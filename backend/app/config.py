@@ -94,15 +94,17 @@ class Settings(BaseModel):
     sandbox_mode: Literal["auto", "strict", "guarded"] = "auto"
     demo_step_delay_seconds: float = Field(default=0.15, ge=0, le=5)
     max_parallel_tasks: int = Field(default=4, ge=1, le=32)
-    department_timeout_seconds: float = Field(default=300, gt=0, le=3600)
+    department_timeout_seconds: float = Field(default=600, gt=0, le=3600)
     ollama_base_url: str | None = None
     openai_model: str = "openai/gpt-4o-mini"
-    gemini_model: str = "gemini/gemini-2.5-flash"
+    gemini_model: str = "gemini/gemini-3.5-flash-lite"
     anthropic_model: str = "anthropic/claude-haiku-4-5"
     ollama_model: str = "ollama_chat/llama3.2"
     provider_order: tuple[Provider, ...] = ("openai", "gemini", "anthropic", "ollama")
-    request_timeout_seconds: float = Field(default=60, gt=0, le=600)
-    max_output_tokens: int = Field(default=1024, gt=0, le=131_072)
+    request_timeout_seconds: float = Field(default=180, gt=0, le=600)
+    max_output_tokens: int = Field(default=4096, gt=0, le=131_072)
+    provider_max_attempts: int = Field(default=3, ge=1, le=5)
+    provider_retry_delay_seconds: float = Field(default=1, ge=0, le=30)
     sqlite_busy_timeout_ms: int = Field(default=30_000, ge=100, le=300_000)
 
     @field_validator("data_dir")
@@ -225,6 +227,8 @@ class Settings(BaseModel):
             "OPENFOUNDRY_OLLAMA_MODEL": "ollama_model",
             "OPENFOUNDRY_REQUEST_TIMEOUT_SECONDS": "request_timeout_seconds",
             "OPENFOUNDRY_MAX_OUTPUT_TOKENS": "max_output_tokens",
+            "OPENFOUNDRY_PROVIDER_MAX_ATTEMPTS": "provider_max_attempts",
+            "OPENFOUNDRY_PROVIDER_RETRY_DELAY_SECONDS": "provider_retry_delay_seconds",
             "OPENFOUNDRY_SQLITE_BUSY_TIMEOUT_MS": "sqlite_busy_timeout_ms",
         }
         values: dict[str, object] = {
