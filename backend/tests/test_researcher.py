@@ -25,7 +25,6 @@ from backend.app.departments._research_web import (
     PublicTransport,
     PublicWeb,
     SourceError,
-    browser_html,
     html_to_markdown,
     public_url,
     resolve_public,
@@ -669,6 +668,7 @@ def browser_api(monkeypatch):
         lambda name: session_module if name.endswith("session") else profile_module,
     )
     monkeypatch.setattr(web, "resolve_public", AsyncMock(return_value=("93.184.216.34",)))
+    monkeypatch.setattr(web, "_browser_executable", lambda: "/usr/bin/chromium")
     return SimpleNamespace(
         page=page,
         browser=browser,
@@ -679,7 +679,7 @@ def browser_api(monkeypatch):
 
 
 async def test_browser_use_adapter_disables_cloud_extensions_and_uses_proxy(browser_api):
-    assert await browser_html("https://example.com/") == "<main>Rendered evidence</main>"
+    assert await web._browser_html("https://example.com/") == "<main>Rendered evidence</main>"
     browser_api.browser.kill.assert_awaited_once()
     browser_api.page.goto.assert_awaited_once_with("https://example.com/")
     settings = browser_api.profile_factory.call_args.kwargs
@@ -699,35 +699,35 @@ async def test_browser_adapter_rejects_navigation_outside_source_and_always_clos
 ):
     browser_api.page.get_url.return_value = url
     with pytest.raises(SourceError):
-        await browser_html("https://example.com/")
+        await web._browser_html("https://example.com/")
     browser_api.browser.kill.assert_awaited_once()
 
 
 async def test_browser_adapter_kills_after_start_failure(browser_api):
     browser_api.browser.start.side_effect = RuntimeError("Chromium launch failed")
     with pytest.raises(RuntimeError):
-        await browser_html("https://example.com/")
+        await web._browser_html("https://example.com/")
     browser_api.browser.kill.assert_awaited_once()
 
 
 async def test_browser_adapter_kills_on_cancellation(browser_api):
     browser_api.page.goto.side_effect = asyncio.CancelledError
     with pytest.raises(asyncio.CancelledError):
-        await browser_html("https://example.com/")
+        await web._browser_html("https://example.com/")
     browser_api.browser.kill.assert_awaited_once()
 
 
 async def test_browser_adapter_bounds_utf8_output(browser_api):
     browser_api.page.evaluate.side_effect = ["ready", "é" * 100]
     with pytest.raises(SourceError, match="byte limit"):
-        await browser_html("https://example.com/", max_bytes=100)
+        await web._browser_html("https://example.com/", max_bytes=100)
     browser_api.browser.kill.assert_awaited_once()
 
 
 async def test_browser_adapter_refuses_library_no_sandbox_default(browser_api):
     browser_api.profile.get_args = lambda: ["--no-sandbox"]
     with pytest.raises(SourceError, match="sandbox is unavailable"):
-        await browser_html("https://example.com/")
+        await web._browser_html("https://example.com/")
     browser_api.browser_factory.assert_not_called()
 
 

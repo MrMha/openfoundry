@@ -2,13 +2,11 @@
 
 from __future__ import annotations
 
-import asyncio
 import base64
 import contextlib
 import importlib
 import io
 import json
-import os
 import re
 import sys
 from pathlib import PurePosixPath
@@ -17,6 +15,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 from pypdf import PdfReader
 
+from backend.app.core.research_worker import ResearchWorkerError, run_research_worker
 from backend.app.departments._research_web import MAX_SOURCE_BYTES, SourceError, html_to_markdown
 
 MAX_TEXT_CHARACTERS = 500_000
@@ -132,64 +131,18 @@ async def parse_document(
     payload = json.dumps(
         {"data": base64.b64encode(data).decode(), "name": name, "prefer_docling": prefer_docling}
     ).encode()
-    allowed_environment = {"PATH", "LANG", "LC_ALL", "SYSTEMROOT", "TMPDIR", "PYTHONPATH"}
-    environment = {key: value for key, value in os.environ.items() if key in allowed_environment}
-    environment.update(
-        {
-            "HF_HUB_OFFLINE": "1",
-            "HF_HUB_DISABLE_TELEMETRY": "1",
-            "DO_NOT_TRACK": "1",
-            "PYTHONDONTWRITEBYTECODE": "1",
-        }
-    )
-    process = await asyncio.create_subprocess_exec(
-        sys.executable,
-        "-m",
-        "backend.app.departments._research_documents",
-        stdin=asyncio.subprocess.PIPE,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.DEVNULL,
-        env=environment,
-    )
-    assert process.stdout is not None
-    assert process.stdin is not None
-
-    async def exchange() -> bytes:
-        # Feed and drain concurrently: large documents exceed the pipe capacity.
-        async def send() -> None:
-            assert process.stdin is not None
-            process.stdin.write(payload)
-            await process.stdin.drain()
-            process.stdin.close()
-
-        sender = asyncio.create_task(send())
-        try:
-            assert process.stdout is not None
-            result = bytearray()
-            while chunk := await process.stdout.read(65536):
-                result.extend(chunk)
-                if len(result) > 4 * MAX_SOURCE_BYTES:
-                    raise SourceError("Parser output exceeds byte limit")
-            await sender
-            await process.wait()
-            return bytes(result)
-        finally:
-            sender.cancel()
-            await asyncio.gather(sender, return_exceptions=True)
-
     try:
-        async with asyncio.timeout(timeout_seconds):
-            output = await exchange()
-        if process.returncode != 0:
-            raise SourceError(
-                "Document parsing failed; unsupported, corrupt, or resource limit exceeded"
-            )
-        return ParsedDocument.model_validate_json(output)
-    finally:
-        if process.returncode is None:
-            with contextlib.suppress(ProcessLookupError):
-                process.kill()
-        await process.wait()
+        output = await run_research_worker(
+            "backend.app.departments._research_documents",
+            payload,
+            timeout_seconds=timeout_seconds,
+            max_output_bytes=4 * MAX_SOURCE_BYTES,
+        )
+    except ResearchWorkerError:
+        raise SourceError(
+            "Document parsing failed; unsupported, corrupt, or resource limit exceeded"
+        ) from None
+    return ParsedDocument.model_validate_json(output)
 
 
 def _worker() -> None:

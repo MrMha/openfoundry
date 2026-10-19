@@ -14,7 +14,7 @@ Use the actual assets: [four-stage demo GIF](assets/war-room-demo.gif), [2× her
 | Models | Server-side BYOK OpenAI/Gemini/Anthropic and local Ollama routing, schema validation and a durable budget ledger; default mission ceiling $2.00. |
 | QA | Actual test subprocesses and ASGI/HTTP/DOM checks, up to three repairs after the initial round; browser adapters when available, labeled diagnostics otherwise. |
 | MCP | Official SDK; `openfoundry mcp` proxies an already-running API over stdio. Departments can call explicitly configured/granted external MCP tools. |
-| Verification | Locally verified baseline: 390 backend + 34 frontend + 6 Chromium E2E tests. Remote CI status comes from workflow badges, not this count. |
+| Verification | Locally verified baseline: 408 backend + 34 frontend + 6 Chromium E2E tests. Remote CI status comes from workflow badges, not this count. |
 | Roadmap | Chat approvals, GitHub PR publication and a community registry are future specifications, not current capabilities. |
 
 ## Hacker News
@@ -116,7 +116,7 @@ A key-free demo makes the failure → patch → pass path reproducible: real exe
 
 **Source + GIF:** https://github.com/MrMha/openfoundry
 
-The current baseline is 390 backend, 34 frontend and 6 Chromium tests verified locally. I’d appreciate review of the transaction/replay boundaries, conservative spend reservations and department contract.
+The current baseline is 408 backend, 34 frontend and 6 Chromium tests verified locally. I’d appreciate review of the transaction/replay boundaries, conservative spend reservations and department contract.
 ```
 
 ## X: seven-post launch thread

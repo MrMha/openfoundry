@@ -2,7 +2,7 @@
 
 [![Backend CI](https://github.com/MrMha/openfoundry/actions/workflows/ci-backend.yml/badge.svg?branch=main)](https://github.com/MrMha/openfoundry/actions/workflows/ci-backend.yml)
 [![Frontend & Chromium CI](https://github.com/MrMha/openfoundry/actions/workflows/ci-frontend.yml/badge.svg?branch=main)](https://github.com/MrMha/openfoundry/actions/workflows/ci-frontend.yml)
-[![Tests: 430 verified locally](https://img.shields.io/badge/tests-430%20verified%20locally-10B981)](CONTRIBUTING.md#validation)
+[![Tests: 448 verified locally](https://img.shields.io/badge/tests-448%20verified%20locally-10B981)](CONTRIBUTING.md#validation)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 **If an AI agent is a freelancer, OpenFoundry is your autonomous software & research company—with a built-in QA department that tests and self-heals its own code.**
@@ -173,11 +173,11 @@ The current release is **0.1.0**. Future **v1.1** chat approvals, **v1.2** GitHu
 
 `auto` reports the measured execution mode in `/api/plugins`. **Guarded execution is not OS isolation**: generated tests run with the service account's filesystem/network privileges. Use a dedicated account/container; choose `OPENFOUNDRY_SANDBOX_MODE=strict` when unavailable isolation must stop execution. Plugins and explicitly configured MCP executables are trusted service code. Research and model output remain untrusted data.
 
-SQLite volumes are for one host and one coordinator, not a distributed cluster. Bind publicly only with an operator token and an appropriate TLS reverse proxy. REST uses `Authorization: Bearer …`; browser WebSockets use `openfoundry` and `bearer.<token>` subprotocols, never token URL parameters. Approval rejection cancels the mission. See [authentication and API contracts](docs/BACKEND_GUIDE.md), [frontend behavior](frontend/README.md), and [MCP limits](docs/mcp.md).
+SQLite volumes are for one host and one coordinator, not a distributed cluster. Bind publicly only with an operator token and an appropriate TLS reverse proxy. REST uses `Authorization: Bearer …`; browser WebSockets use `openfoundry` and `bearer.<token>` subprotocols, never token URL parameters. Approval rejection cancels the mission. See [authentication and API contracts](docs/BACKEND_GUIDE.md), [frontend behavior](frontend/README.md), [MCP limits](docs/mcp.md), and the [publication security audit](docs/SECURITY_AUDIT.md).
 
 ## Verification and license
 
-Locally verified baseline: **390 backend tests + 34 frontend tests + 6 Chromium E2E tests**. CI badges reflect the repository's actual workflow runs separately. [CONTRIBUTING.md](CONTRIBUTING.md#validation) lists the exact commands, including strict typing, Ruff/Flake8, frontend lint/format and production builds.
+Locally verified baseline: **408 backend tests + 34 frontend tests + 6 Chromium E2E tests**. CI badges reflect the repository's actual workflow runs separately. [CONTRIBUTING.md](CONTRIBUTING.md#validation) lists the exact commands, including strict typing, Ruff/Flake8, frontend lint/format and production builds.
 
 Regenerate the real screenshots with `uv run --frozen python scripts/generate_demo_assets.py` after installing the frontend dependencies and Chromium; [asset instructions](CONTRIBUTING.md#regenerate-the-demo-assets) describe the system-browser override and reproducibility checks.
 

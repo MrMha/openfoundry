@@ -6,6 +6,8 @@ import asyncio
 import contextlib
 import importlib
 import ipaddress
+import json
+import shutil
 import socket
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
@@ -15,6 +17,8 @@ from typing import Protocol, cast
 import httpx
 from bs4 import BeautifulSoup
 from markdownify import markdownify
+
+from backend.app.core.research_worker import ResearchWorkerError, run_research_worker
 
 Resolver = Callable[[str, int], Awaitable[tuple[str, ...]]]
 MAX_SOURCE_BYTES = 2 * 1024 * 1024
@@ -300,7 +304,7 @@ class BrowserProxy:
                 await writer.wait_closed()
 
 
-async def browser_html(url: str, *, max_bytes: int = MAX_SOURCE_BYTES) -> str:
+async def _browser_html(url: str, *, max_bytes: int = MAX_SOURCE_BYTES) -> str:
     """Use browser-use's deterministic browser API, never its unmetered LLM Agent."""
     source = public_url(url)
     module = importlib.import_module("browser_use.browser.session")
@@ -308,7 +312,9 @@ async def browser_html(url: str, *, max_bytes: int = MAX_SOURCE_BYTES) -> str:
     await resolve_public(source.host, source.port or 443)
     async with BrowserProxy(source.host) as proxy:
         with TemporaryDirectory(prefix="openfoundry-browser-") as profile_dir:
+            executable = _browser_executable()
             profile = profile_module.BrowserProfile(
+                executable_path=executable,
                 headless=True,
                 is_local=True,
                 use_cloud=False,
@@ -360,3 +366,31 @@ async def browser_html(url: str, *, max_bytes: int = MAX_SOURCE_BYTES) -> str:
                     cleanup.cancel()
                     await asyncio.gather(cleanup, return_exceptions=True)
                     raise
+
+
+def _browser_executable() -> str:
+    for name in ("chromium", "chromium-browser", "google-chrome", "chrome"):
+        executable = shutil.which(name)
+        if executable:
+            return executable
+    raise SourceError("A provisioned Chromium executable is required; using HTTP extraction")
+
+
+async def browser_html(url: str, *, max_bytes: int = MAX_SOURCE_BYTES) -> str:
+    """Render in a credential-free worker; SDK children cannot inherit backend secrets."""
+    source = public_url(url)
+    if not 0 < max_bytes <= MAX_SOURCE_BYTES:
+        raise ValueError("Browser output limit is invalid")
+    try:
+        output = await run_research_worker(
+            "backend.app.departments._research_browser",
+            json.dumps({"url": str(source), "max_bytes": max_bytes}).encode(),
+            timeout_seconds=45,
+            max_output_bytes=6 * max_bytes + 4096,
+        )
+        value = json.loads(output)
+        if not isinstance(value, str) or len(value.encode()) > max_bytes:
+            raise SourceError("Browser output is invalid or exceeds byte limit")
+        return value
+    except ResearchWorkerError:
+        raise SourceError("Browser unavailable; using HTTP extraction") from None

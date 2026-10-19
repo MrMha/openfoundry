@@ -420,7 +420,10 @@ Optional integrations can be installed separately or together:
 uv sync --extra dev --extra browser --extra documents
 ```
 
-`browser-use` needs its supported Chromium installed and OS sandbox support. The adapter
+`browser-use` needs a provisioned `chromium`, `chromium-browser`, `google-chrome` or
+`chrome` executable on the sanitized worker PATH and OS sandbox support. It never installs
+a browser at task execution time. Rendering runs in a fixed-module worker with a sanitized
+environment; browser SDK subprocesses cannot inherit backend provider/cloud credentials. The adapter
 uses deterministic browser APIs, a fresh profile, and a same-host public-address proxy;
 it never invokes browser-use's LLM Agent or bypasses mission billing. Extensions, cloud
 browsers, proxy bypass for loopback, and non-proxied WebRTC/QUIC are disabled. Cross-host
@@ -431,7 +434,9 @@ launch Chromium with `--no-sandbox` use the HTTP fallback instead.
 Docling uses its model-free native PDF pipeline, with no OCR model download. Missing or
 unsuccessful conversion falls back to UTF-8 text/Markdown/JSON/CSV/HTML or `pypdf`. Encrypted,
 corrupt, over-100-page, or image-only PDFs fail explicitly; scanned documents need a separate
-OCR integration. Parser subprocesses run offline, receive no provider credentials, and have
+OCR integration. Parser subprocesses run with isolated Python startup (`-I`), reject inherited `PYTHONPATH`,
+and use the same positive environment allowlist as agent test commands. They run offline,
+receive no provider credentials, and have
 30-second wall, 20-second CPU, 1.5 GiB address-space, and bounded output limits. Timeout or
 cancellation kills and reaps the child. These limits constrain parsing; the subprocess is
 not an OS security boundary for hostile native parser exploits.
@@ -577,3 +582,10 @@ local API, captures all four phases, verifies completion at zero API cost, and s
 default 0.15), allowing transient failure/patch states to be observed without fabricating UI
 state. GitHub Actions runs backend checks and frontend/build/Chromium verification on pushes
 and pull requests to main, and uploads regenerated visual/browser artifacts for review.
+
+
+Publication security checks are documented in [SECURITY_AUDIT.md](SECURITY_AUDIT.md).
+The CLI and application install credential redaction before standard Python log handlers,
+including access/WebSocket/SDK messages and exception text. Request validation errors omit
+submitted input/context values to avoid echoing an accidentally supplied credential.
+These controls do not turn guarded execution or trusted Python plugins into an OS jail.

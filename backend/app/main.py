@@ -10,7 +10,9 @@ from typing import cast
 
 import uvicorn
 from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
@@ -24,6 +26,7 @@ from backend.app.api.ws_war_room import router as websocket_routes
 from backend.app.config import Settings
 from backend.app.core.mcp_bridge import MCPBridge, create_mcp_server
 from backend.app.core.orchestrator import MissionOrchestrator
+from backend.app.core.security_logging import install_log_redaction, redact_secrets
 from backend.app.core.spa import WarRoomStaticFiles
 from backend.app.database import Database
 from backend.app.departments.base_department import BaseDepartment
@@ -35,6 +38,7 @@ def create_app(
     settings: Settings | None = None, *, departments: Mapping[str, BaseDepartment] | None = None
 ) -> FastAPI:
     config = settings if settings is not None else Settings.from_env()
+    install_log_redaction(config)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
@@ -61,6 +65,27 @@ def create_app(
             await database.close()
 
     app = FastAPI(title="OpenFoundry", version="0.1.0", lifespan=lifespan)
+
+    @app.exception_handler(RequestValidationError)
+    async def invalid_request(request: Request, error: RequestValidationError) -> JSONResponse:
+        # Pydantic's default input/context echo may contain accidentally submitted keys.
+        return JSONResponse(
+            status_code=422,
+            content={
+                "detail": [
+                    {
+                        "loc": [
+                            redact_secrets(part) if isinstance(part, str) else part
+                            for part in item["loc"]
+                        ],
+                        "msg": redact_secrets(item["msg"]),
+                        "type": item["type"],
+                    }
+                    for item in error.errors()
+                ]
+            },
+        )
+
     app.add_middleware(
         CORSMiddleware,
         allow_origins=list(config.cors_origins),
@@ -98,6 +123,7 @@ def run_cli() -> None:
     parser.add_argument("--api-url", default="http://127.0.0.1:8000")
     args = parser.parse_args()
     settings = Settings.from_env()
+    install_log_redaction(settings)
     if args.command == "mcp":
         create_mcp_server(
             args.api_url, settings.api_token.get_secret_value() if settings.api_token else None

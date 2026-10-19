@@ -94,7 +94,7 @@ PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium npm run test:e2e
 
 `frontend/playwright.config.ts` starts its own temporary-data backend on **8001** and Vite on **5174**. Keep those ports free. The two projects exercise development Vite and the production FastAPI SPA mount. They verify real demo execution, approval/defer/reject behavior, replay-driven panels, artifact inspection, responsive layout and the blueprint contract. Browser logs/traces go to ignored `frontend/test-results/`; these tests do not replace the generated application's own QA tests.
 
-The last locally verified baseline is **390 backend + 34 frontend + 6 Chromium tests**. Counts can change with contributions; report the counts actually executed and distinguish skips/failures. CI runs the commands in [.github/workflows/ci-backend.yml](.github/workflows/ci-backend.yml) and [.github/workflows/ci-frontend.yml](.github/workflows/ci-frontend.yml); a local pass is separate from a remote workflow result.
+The last locally verified baseline is **408 backend + 34 frontend + 6 Chromium tests**. Counts can change with contributions; report the counts actually executed and distinguish skips/failures. CI runs the commands in [.github/workflows/ci-backend.yml](.github/workflows/ci-backend.yml) and [.github/workflows/ci-frontend.yml](.github/workflows/ci-frontend.yml); a local pass is separate from a remote workflow result.
 
 ## Add a department plugin
 
