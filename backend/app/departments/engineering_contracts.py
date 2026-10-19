@@ -59,6 +59,15 @@ class CommandSpec(BaseModel):
     @field_validator("command")
     @classmethod
     def supported(cls, command: list[str]) -> list[str]:
+        if (
+            len(command) >= 3
+            and command[0] in {"python", "python3"}
+            and command[1] == "-m"
+            and command[2] in {"pytest", "ruff"}
+        ):
+            # Canonicalize only these fixed module launchers. The sandbox still builds
+            # its own isolated Python argv and validates every remaining argument.
+            command = command[2:]
         if command[0] not in {"pytest", "ruff"}:
             raise ValueError("QA commands must use pytest or ruff")
         return command

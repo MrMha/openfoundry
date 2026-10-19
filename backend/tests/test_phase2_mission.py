@@ -53,6 +53,7 @@ def test_complete_phase2_mission_streams_one_self_heal_and_accounts_for_every_pa
     outputs = [
         planning,
         implementation(),
+        implementation(),
         diagnosis().model_dump(mode="json"),
         repair(),
         launch_output(),
@@ -227,17 +228,17 @@ def test_complete_phase2_mission_streams_one_self_heal_and_accounts_for_every_pa
             for source in source_context["artifacts"]
         )
         assert requested_sources == ["https://example.com/addition"]
-        assert len(provider_calls) == 5
+        assert len(provider_calls) == 6
         assert all(call["num_retries"] == 0 and call["fallbacks"] == [] for call in provider_calls)
         expected_cost = sum(
             (
                 Decimal(200 + index * 20) * Decimal("0.000001")
                 + Decimal(1000 + index * 100) * Decimal("0.000002")
-                for index in range(5)
+                for index in range(6)
             ),
             Decimal(0),
         )
-        assert Decimal(detail["total_cost_usd"]) == expected_cost == Decimal("0.013200000")
+        assert Decimal(detail["total_cost_usd"]) == expected_cost == Decimal("0.016500000")
         assert (
             Decimal(detail["reserved_cost_usd"]) == 0
             and expected_cost < config.max_mission_cost_usd
@@ -256,12 +257,12 @@ def test_complete_phase2_mission_streams_one_self_heal_and_accounts_for_every_pa
             return ledger, await memory.search("subtracts", kind=MemoryKind.BUG_REPORT)
 
         ledger, bugs = client.portal.call(accounting_and_memory)
-        assert len(ledger) == 5 and all(
+        assert len(ledger) == 6 and all(
             attempt.status == AttemptStatus.SUCCEEDED for attempt in ledger
         )
         assert sum(attempt.cost_usd for attempt in ledger) == expected_cost
-        assert sum(attempt.prompt_tokens for attempt in ledger) == 1200
-        assert sum(attempt.completion_tokens for attempt in ledger) == 6000
+        assert sum(attempt.prompt_tokens for attempt in ledger) == 1500
+        assert sum(attempt.completion_tokens for attempt in ledger) == 7500
         assert bugs and len(bugs) == 1
         catalog = client.get("/api/plugins").json()
         assert {plugin["name"] for plugin in catalog["plugins"] if plugin["enabled"]} >= set(

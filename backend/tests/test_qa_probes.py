@@ -222,7 +222,7 @@ async def test_failed_qa_persists_diagnostic_artifacts_through_orchestrator(sett
             ).all()
         assert any(artifact.artifact_type == "qa_report" for artifact in artifacts)
         assert any(artifact.artifact_type == "dom_diagnostic" for artifact in artifacts)
-        router.complete.assert_awaited_once()
+        assert router.complete.await_count == 2  # Initial draft and static review only.
     finally:
         await coordinator.close()
         await manager.close()

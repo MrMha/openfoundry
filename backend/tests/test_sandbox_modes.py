@@ -4,6 +4,7 @@ import asyncio
 import os
 import py_compile
 import shutil
+import sys
 from unittest.mock import AsyncMock
 from uuid import uuid4
 
@@ -48,6 +49,7 @@ async def test_auto_falls_back_when_bwrap_is_missing_without_inheriting_credenti
         assert "Bubblewrap" in result.fallback_reason
 
 
+@pytest.mark.skipif(sys.platform != "linux", reason="Exercises Linux Bubblewrap capability probing")
 async def test_auto_probe_detects_blocked_user_namespaces_and_is_cached(tmp_path, monkeypatch):
     async with WorkspaceSandbox(uuid4(), root=tmp_path) as sandbox:
         await sandbox.initialize_git()
@@ -220,6 +222,7 @@ async def test_local_git_commit_preserves_unrelated_staged_work_and_disables_fil
         ).stdout.strip() == "unrelated.txt"
 
 
+@pytest.mark.skipif(sys.platform != "linux", reason="Exercises Linux Bubblewrap capability probing")
 async def test_subprocess_probe_cancellation_does_not_cache_an_unproven_fallback(
     tmp_path, monkeypatch
 ):

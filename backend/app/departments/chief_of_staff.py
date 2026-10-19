@@ -68,6 +68,10 @@ class ChiefOfStaff(BaseDepartment):
                         "Include all four phases when the goal requires a product delivery. "
                         "Research descriptions may be JSON objects with query, urls (HTTP URLs), "
                         "and documents (workspace-relative paths). Never invent source URLs. "
+                        "For self-contained tasks whose requirements supply the needed facts, "
+                        "research the local SPEC.md rather than requiring a web search. "
+                        'Use a JSON research description with query and documents=["SPEC.md"], '
+                        "prefer_docling=false; clearly describe it as requirements analysis. "
                         "Each task must describe a concrete deliverable and verification criteria. "
                         "Use stable lowercase task keys and dependencies on other task keys. "
                         "Set requires_approval=true on the first engineering task, "

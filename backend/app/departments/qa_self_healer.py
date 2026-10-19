@@ -367,6 +367,7 @@ class QASelfHealer(BaseDepartment):
                         ChatMessage(role="user", content=json.dumps(context, ensure_ascii=False)),
                     ],
                     json_schema=strict_schema(BugDiagnosis),
+                    output_validator=BugDiagnosis.model_validate,
                 )
                 diagnosis = BugDiagnosis.model_validate(diagnosis_result.structured_output)
                 bug = BugReport(

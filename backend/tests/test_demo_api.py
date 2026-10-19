@@ -80,7 +80,7 @@ def test_key_free_demo_uses_real_loop_without_mutating_live_routing(tmp_path, mo
                 )
 
         ledger = client.portal.call(attempts)
-        assert len(ledger) == 5 and all(row.cost_usd == 0 for row in ledger)
+        assert len(ledger) == 6 and all(row.cost_usd == 0 for row in ledger)
         assert all(row.model == "ollama_chat/openfoundry-offline-demo" for row in ledger)
         # A subsequent live mission retains the original key-free routing and fails clearly.
         live = client.post("/api/missions", json={"goal": "A real live mission"}).json()

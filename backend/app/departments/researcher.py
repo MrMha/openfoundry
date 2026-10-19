@@ -67,6 +67,13 @@ class ResearchRequest(BaseModel):
         if description.lstrip().startswith("{"):
             return cls.model_validate_json(description)
         urls = [url.rstrip(".,;:!?)]}") for url in re.findall(r"https?://[^\s<>\"']+", description)]
+        local_specification = re.search(
+            r"(?<![\w/])SPEC\.md(?![\w/]|\.\w)", description
+        ) or re.search(r"\blocal\s+(?:specification|spec|requirements)\b", description, re.I)
+        if not urls and local_specification:
+            # The planner can refer to its materialized specification in ordinary prose.
+            # Resolve this explicit local source instead of searching the whole sentence.
+            return cls(query=description, documents=["SPEC.md"], prefer_docling=False)
         return cls(query=description, urls=urls, max_sources=8)
 
 
