@@ -1,6 +1,6 @@
 """Credential-isolated LiteLLM routing with durable, conservative mission budgets.
 
-Only non-streaming text chat is exposed: tools, images, automatic retries, and other
+Only non-streaming text chat is exposed: tools, images, implicit SDK retries, and other
 unbounded charge sources are intentionally outside this API. Dollar amounts are
 list-price estimates from LiteLLM's pricing catalog, not provider invoice guarantees.
 """
@@ -20,6 +20,7 @@ from uuid import UUID, uuid4
 import litellm
 from jsonschema import Draft202012Validator, ValidationError
 from pydantic import BaseModel, ConfigDict, Field, JsonValue
+from pydantic import ValidationError as PydanticValidationError
 from referencing import Registry
 from sqlalchemy import literal, update
 
@@ -316,6 +317,7 @@ class LLMRouter:
         usage: TokenUsage,
         *,
         rejected: bool = False,
+        error_code: str | None = None,
     ) -> None:
         async with self.database.session() as session:
             # Claim settlement first using one write, avoiding a read/upgrade race in SQLite.
@@ -331,6 +333,7 @@ class LLMRouter:
                         cost_usd=cost,
                         prompt_tokens=usage.prompt_tokens,
                         completion_tokens=usage.completion_tokens,
+                        error_code=error_code,
                     )
                     .returning(LLMAttempt.mission_id, LLMAttempt.reserved_cost_usd)
                 )
@@ -346,6 +349,83 @@ class LLMRouter:
                     reserved_cost_usd=Mission.reserved_cost_usd - reservation,
                 )
             )
+
+    async def _dispatch(
+        self,
+        mission_id: UUID,
+        route: _Route,
+        bound: _Bound,
+        kwargs: dict[str, Any],
+        max_attempts: int,
+    ) -> tuple[UUID, Any, int] | None:
+        """Ledger every physical call; retain ambiguous reservations across bounded retries."""
+        for attempt in range(max_attempts):
+            attempt_id = await self._reserve(mission_id, route, bound)
+            try:
+                async with asyncio.timeout(self.settings.request_timeout_seconds):
+                    return attempt_id, await self._completion(**kwargs), attempt + 1
+            except asyncio.CancelledError:
+                raise  # The committed reservation survives cancellation.
+            except litellm.ContentPolicyViolationError:
+                await self._uncertain(attempt_id, "provider_refusal")
+                raise ProviderRefusalError("Provider refused the request") from None
+            except (
+                litellm.AuthenticationError,
+                litellm.PermissionDeniedError,
+                litellm.BadRequestError,
+                litellm.NotFoundError,
+                litellm.UnsupportedParamsError,
+            ) as error:
+                status = getattr(error, "status_code", None)
+                code = (
+                    f"http_{status}" if status in {400, 401, 403, 404, 422} else "request_rejected"
+                )
+                await self._settle(
+                    attempt_id, Decimal(0), TokenUsage(0, 0), rejected=True, error_code=code
+                )
+                logger.warning("LLM route rejected: provider=%s reason=%s", route.provider, code)
+                return None
+            except (
+                litellm.APIError,
+                litellm.ServiceUnavailableError,
+                litellm.RateLimitError,
+                TimeoutError,
+                ConnectionError,
+            ) as error:
+                status = getattr(error, "status_code", None)
+                code = (
+                    f"http_{status}"
+                    if status in {408, 429, 500, 502, 503, 504}
+                    else "provider_timeout"
+                    if isinstance(error, (TimeoutError, litellm.Timeout))
+                    else "provider_failure"
+                )
+                await self._uncertain(attempt_id, code)
+                logger.warning(
+                    "LLM route failed: provider=%s reason=%s reservation_retained",
+                    route.provider,
+                    code,
+                )
+                # Never replay an ambiguous timeout automatically. Explicit overload/rate
+                # responses may retry, with a new reservation and no provider/key rotation.
+                if status not in {429, 503} or attempt + 1 == max_attempts:
+                    return None
+                delay = min(30.0, self.settings.provider_retry_delay_seconds * 2**attempt)
+                response = getattr(error, "response", None)
+                retry_after = response.headers.get("retry-after") if response is not None else None
+                if retry_after:
+                    try:
+                        requested_delay = float(retry_after)
+                    except ValueError:
+                        return None  # A date-valued hint needs a later operator retry.
+                    if not math.isfinite(requested_delay) or requested_delay > 30:
+                        return None
+                    delay = max(delay, requested_delay)
+                await asyncio.sleep(delay)
+            except Exception:
+                await self._uncertain(attempt_id, "unexpected_failure")
+                raise LLMRouterError("Unexpected provider failure; reservation retained") from None
+        return None
 
     @staticmethod
     def _schema_validator(schema: JSONSchema | None) -> Draft202012Validator | None:
@@ -375,6 +455,7 @@ class LLMRouter:
         messages: Sequence[ChatMessage],
         *,
         json_schema: JSONSchema | None = None,
+        output_validator: Callable[[JsonValue], object] | None = None,
         max_output_tokens: int | None = None,
         temperature: float = 0.2,
     ) -> LLMResult:
@@ -402,16 +483,14 @@ class LLMRouter:
         if not routes:
             raise ProvidersUnavailableError("Configure an API key or OLLAMA_BASE_URL")
         budget_failures = 0
-        for route in routes:
+        requests_made: dict[Provider, int] = {}
+        feedback: dict[Provider, list[dict[str, str]]] = {}
+        while routes:
+            route = routes.pop(0)
             try:
                 bound = await asyncio.to_thread(self._bound, route, output_tokens)
             except PricingUnavailableError:
                 logger.warning("LLM route skipped: provider=%s reason=pricing", route.provider)
-                continue
-            try:
-                attempt_id = await self._reserve(mission_uuid, route, bound)
-            except BudgetExceededError:
-                budget_failures += 1
                 continue
             kwargs: dict[str, Any] = {
                 "model": route.model,
@@ -431,41 +510,46 @@ class LLMRouter:
             if route.api_base is not None:
                 kwargs["api_base"] = route.api_base
             if json_schema is not None:
-                kwargs["response_format"] = {
-                    "type": "json_schema",
-                    "json_schema": {
-                        "name": "mission_output",
-                        "strict": True,
-                        "schema": json_schema,
-                    },
-                }
+                if route.provider == "gemini":
+                    # Gemini rejects some valid Pydantic schema constructs at dispatch.
+                    # JSON mode plus the complete schema avoids remote grammar limits;
+                    # the original Draft202012Validator below remains authoritative.
+                    kwargs["response_format"] = {"type": "json_object"}
+                    kwargs["messages"] = [
+                        {
+                            "role": "system",
+                            "content": "Return a JSON object matching this JSON Schema exactly. "
+                            "Include every required field and no extra fields.\n"
+                            + json.dumps(json_schema, separators=(",", ":")),
+                        },
+                        *kwargs["messages"],
+                    ]
+                else:
+                    kwargs["response_format"] = {
+                        "type": "json_schema",
+                        "json_schema": {
+                            "name": "mission_output",
+                            "strict": True,
+                            "schema": json_schema,
+                        },
+                    }
+            if route.provider in feedback:
+                kwargs["messages"].extend(feedback[route.provider])
             try:
-                async with asyncio.timeout(self.settings.request_timeout_seconds):
-                    raw_response = await self._completion(**kwargs)
-            except asyncio.CancelledError:
-                # Reservation was committed before dispatch and survives even a hard kill.
-                raise
-            except litellm.ContentPolicyViolationError:
-                await self._uncertain(attempt_id, "provider_refusal")
-                raise ProviderRefusalError("Provider refused the request") from None
-            except (
-                litellm.AuthenticationError,
-                litellm.PermissionDeniedError,
-                litellm.BadRequestError,
-                litellm.NotFoundError,
-                litellm.UnsupportedParamsError,
-            ):
-                # A definitive pre-generation rejection incurs no completion charge.
-                await self._settle(attempt_id, Decimal(0), TokenUsage(0, 0), rejected=True)
-                logger.warning("LLM route rejected: provider=%s", route.provider)
+                dispatched = await self._dispatch(
+                    mission_uuid,
+                    route,
+                    bound,
+                    kwargs,
+                    self.settings.provider_max_attempts - requests_made.get(route.provider, 0),
+                )
+            except BudgetExceededError:
+                budget_failures += 1
                 continue
-            except (litellm.APIError, TimeoutError, ConnectionError):
-                await self._uncertain(attempt_id, "provider_failure")
-                logger.warning("LLM route failed: provider=%s reservation_retained", route.provider)
+            if dispatched is None:
                 continue
-            except Exception:
-                await self._uncertain(attempt_id, "unexpected_failure")
-                raise LLMRouterError("Unexpected provider failure; reservation retained") from None
+            attempt_id, raw_response, physical_attempts = dispatched
+            requests_made[route.provider] = requests_made.get(route.provider, 0) + physical_attempts
 
             try:
                 payload = (
@@ -514,12 +598,66 @@ class LLMRouter:
                     try:
                         structured_output = _strict_json(content)
                         validator.validate(structured_output)
-                    except (ValueError, ValidationError):
+                    except (ValueError, ValidationError) as error:
+                        detail = (
+                            f"Schema rule {error.validator!r} failed. "
+                            f"Path: {list(error.absolute_path)}."
+                            f" Expected: {error.validator_value!r}"
+                            if isinstance(error, ValidationError)
+                            else "Return valid, unambiguous JSON."
+                        )
                         raise StructuredOutputError(
-                            "Response did not match the JSON schema"
+                            "Response did not match the JSON schema. " + detail
                         ) from None
-            except StructuredOutputError:
+                    if output_validator is not None:
+                        try:
+                            output_validator(structured_output)
+                        except (ValueError, TypeError, SyntaxError) as error:
+                            detail = (
+                                json.dumps(
+                                    error.errors(
+                                        include_input=False,
+                                        include_context=False,
+                                        include_url=False,
+                                    ),
+                                    default=str,
+                                )[:2000]
+                                if isinstance(error, PydanticValidationError)
+                                else f"Python syntax error: {error.msg} at line {error.lineno}"
+                                if isinstance(error, SyntaxError)
+                                else type(error).__name__
+                            )
+                            raise StructuredOutputError(
+                                "Response failed application validation: " + detail
+                            ) from None
+            except StructuredOutputError as error:
                 logger.warning("LLM output invalid: provider=%s spend_recorded", route.provider)
+                async with self.database.session() as session:
+                    await session.execute(
+                        update(LLMAttempt)
+                        .where(LLMAttempt.id == attempt_id)
+                        .values(error_code="invalid_output")
+                    )
+                if requests_made[route.provider] < self.settings.provider_max_attempts:
+                    feedback[route.provider] = []
+                    if choice.message.content:
+                        feedback[route.provider].append(
+                            {
+                                "role": "assistant",
+                                "content": choice.message.content[:64000],
+                            }
+                        )
+                    feedback[route.provider].append(
+                        {
+                            "role": "user",
+                            "content": str(error)
+                            + " Correct the invalid response above. Return a complete "
+                            "JSON object matching the supplied schema and task requirements; "
+                            "include all required fields. Keep it concise enough for "
+                            "the output limit.",
+                        }
+                    )
+                    routes.insert(0, route)
                 continue
             return LLMResult(
                 mission_uuid,
