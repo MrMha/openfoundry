@@ -60,17 +60,19 @@ through your process supervisor or secret manager. Never commit them.
 | `OLLAMA_BASE_URL` | Enables Ollama, e.g. `http://127.0.0.1:11434` |
 | `OPENFOUNDRY_PROVIDER_ORDER` | `openai,gemini,anthropic,ollama` |
 | `OPENFOUNDRY_OPENAI_MODEL` | `openai/gpt-4o-mini` |
-| `OPENFOUNDRY_GEMINI_MODEL` | `gemini/gemini-2.5-flash` |
+| `OPENFOUNDRY_GEMINI_MODEL` | `gemini/gemini-3.5-flash-lite` |
 | `OPENFOUNDRY_ANTHROPIC_MODEL` | `anthropic/claude-haiku-4-5` |
 | `OPENFOUNDRY_OLLAMA_MODEL` | `ollama_chat/llama3.2` |
-| `OPENFOUNDRY_MAX_OUTPUT_TOKENS` | `1024`; per-request upper bound |
-| `OPENFOUNDRY_REQUEST_TIMEOUT_SECONDS` | `60` |
+| `OPENFOUNDRY_MAX_OUTPUT_TOKENS` | `4096`; per-request upper bound |
+| `OPENFOUNDRY_PROVIDER_MAX_ATTEMPTS` | `3`; shared limit for overload and invalid-output retries |
+| `OPENFOUNDRY_PROVIDER_RETRY_DELAY_SECONDS` | `1`; exponential delay, capped at 30 seconds |
+| `OPENFOUNDRY_REQUEST_TIMEOUT_SECONDS` | `180` |
 | `OPENFOUNDRY_SQLITE_BUSY_TIMEOUT_MS` | `30000` |
 | `OPENFOUNDRY_API_TOKEN` | Optional for loopback; required for non-loopback CLI binding |
 | `OPENFOUNDRY_CORS_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` |
 | `OPENFOUNDRY_DEPARTMENT_PLUGINS` | Comma-separated trusted Python module names |
 | `OPENFOUNDRY_MAX_PARALLEL_TASKS` | `4` per mission |
-| `OPENFOUNDRY_DEPARTMENT_TIMEOUT_SECONDS` | `300` per plugin invocation |
+| `OPENFOUNDRY_DEPARTMENT_TIMEOUT_SECONDS` | `600` per plugin invocation |
 | `OPENFOUNDRY_SANDBOX_MODE` | `auto`; `strict` requires Bubblewrap; `guarded` selects host execution |
 
 Ollama must already be serving the configured model. Run one active mission coordinator
@@ -137,12 +139,29 @@ that exceeds published model bounds cannot be prevented locally; such overruns a
 and raise `AccountingError`. Use provider-side spend limits as an additional billing control.
 Ollama API-token cost is recorded as zero; infrastructure and electricity costs are excluded.
 Automatic SDK retries and implicit fallbacks are disabled, and every explicit fallback
-gets its own reservation. Safety refusals stop routing.
+gets its own reservation. Explicit 429/503 responses can retry up to the configured
+attempt limit with exponential delays; every physical call gets a new reservation and
+ambiguous reservations remain held. Retry-After hints longer than 30 seconds stop the
+request for a later retry. Timeouts are not automatically replayed. Safety refusals stop routing.
 
 Structured output uses JSON Schema Draft 2020-12 and is validated locally, rejecting duplicate
 keys, non-finite numbers, truncated output, and schema violations. Only local schema references
-are accepted. Each provider must support the supplied schema; unsupported schemas fall back
-to the next configured provider, with no silent removal of structured-output constraints.
+are accepted. Gemini uses JSON mode with the complete schema in its instructions because
+its native schema endpoint rejects some application schemas. Other providers receive
+native JSON Schema requests. Every response passes the same complete local validator;
+incompatible output is rejected and any reported usage remains charged in the ledger.
+Invalid structured output can request a corrected response within the same per-provider
+attempt limit; it never bypasses schema or application validation. Engineering makes a
+second metered call to review its uncommitted draft against the specification, including
+test expectations and boundary cases. This is static model review, not execution evidence;
+it cannot change the draft verification plan. Actual QA runs after files are committed,
+and its repairs cannot change existing tests. Safe import cleanup and formatting run
+before the Engineer first commits generated Python files.
+
+Document parsing retains byte limits, parent deadlines and offline network restrictions.
+Linux additionally enforces an address-space cap. macOS reports that this cap is unavailable;
+its worker retains CPU/file-size limits. Use Linux isolation for untrusted documents that
+require a hard memory boundary.
 
 Workspace path helpers reject traversal and existing symlink escapes. They are path
 validation utilities; execute untrusted generated programs inside an OS/container sandbox.
@@ -589,3 +608,40 @@ The CLI and application install credential redaction before standard Python log 
 including access/WebSocket/SDK messages and exception text. Request validation errors omit
 submitted input/context values to avoid echoing an accidentally supplied credential.
 These controls do not turn guarded execution or trusted Python plugins into an OS jail.
+
+## Live synthetic evaluation, 19 October 2026
+
+The final batch on source commit `0bbea0d9e88fc430fb29d9d8aa81723436c22d2f`
+used real Gemini 3.5 Flash-Lite calls from the OpenFoundry free-tier project, fresh
+workspaces and no response cache. All six missions completed and passed independent
+checks inserted only after each mission finished. The grader copied only `app.py` into
+a new workspace, excluding generated test configuration.
+
+| Utility | Fresh missions passed | Independent checks passed | Live QA repairs |
+| --- | --- | --- | --- |
+| Unicode slug generation | 2/2 | 24 | 0 |
+| Decimal invoice totals | 2/2 | 26 | 2 |
+| CSV category aggregation | 2/2 | 26 | 1 |
+
+All three observed live repairs addressed lint findings; this batch did not demonstrate
+repairing a failing functional test. The separate regression suite passed 436 tests,
+with two Linux-only Bubblewrap checks skipped on macOS. Ruff, formatting, Flake8 and
+strict application typing checks also passed.
+
+The [evidence receipt](evidence/live-validation-2026-10-19.json) contains the full
+development history (33 missions, including 20 unsuccessful end-to-end attempts),
+source fingerprints, generated source, QA histories, token ledgers, fixed independent
+checks and negative harness controls. The initial failed baseline is also retained in
+[its original receipt](evidence/live-pilot-2026-10-19.json).
+
+This is a small synthetic integration pilot following fixes informed by earlier failures.
+It does not establish production reliability or measured token savings. Research analyzed
+local requirements; this pilot did not exercise live web research, browser-based web apps
+or deployment. Execution used guarded macOS processes. The final batch's catalog estimate
+was approximately $0.155; actual invoice charges were not retrieved. AI Studio showed
+Free tier with billing unset, and no alternate provider accounts were needed.
+
+Reproduce with a securely supplied `GEMINI_API_KEY` and
+`uv run --frozen python -m scripts.run_live_evaluation --case all --repeats 2`.
+Credentials must remain outside source and command arguments. Results are written under
+the ignored `.openfoundry/live-evaluations` directory for review before publication.
