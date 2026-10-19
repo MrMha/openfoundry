@@ -1,0 +1,28 @@
+name: Backend
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.12.23"
+          enable-cache: true
+      - run: uv python install 3.12
+      - run: uv sync --frozen --extra dev --python 3.12
+      - run: uv run --frozen ruff check backend scripts frontend/scripts
+      - run: uv run --frozen ruff format --check backend scripts frontend/scripts
+      - run: uv run --frozen flake8 backend scripts frontend/scripts --max-line-length=100 --extend-ignore=E203,W503
+      - run: uv run --frozen mypy
+      - run: uv run --frozen pytest

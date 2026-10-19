@@ -1,0 +1,893 @@
+{
+  "$defs": {
+    "AgentThoughtEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "format": "uuid",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "mission_id": {
+          "format": "uuid",
+          "title": "Mission Id",
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "sequence": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sequence"
+        },
+        "type": {
+          "const": "agent_thought",
+          "default": "agent_thought",
+          "title": "Type",
+          "type": "string"
+        },
+        "department": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Department"
+            },
+            {
+              "pattern": "^[a-z][a-z0-9_]{0,63}$",
+              "type": "string"
+            }
+          ],
+          "title": "Department"
+        },
+        "task_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Task Id"
+        },
+        "thought": {
+          "maxLength": 32768,
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Thought",
+          "type": "string"
+        },
+        "level": {
+          "default": "info",
+          "enum": [
+            "info",
+            "warning",
+            "error"
+          ],
+          "title": "Level",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mission_id",
+        "department",
+        "thought"
+      ],
+      "title": "AgentThoughtEvent",
+      "type": "object"
+    },
+    "ApprovalDecisionEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "format": "uuid",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "mission_id": {
+          "format": "uuid",
+          "title": "Mission Id",
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "sequence": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sequence"
+        },
+        "type": {
+          "const": "approval_decision",
+          "default": "approval_decision",
+          "title": "Type",
+          "type": "string"
+        },
+        "approval_id": {
+          "format": "uuid",
+          "title": "Approval Id",
+          "type": "string"
+        },
+        "task_id": {
+          "format": "uuid",
+          "title": "Task Id",
+          "type": "string"
+        },
+        "department": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Department"
+            },
+            {
+              "pattern": "^[a-z][a-z0-9_]{0,63}$",
+              "type": "string"
+            }
+          ],
+          "title": "Department"
+        },
+        "decision": {
+          "enum": [
+            "approved",
+            "rejected"
+          ],
+          "title": "Decision",
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        }
+      },
+      "required": [
+        "mission_id",
+        "approval_id",
+        "task_id",
+        "department",
+        "decision"
+      ],
+      "title": "ApprovalDecisionEvent",
+      "type": "object"
+    },
+    "ApprovalRequestEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "format": "uuid",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "mission_id": {
+          "format": "uuid",
+          "title": "Mission Id",
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "sequence": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sequence"
+        },
+        "type": {
+          "const": "approval_request",
+          "default": "approval_request",
+          "title": "Type",
+          "type": "string"
+        },
+        "approval_id": {
+          "format": "uuid",
+          "title": "Approval Id",
+          "type": "string"
+        },
+        "department": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Department"
+            },
+            {
+              "pattern": "^[a-z][a-z0-9_]{0,63}$",
+              "type": "string"
+            }
+          ],
+          "title": "Department"
+        },
+        "task_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Task Id"
+        },
+        "title": {
+          "maxLength": 255,
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 32768,
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Description",
+          "type": "string"
+        },
+        "approval_type": {
+          "enum": [
+            "plan",
+            "command",
+            "code_change",
+            "budget",
+            "publication"
+          ],
+          "title": "Approval Type",
+          "type": "string"
+        },
+        "context": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Context",
+          "type": "object"
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expires At"
+        }
+      },
+      "required": [
+        "mission_id",
+        "department",
+        "title",
+        "description",
+        "approval_type"
+      ],
+      "title": "ApprovalRequestEvent",
+      "type": "object"
+    },
+    "BrowserFrameEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "format": "uuid",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "mission_id": {
+          "format": "uuid",
+          "title": "Mission Id",
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "sequence": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sequence"
+        },
+        "type": {
+          "const": "browser_frame",
+          "default": "browser_frame",
+          "title": "Type",
+          "type": "string"
+        },
+        "department": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Department"
+            },
+            {
+              "pattern": "^[a-z][a-z0-9_]{0,63}$",
+              "type": "string"
+            }
+          ],
+          "default": "qa",
+          "title": "Department"
+        },
+        "task_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Task Id"
+        },
+        "frame_number": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Frame Number",
+          "type": "integer"
+        },
+        "screenshot_base64": {
+          "maxLength": 5592408,
+          "minLength": 1,
+          "title": "Screenshot Base64",
+          "type": "string"
+        },
+        "screenshot_mime_type": {
+          "default": "image/png",
+          "enum": [
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+          ],
+          "title": "Screenshot Mime Type",
+          "type": "string"
+        },
+        "current_url": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "const": "about:blank",
+              "type": "string"
+            }
+          ],
+          "title": "Current Url"
+        },
+        "console_errors": {
+          "default": [],
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Console Errors",
+          "type": "array"
+        }
+      },
+      "required": [
+        "mission_id",
+        "screenshot_base64",
+        "current_url"
+      ],
+      "title": "BrowserFrameEvent",
+      "type": "object"
+    },
+    "CodeDiffEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "format": "uuid",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "mission_id": {
+          "format": "uuid",
+          "title": "Mission Id",
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "sequence": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sequence"
+        },
+        "type": {
+          "const": "code_diff",
+          "default": "code_diff",
+          "title": "Type",
+          "type": "string"
+        },
+        "department": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Department"
+            },
+            {
+              "pattern": "^[a-z][a-z0-9_]{0,63}$",
+              "type": "string"
+            }
+          ],
+          "default": "engineering",
+          "title": "Department"
+        },
+        "task_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Task Id"
+        },
+        "file_path": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "File Path",
+          "type": "string"
+        },
+        "unified_diff": {
+          "maxLength": 2097152,
+          "title": "Unified Diff",
+          "type": "string"
+        },
+        "test_result": {
+          "$ref": "#/$defs/TestResult"
+        }
+      },
+      "required": [
+        "mission_id",
+        "file_path",
+        "unified_diff",
+        "test_result"
+      ],
+      "title": "CodeDiffEvent",
+      "type": "object"
+    },
+    "Department": {
+      "enum": [
+        "chief_of_staff",
+        "research",
+        "engineering",
+        "qa",
+        "growth"
+      ],
+      "title": "Department",
+      "type": "string"
+    },
+    "JsonValue": {},
+    "MissionStatus": {
+      "enum": [
+        "pending",
+        "running",
+        "paused",
+        "awaiting_approval",
+        "completed",
+        "failed",
+        "cancelled"
+      ],
+      "title": "MissionStatus",
+      "type": "string"
+    },
+    "MissionStatusChangeEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "format": "uuid",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "mission_id": {
+          "format": "uuid",
+          "title": "Mission Id",
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "sequence": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sequence"
+        },
+        "type": {
+          "const": "mission_status_change",
+          "default": "mission_status_change",
+          "title": "Type",
+          "type": "string"
+        },
+        "previous_status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MissionStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "status": {
+          "$ref": "#/$defs/MissionStatus"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "goal": {
+          "title": "Goal",
+          "type": "string"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error"
+        }
+      },
+      "required": [
+        "mission_id",
+        "status",
+        "title",
+        "goal"
+      ],
+      "title": "MissionStatusChangeEvent",
+      "type": "object"
+    },
+    "TaskStatus": {
+      "enum": [
+        "pending",
+        "running",
+        "awaiting_approval",
+        "completed",
+        "failed",
+        "skipped",
+        "cancelled"
+      ],
+      "title": "TaskStatus",
+      "type": "string"
+    },
+    "TaskStatusChangeEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "format": "uuid",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "mission_id": {
+          "format": "uuid",
+          "title": "Mission Id",
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "sequence": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sequence"
+        },
+        "type": {
+          "const": "task_status_change",
+          "default": "task_status_change",
+          "title": "Type",
+          "type": "string"
+        },
+        "department": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Department"
+            },
+            {
+              "pattern": "^[a-z][a-z0-9_]{0,63}$",
+              "type": "string"
+            }
+          ],
+          "title": "Department"
+        },
+        "task_id": {
+          "format": "uuid",
+          "title": "Task Id",
+          "type": "string"
+        },
+        "previous_status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TaskStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "status": {
+          "$ref": "#/$defs/TaskStatus"
+        },
+        "output_summary": {
+          "anyOf": [
+            {
+              "maxLength": 65536,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output Summary"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "dependencies": {
+          "default": [],
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "requires_approval": {
+          "default": false,
+          "title": "Requires Approval",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "mission_id",
+        "department",
+        "task_id",
+        "status"
+      ],
+      "title": "TaskStatusChangeEvent",
+      "type": "object"
+    },
+    "TestResult": {
+      "additionalProperties": false,
+      "description": "A command result that can be attached to a generated code diff.",
+      "properties": {
+        "status": {
+          "enum": [
+            "passed",
+            "failed",
+            "error",
+            "skipped",
+            "not_run",
+            "timed_out"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "command": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Command",
+          "type": "array"
+        },
+        "return_code": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Return Code"
+        },
+        "duration_seconds": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Duration Seconds",
+          "type": "number"
+        },
+        "output_summary": {
+          "default": "",
+          "maxLength": 65536,
+          "title": "Output Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "TestResult",
+      "type": "object"
+    }
+  },
+  "discriminator": {
+    "mapping": {
+      "agent_thought": "#/$defs/AgentThoughtEvent",
+      "approval_decision": "#/$defs/ApprovalDecisionEvent",
+      "approval_request": "#/$defs/ApprovalRequestEvent",
+      "browser_frame": "#/$defs/BrowserFrameEvent",
+      "code_diff": "#/$defs/CodeDiffEvent",
+      "mission_status_change": "#/$defs/MissionStatusChangeEvent",
+      "task_status_change": "#/$defs/TaskStatusChangeEvent"
+    },
+    "propertyName": "type"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/MissionStatusChangeEvent"
+    },
+    {
+      "$ref": "#/$defs/AgentThoughtEvent"
+    },
+    {
+      "$ref": "#/$defs/TaskStatusChangeEvent"
+    },
+    {
+      "$ref": "#/$defs/BrowserFrameEvent"
+    },
+    {
+      "$ref": "#/$defs/CodeDiffEvent"
+    },
+    {
+      "$ref": "#/$defs/ApprovalRequestEvent"
+    },
+    {
+      "$ref": "#/$defs/ApprovalDecisionEvent"
+    }
+  ]
+}

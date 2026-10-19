@@ -1,0 +1,17 @@
+{
+  "viewport": [
+    1280,
+    800
+  ],
+  "hero_pixels": [
+    2560,
+    1600
+  ],
+  "phases": [
+    "Mission Start \u00b7 Specification approved, code generated",
+    "QA Failure Detected \u00b7 Tests and DOM evidence caught the defect",
+    "Engineer Auto-Patch \u00b7 Original acceptance checks are preserved",
+    "All Checks Passed \u00b7 One repair, verified output, zero API cost"
+  ],
+  "api_cost_usd": "0.00"
+}

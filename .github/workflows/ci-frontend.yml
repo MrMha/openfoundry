@@ -1,0 +1,44 @@
+name: Frontend and Chromium
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.12.23"
+          enable-cache: true
+      - run: uv python install 3.12
+      - run: uv sync --frozen --extra dev --python 3.12
+      - run: npm ci
+        working-directory: frontend
+      - run: npm run typecheck && npm run lint && npm run format:check && npm test && npm run build
+        working-directory: frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - run: npm run test:e2e
+        working-directory: frontend
+      - run: uv run --frozen python scripts/generate_demo_assets.py --skip-build
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: war-room-demo-and-browser-results
+          path: |
+            docs/assets/
+            frontend/test-results/

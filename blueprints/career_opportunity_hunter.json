@@ -1,0 +1,73 @@
+{
+  "id": "career_opportunity_hunter",
+  "title": "Career Opportunity Hunter",
+  "description": "Research suitable roles and companies, ground tailored deliverables in a supplied candidate profile, and prepare an outreach pipeline for human review. Never send outreach autonomously.",
+  "goal_template": "Research $target_roles at $target_companies using candidate evidence in $profile_path. Cite current public job sources, distinguish unavailable or stale listings, and prepare a role-fit matrix, tailored portfolio/profile material, cover letters and outreach drafts. Never fabricate skills, employment or achievements. Stop tailoring if the supplied profile is unavailable. Do not submit applications or contact anyone.",
+  "parameters": [
+    {
+      "key": "target_roles",
+      "label": "Target roles",
+      "description": "Role titles, seniority and location constraints.",
+      "kind": "text",
+      "required": true,
+      "default": "remote backend Python engineering roles"
+    },
+    {
+      "key": "target_companies",
+      "label": "Target companies",
+      "description": "Named companies or a concrete company category.",
+      "kind": "text",
+      "required": true,
+      "default": "open-source developer tooling companies"
+    },
+    {
+      "key": "profile_path",
+      "label": "Candidate profile",
+      "description": "Existing workspace Markdown/text/PDF profile used as evidence.",
+      "kind": "path",
+      "required": true,
+      "default": "PROFILE.md"
+    }
+  ],
+  "tasks": [
+    {
+      "key": "research",
+      "department": "researcher",
+      "title": "Research roles and candidate evidence",
+      "description": "Ingest $profile_path and research $target_roles at $target_companies using current cited public sources. Preserve retrieval dates, requirements and evidence excerpts.",
+      "dependencies": [],
+      "requires_approval": false
+    },
+    {
+      "key": "package",
+      "department": "growth_career",
+      "title": "Tailor career and outreach package",
+      "description": "Use supplied profile and research evidence to prepare tailored career_profile, portfolio, cover_letter and outreach drafts. Clearly flag unknown qualifications, stale roles and missing facts; do not invent achievements.",
+      "dependencies": [
+        "research"
+      ],
+      "requires_approval": false
+    }
+  ],
+  "deliverables": [
+    "Cited research manifest and source excerpts",
+    "Candidate evidence chunks in shared memory",
+    "Role-fit matrix and portfolio narrative",
+    "Tailored cover letters and outreach drafts",
+    "Reviewable next-step pipeline with no messages sent"
+  ],
+  "acceptance_criteria": [
+    "Personal claims are grounded in the supplied profile.",
+    "Each role has a source or is explicitly unavailable.",
+    "No application, email or social message is sent.",
+    "Missing candidate evidence is reported rather than inferred.",
+    "All output remains draft material for operator review."
+  ],
+  "schema_version": 1,
+  "version": "1.0.0",
+  "suggested_configuration": {
+    "provider": null,
+    "model": null,
+    "budget_usd": "2.00"
+  }
+}

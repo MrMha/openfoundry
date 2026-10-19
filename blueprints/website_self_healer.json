@@ -1,0 +1,93 @@
+{
+  "id": "website_self_healer",
+  "title": "Website Self-Healer",
+  "description": "Audit an explicitly supplied application, reproduce defects, apply focused source repairs and preserve verification evidence. No remote writes or deployments are implied.",
+  "goal_template": "Audit $target_url using source rooted at $source_path. Exercise $critical_journeys with HTTP/DOM checks and a real browser when available. Reproduce each failure, propose root-cause hypotheses, patch source locally with approval, run a bounded three-repair loop, and produce before/after verification evidence. Do not push, deploy, alter acceptance tests, or claim unavailable browser coverage.",
+  "parameters": [
+    {
+      "key": "target_url",
+      "label": "Target application URL",
+      "description": "An application you operate; loopback is supported by QA.",
+      "kind": "url",
+      "required": true,
+      "default": "http://127.0.0.1:3000"
+    },
+    {
+      "key": "source_path",
+      "label": "Workspace source path",
+      "description": "Source must already be present in the mission workspace.",
+      "kind": "text",
+      "required": true,
+      "default": "."
+    },
+    {
+      "key": "critical_journeys",
+      "label": "Critical journeys",
+      "description": "Concrete pages and outcomes to verify.",
+      "kind": "text",
+      "required": true,
+      "default": "homepage readiness, navigation, form validation and accessible headings"
+    }
+  ],
+  "tasks": [
+    {
+      "key": "audit",
+      "department": "researcher",
+      "title": "Establish audit scope",
+      "description": "Inspect supplied workspace documentation for $source_path and research public testing guidance. Do not scrape a loopback target through the public researcher; QA probes $target_url.",
+      "dependencies": [],
+      "requires_approval": false
+    },
+    {
+      "key": "reproduce",
+      "department": "engineer",
+      "title": "Add reproducible acceptance checks",
+      "description": "Inspect existing source at $source_path. Preserve behavior and write failing regression cases for $critical_journeys. Configure QA for $target_url or a workspace ASGI app. Stop visibly if source is unavailable.",
+      "dependencies": [
+        "audit"
+      ],
+      "requires_approval": true
+    },
+    {
+      "key": "heal",
+      "department": "qa_self_healer",
+      "title": "Audit, diagnose and repair",
+      "description": "Probe $target_url for $critical_journeys, collect DOM/HTTP evidence and reproduce bugs. Request engineering patches only for workspace source, preserve tests and retry at most three times.",
+      "dependencies": [
+        "reproduce"
+      ],
+      "requires_approval": false
+    },
+    {
+      "key": "report",
+      "department": "growth_career",
+      "title": "Package verification evidence",
+      "description": "Summarize recorded before/after checks, bounded repairs and remaining limitations. Write reviewable documentation and draft change announcements without publishing.",
+      "dependencies": [
+        "heal"
+      ],
+      "requires_approval": false
+    }
+  ],
+  "deliverables": [
+    "Scoped audit SPEC.md",
+    "Reproduction tests",
+    "Structured root-cause bug reports",
+    "Focused local code diffs",
+    "Before/after HTTP/DOM and test evidence"
+  ],
+  "acceptance_criteria": [
+    "Target URL and source availability are explicit.",
+    "Missing source blocks repair rather than inventing a codebase.",
+    "Existing acceptance tests and configuration remain protected.",
+    "Repair loop never exceeds three iterations.",
+    "A failed final check leaves a failed mission with diagnostic artifacts."
+  ],
+  "schema_version": 1,
+  "version": "1.0.0",
+  "suggested_configuration": {
+    "provider": null,
+    "model": null,
+    "budget_usd": "2.00"
+  }
+}

@@ -1,0 +1,34 @@
+.venv/
+node_modules/
+*.tsbuildinfo
+frontend/playwright-report/
+frontend/test-results/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+.openfoundry/
+workspaces/
+.env
+.env.*
+!.env.example
+
+# Runtime database files, including SQLite WAL/SHM sidecars outside default data roots.
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+.coverage
+htmlcov/
+
+# Published demo media and versioned mission templates are source assets.
+!docs/assets/war-room-hero.png
+!docs/assets/war-room-demo.gif
+!docs/assets/demo-assets.json
+!blueprints/*.json

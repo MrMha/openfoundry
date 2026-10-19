@@ -1,0 +1,93 @@
+{
+  "id": "saas_mvp_builder",
+  "title": "SaaS MVP Builder",
+  "description": "Turn an idea into a scoped specification, modular implementation, self-healing QA evidence and launch kit. Chief of Staff owns scope and acceptance gates.",
+  "goal_template": "Build $idea for $audience using $stack. Write SPEC.md and STATE.md, research cited requirements, generate modular files under 200 lines, test and repair at most three times, and prepare a launch kit. Keep credentials outside generated code and do not publish or send messages.",
+  "parameters": [
+    {
+      "key": "idea",
+      "label": "Product idea",
+      "description": "A concrete problem and smallest useful product.",
+      "kind": "text",
+      "required": true,
+      "default": "an accessible notes app"
+    },
+    {
+      "key": "audience",
+      "label": "Target audience",
+      "description": "People whose workflow the MVP should improve.",
+      "kind": "text",
+      "required": true,
+      "default": "independent developers"
+    },
+    {
+      "key": "stack",
+      "label": "Preferred stack",
+      "description": "Runtime constraints available in the mission workspace.",
+      "kind": "text",
+      "required": true,
+      "default": "Python FastAPI with SQLite and server-rendered HTML"
+    }
+  ],
+  "tasks": [
+    {
+      "key": "research",
+      "department": "researcher",
+      "title": "Research requirements",
+      "description": "Research $idea for $audience with cited public evidence. Separate verified sources from assumptions.",
+      "dependencies": [],
+      "requires_approval": false
+    },
+    {
+      "key": "implement",
+      "department": "engineer",
+      "title": "Implement the approved MVP",
+      "description": "Read SPEC.md. Build $idea using $stack, with modular source, executable tests and local Git commits. Include a runnable verification plan.",
+      "dependencies": [
+        "research"
+      ],
+      "requires_approval": true
+    },
+    {
+      "key": "verify",
+      "department": "qa_self_healer",
+      "title": "AutoQA and bounded self-healing",
+      "description": "Run regression tests and DOM/ASGI endpoint checks. Record root causes and repair up to three times without weakening acceptance tests.",
+      "dependencies": [
+        "implement"
+      ],
+      "requires_approval": false
+    },
+    {
+      "key": "launch",
+      "department": "growth_career",
+      "title": "Assemble launch kit",
+      "description": "Read completed artifacts and QA evidence. Write README, Mermaid architecture, Show HN, Reddit and X drafts. Do not publish.",
+      "dependencies": [
+        "verify"
+      ],
+      "requires_approval": false
+    }
+  ],
+  "deliverables": [
+    "SPEC.md and STATE.md",
+    "Modular source and regression tests",
+    "Local Git history and unified diffs",
+    "QA reports and diagnostic frames",
+    "README, architecture.mmd and launch drafts"
+  ],
+  "acceptance_criteria": [
+    "First engineering work requires operator approval.",
+    "No generated source file reaches 200 lines.",
+    "Recorded tests pass or mission fails visibly with evidence.",
+    "Launch claims cite the actual QA coverage.",
+    "API-token spend stays within the mission ceiling."
+  ],
+  "schema_version": 1,
+  "version": "1.0.0",
+  "suggested_configuration": {
+    "provider": null,
+    "model": null,
+    "budget_usd": "2.00"
+  }
+}

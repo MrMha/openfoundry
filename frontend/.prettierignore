@@ -1,0 +1,10 @@
+node_modules
+dist
+test-results
+playwright-report
+src/services/generated.ts
+src/services/openapi.json
+src/services/events.schema.json
+src/services/probes.schema.json
+src/test/events.json
+package-lock.json

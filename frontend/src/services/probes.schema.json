@@ -1,0 +1,108 @@
+{
+  "$defs": {
+    "ProbeResult": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Status"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "failures": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Failures",
+          "type": "array"
+        },
+        "backend": {
+          "title": "Backend",
+          "type": "string"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "console_errors": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Console Errors",
+          "type": "array"
+        },
+        "frame_path": {
+          "title": "Frame Path",
+          "type": "string"
+        },
+        "duration_seconds": {
+          "minimum": 0,
+          "title": "Duration Seconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "path",
+        "url",
+        "status",
+        "passed",
+        "failures",
+        "backend",
+        "warnings",
+        "console_errors",
+        "frame_path",
+        "duration_seconds"
+      ],
+      "title": "ProbeResult",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "results": {
+      "items": {
+        "$ref": "#/$defs/ProbeResult"
+      },
+      "maxItems": 8,
+      "title": "Results",
+      "type": "array"
+    },
+    "error": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Error"
+    }
+  },
+  "required": [
+    "results",
+    "error"
+  ],
+  "title": "ProbeReport",
+  "type": "object"
+}

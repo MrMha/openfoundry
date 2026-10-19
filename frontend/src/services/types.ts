@@ -1,0 +1,28 @@
+import type { components } from './generated';
+
+export type Mission = components['schemas']['MissionView'];
+export type MissionDetail = components['schemas']['MissionDetail'];
+export type MissionCreate = components['schemas']['MissionCreate'];
+export type MissionConfiguration = NonNullable<MissionCreate['configuration']>;
+export type BlueprintSelection = Pick<MissionCreate, 'blueprint_id' | 'blueprint_parameters'>;
+export type Blueprint = components['schemas']['Blueprint'];
+export type TaskNode = components['schemas']['TaskView'];
+export type MissionStatus = components['schemas']['MissionStatus'];
+export type TaskStatus = components['schemas']['TaskStatus'];
+export type Artifact = components['schemas']['ArtifactView'];
+export type Approval = components['schemas']['ApprovalView'];
+export type FileContent = components['schemas']['FileContent'];
+export type PluginCatalog = components['schemas']['PluginCatalog'];
+export type PluginMetadata = components['schemas']['PluginMetadata'];
+export type SandboxStatus = components['schemas']['SandboxStatus'];
+export type ProbeReport = components['schemas']['ProbeReport'];
+export type ProbeResult = components['schemas']['ProbeResult'];
+export type Runtime = components['schemas']['RuntimeView'];
+export type WarRoomEvent = components['schemas']['WarRoomEvent'];
+export type AgentThoughtEvent = components['schemas']['AgentThoughtEvent'];
+export type TaskStatusChangeEvent = components['schemas']['TaskStatusChangeEvent'];
+export type BrowserFrameEvent = components['schemas']['BrowserFrameEvent'];
+export type CodeDiffEvent = components['schemas']['CodeDiffEvent'];
+export type ApprovalRequestEvent = components['schemas']['ApprovalRequestEvent'];
+export type StoredEvent = WarRoomEvent & { sequence: number };
+export type Provider = NonNullable<MissionConfiguration['provider']>;
