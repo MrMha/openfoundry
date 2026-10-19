@@ -396,3 +396,216 @@ async def test_real_litellm_openai_adapter_with_mock_http(
     assert result.structured_output == {"answer": 42}
     assert len(requests) == 1
     assert requests[0].url.path == "/v1/chat/completions"
+
+
+async def test_gemini_json_mode_preserves_full_local_schema(
+    settings: Settings, database: Database, mission_id: UUID
+) -> None:
+    import copy
+    import json
+
+    configured = Settings.model_validate(
+        {
+            **settings.model_dump(),
+            "provider_order": ("gemini",),
+            "gemini_api_key": "unit-test-gemini",
+        }
+    )
+    schema = {
+        "type": "object",
+        "properties": {
+            "answer": {
+                "type": "string",
+                "pattern": "^[a-z]+$",
+                "minLength": 2,
+            }
+        },
+        "required": ["answer"],
+        "additionalProperties": False,
+    }
+    original = copy.deepcopy(schema)
+    completion = AsyncMock(return_value=response('{"answer":"valid"}'))
+    result = await LLMRouter(configured, database, completion=completion).complete(
+        mission_id,
+        MESSAGES,
+        json_schema=schema,
+    )
+    assert result.structured_output == {"answer": "valid"}
+    kwargs = completion.call_args.kwargs
+    assert kwargs["response_format"] == {"type": "json_object"}
+    assert json.dumps(schema, separators=(",", ":")) in kwargs["messages"][0]["content"]
+    assert schema == original
+
+    invalid = AsyncMock(return_value=response('{"answer":"INVALID"}'))
+    with pytest.raises(ProvidersUnavailableError):
+        await LLMRouter(configured, database, completion=invalid).complete(
+            mission_id,
+            MESSAGES,
+            json_schema=schema,
+        )
+    assert (await attempts(database))[-1].cost_usd > 0
+
+
+@pytest.mark.parametrize("exception", [litellm.ServiceUnavailableError, litellm.RateLimitError])
+async def test_transient_retry_has_its_own_durable_reservation(
+    settings: Settings, database: Database, mission_id: UUID, exception: Any
+) -> None:
+    configured = settings.model_copy(
+        update={
+            "provider_max_attempts": 2,
+            "provider_retry_delay_seconds": 0,
+        }
+    )
+    completion = AsyncMock(
+        side_effect=[
+            exception(message="private detail", model="test", llm_provider="openai"),
+            response(),
+        ]
+    )
+    router = LLMRouter(configured, database, completion=completion)
+    result = await router.complete(mission_id, MESSAGES)
+    rows = await attempts(database)
+    assert result.structured_output is None
+    assert completion.await_count == 2
+    assert [row.status for row in rows] == [AttemptStatus.UNCERTAIN, AttemptStatus.SUCCEEDED]
+    assert rows[0].error_code in {"http_429", "http_503"}
+    assert "private" not in rows[0].error_code
+    assert (await router.budget(mission_id)).reserved_usd == Decimal("0.003048")
+    assert completion.call_args_list[0].kwargs == completion.call_args_list[1].kwargs
+
+
+async def test_transient_retry_stops_at_budget_or_attempt_limit(
+    settings: Settings, database: Database, mission_id: UUID
+) -> None:
+    configured = settings.model_copy(
+        update={
+            "provider_max_attempts": 3,
+            "provider_retry_delay_seconds": 0,
+            "max_mission_cost_usd": Decimal("0.004"),
+        }
+    )
+    completion = AsyncMock(
+        side_effect=litellm.ServiceUnavailableError(
+            message="overload",
+            model="test",
+            llm_provider="openai",
+        )
+    )
+    with pytest.raises(BudgetExceededError):
+        await LLMRouter(configured, database, completion=completion).complete(mission_id, MESSAGES)
+    assert completion.await_count == 1
+    assert len(await attempts(database)) == 1
+
+
+async def test_provider_rejection_records_safe_code_without_retry(
+    settings: Settings, database: Database, mission_id: UUID
+) -> None:
+    configured = settings.model_copy(update={"provider_max_attempts": 3})
+    completion = AsyncMock(
+        side_effect=litellm.BadRequestError(
+            message="private request contents",
+            model="test",
+            llm_provider="openai",
+        )
+    )
+    with pytest.raises(ProvidersUnavailableError):
+        await LLMRouter(configured, database, completion=completion).complete(mission_id, MESSAGES)
+    row = (await attempts(database))[0]
+    assert completion.await_count == 1
+    assert row.error_code == "http_400"
+    assert row.status == AttemptStatus.REJECTED
+    assert row.cost_usd == 0
+
+
+async def test_overload_retries_are_bounded(settings, database, mission_id):
+    configured = settings.model_copy(
+        update={
+            "provider_max_attempts": 3,
+            "provider_retry_delay_seconds": 0,
+        }
+    )
+    completion = AsyncMock(
+        side_effect=litellm.ServiceUnavailableError(
+            message="overload",
+            model="test",
+            llm_provider="openai",
+        )
+    )
+    with pytest.raises(ProvidersUnavailableError):
+        await LLMRouter(configured, database, completion=completion).complete(mission_id, MESSAGES)
+    assert completion.await_count == 3
+    assert len(await attempts(database)) == 3
+
+
+async def test_long_retry_after_does_not_retry_early(settings, database, mission_id):
+    configured = settings.model_copy(update={"provider_max_attempts": 3})
+    completion = AsyncMock(
+        side_effect=litellm.ServiceUnavailableError(
+            message="overload",
+            model="test",
+            llm_provider="openai",
+            response=httpx.Response(
+                503,
+                headers={"retry-after": "120"},
+                request=httpx.Request("POST", "https://example.com"),
+            ),
+        )
+    )
+    with pytest.raises(ProvidersUnavailableError):
+        await LLMRouter(configured, database, completion=completion).complete(mission_id, MESSAGES)
+    assert completion.await_count == 1
+
+
+async def test_schema_correction_remains_billed_and_shares_transport_attempt_limit(
+    settings, database, mission_id
+):
+    configured = settings.model_copy(
+        update={
+            "provider_max_attempts": 3,
+            "provider_retry_delay_seconds": 0,
+        }
+    )
+    completion = AsyncMock(
+        side_effect=[
+            litellm.ServiceUnavailableError(
+                message="overload", model="test", llm_provider="openai"
+            ),
+            response('{"answer":"wrong type"}'),
+            response(),
+        ]
+    )
+    router = LLMRouter(configured, database, completion=completion)
+    result = await router.complete(mission_id, MESSAGES, json_schema=SCHEMA)
+    assert result.structured_output == {"answer": 42}
+    assert completion.await_count == 3
+    rows = await attempts(database)
+    assert rows[0].status == AttemptStatus.UNCERTAIN
+    assert rows[1].error_code == "invalid_output"
+    assert rows[1].cost_usd > 0
+    assert (await router.budget(mission_id)).spent_usd == Decimal("0.000240000")
+    assert "Schema rule" in completion.call_args.kwargs["messages"][-1]["content"]
+    assert completion.call_args.kwargs["messages"][-2] == {
+        "role": "assistant",
+        "content": '{"answer":"wrong type"}',
+    }
+
+
+async def test_application_validation_can_request_bounded_correction(
+    settings, database, mission_id
+):
+    configured = settings.model_copy(update={"provider_max_attempts": 2})
+    completion = AsyncMock(side_effect=[response('{"answer":0}'), response()])
+
+    def validate(value):
+        if value != {"answer": 42}:
+            raise ValueError("application contract failed")
+
+    result = await LLMRouter(configured, database, completion=completion).complete(
+        mission_id,
+        MESSAGES,
+        json_schema=SCHEMA,
+        output_validator=validate,
+    )
+    assert result.structured_output == {"answer": 42}
+    assert completion.await_count == 2
+    assert (await attempts(database))[0].error_code == "invalid_output"

@@ -12,9 +12,10 @@ from test_departments import result
 from test_orchestrator import mission_state, task_rows
 
 from backend.app.api.ws_war_room import ConnectionManager
-from backend.app.core.llm_router import LLMRouter, LLMRouterError
+from backend.app.core.llm_router import LLMRouter, LLMRouterError, StructuredOutputError
 from backend.app.core.memory_vault import MemoryKind, MemoryVault
 from backend.app.core.orchestrator import MissionOrchestrator
+from backend.app.core.python_format import format_generated_python
 from backend.app.core.workspace_sandbox import WorkspaceSandbox
 from backend.app.departments.base_department import (
     DepartmentExecutionError,
@@ -25,7 +26,9 @@ from backend.app.departments.engineer import Engineer
 from backend.app.departments.engineering_contracts import (
     BugDiagnosis,
     BugReport,
+    CommandSpec,
     EndpointProbe,
+    RepairResult,
     VerificationPlan,
 )
 from backend.app.departments.qa_self_healer import QASelfHealer
@@ -35,6 +38,101 @@ from backend.app.models.events import (
     parse_event,
 )
 from backend.app.models.mission import Artifact, MissionStatus, TaskNode, TaskStatus
+
+
+@pytest.mark.parametrize("launcher", ["python", "python3"])
+@pytest.mark.parametrize("module", ["pytest", "ruff"])
+def test_fixed_python_test_modules_are_canonicalized(launcher, module):
+    command = CommandSpec(command=[launcher, "-m", module, "-q"])
+    assert command.command == [module, "-q"]
+
+
+@pytest.mark.parametrize(
+    "command",
+    [
+        ["python", "-c", "print('unsafe')"],
+        ["python", "-m", "os"],
+        ["python", "-m", "pytest;echo"],
+    ],
+)
+def test_arbitrary_python_commands_remain_rejected(command):
+    with pytest.raises(ValueError):
+        CommandSpec(command=command)
+
+
+async def test_initial_formatting_preserves_test_assertions_without_importing_code(tmp_path):
+    import ast
+
+    marker = tmp_path / "should-not-exist"
+    source = (
+        f"import pathlib\nimport pytest\n\n"
+        f"def test_expected():\n    assert 2 + 3 == 5\n\n"
+        f"pathlib.Path({str(marker)!r}).touch()\n"
+    )
+    formatted = await format_generated_python(source, "test_generated.py")
+    assert not marker.exists()
+    assert "import pytest" not in formatted
+    original_assertions = [
+        ast.dump(n) for n in ast.walk(ast.parse(source)) if isinstance(n, ast.Assert)
+    ]
+    final_assertions = [
+        ast.dump(n) for n in ast.walk(ast.parse(formatted)) if isinstance(n, ast.Assert)
+    ]
+    assert original_assertions == final_assertions
+
+
+async def test_initial_formatter_knows_generated_first_party_modules():
+    source = (
+        "import pytest\nfrom app import answer\n\n"
+        '@pytest.mark.parametrize("x", [42])\n'
+        "def test_answer(x):\n    assert answer() == x\n"
+    )
+    formatted = await format_generated_python(source, "test_app.py", first_party=("app",))
+    assert "import pytest\n\nfrom app import answer" in formatted
+
+
+async def test_repair_ignores_identical_protected_test_context(settings, database):
+    from backend.app.core.planning import GeneratedFile
+
+    mission_id = uuid4()
+    task = TaskNode(
+        id=uuid4(),
+        mission_id=mission_id,
+        department="engineer",
+        title="Repair",
+        description="Repair implementation",
+        status=TaskStatus.RUNNING,
+    )
+    memory = MemoryVault(mission_id, storage_root=settings.memory_root)
+    protected = "from app import answer\n\ndef test_answer():\n    assert answer() == 42\n"
+    async with WorkspaceSandbox(mission_id, root=settings.workspace_root) as sandbox:
+        await sandbox.initialize_git()
+        await sandbox.write_file("app.py", "def answer():\n    return 0\n")
+        await sandbox.write_file("test_app.py", protected)
+        await sandbox.commit_files(["app.py", "test_app.py"], "Initial code and tests")
+        work = RepairResult(
+            summary="Repair answer",
+            files=[
+                GeneratedFile(
+                    file_path="app.py",
+                    artifact_type="source",
+                    content="def answer():\n    return 42\n",
+                ),
+                GeneratedFile(file_path="test_app.py", artifact_type="test", content=protected),
+            ],
+        )
+        await Engineer(LLMRouter(settings, database))._apply(
+            work,
+            task,
+            sandbox,
+            memory,
+            AsyncMock(),
+            repair=True,
+        )
+        assert await sandbox.read_file("test_app.py") == protected
+        manifest = json.loads(await sandbox.read_file("engineering/latest.json"))
+        assert manifest["paths"] == ["app.py"]
+
 
 APP = """from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
@@ -318,7 +416,7 @@ async def test_generated_files_validate_before_writing(settings, database, path,
 async def test_engineer_uses_spec_shared_memory_and_local_branch(settings, database):
     async with WorkspaceSandbox(uuid4(), root=settings.workspace_root) as sandbox:
         router, memory, _, output = await setup_project(settings, database, sandbox)
-        prompt = json.loads(router.complete.call_args.args[1][1].content)
+        prompt = json.loads(router.complete.call_args.args[1][1].content)["project"]
         assert "Add two numbers" in prompt["specification"] and prompt["memory"]
         assert output["branch"].startswith("engineer/")
         assert output["commit"] in await sandbox.read_file("engineering/latest.json")
@@ -326,6 +424,66 @@ async def test_engineer_uses_spec_shared_memory_and_local_branch(settings, datab
             if reference["artifact_type"] == "source":
                 assert len((await sandbox.read_file(reference["file_path"])).splitlines()) < 200
         assert await memory.search("calculator", department="engineer")
+
+
+async def test_draft_review_precedes_writes_and_protects_finalized_tests(settings, database):
+    mission_id = uuid4()
+    draft = implementation(good=True)
+    draft["files"][1]["content"] = TEST.replace("== 5", "== 4")
+    finalized = implementation(good=True)
+    router = LLMRouter(settings, database)
+    async with WorkspaceSandbox(mission_id, root=settings.workspace_root) as sandbox:
+        await sandbox.write_file("SPEC.md", "Add two numbers; 2 + 3 must equal 5.")
+        proposals = [draft, finalized]
+
+        async def completion(*args, **kwargs):
+            assert not (sandbox.root / "app.py").exists()
+            assert not (sandbox.root / "tests/test_app.py").exists()
+            return result(mission_id, proposals.pop(0))
+
+        router.complete = AsyncMock(side_effect=completion)
+        memory = MemoryVault(mission_id, storage_root=settings.memory_root)
+        await Engineer(router).execute_task(
+            task(mission_id, "engineer"), sandbox, memory, AsyncMock()
+        )
+        assert router.complete.await_count == 2
+        review_context = json.loads(router.complete.call_args.args[1][1].content)
+        assert "== 4" in review_context["draft"]["files"][1]["content"]
+        assert "== 5" in await sandbox.read_file("tests/test_app.py")
+        with pytest.raises(ValueError, match="cannot modify existing tests"):
+            await Engineer(router)._apply(
+                RepairResult.model_validate({"summary": "Weaken", "files": draft["files"]}),
+                task(mission_id, "qa_self_healer"),
+                sandbox,
+                memory,
+                AsyncMock(),
+                repair=True,
+            )
+
+
+@pytest.mark.parametrize("change", ["verification", "omit_tests"])
+async def test_draft_review_cannot_drop_files_or_change_verification(settings, database, change):
+    mission_id = uuid4()
+    draft = implementation(good=True)
+    finalized = implementation(good=True)
+    if change == "verification":
+        finalized["verification"]["max_repairs"] = 0
+    else:
+        finalized["files"] = finalized["files"][:1]
+    router = LLMRouter(settings, database)
+    router.complete = AsyncMock(
+        side_effect=[result(mission_id, draft), result(mission_id, finalized)]
+    )
+    async with WorkspaceSandbox(mission_id, root=settings.workspace_root) as sandbox:
+        await sandbox.write_file("SPEC.md", "Add two numbers and display Ready.")
+        with pytest.raises(StructuredOutputError):
+            await Engineer(router).execute_task(
+                task(mission_id, "engineer"),
+                sandbox,
+                MemoryVault(mission_id, storage_root=settings.memory_root),
+                AsyncMock(),
+            )
+        assert not (sandbox.root / "app.py").exists()
 
 
 async def test_budget_failure_stops_repairs_and_preserves_evidence(settings, database):
@@ -345,7 +503,7 @@ async def test_budget_failure_stops_repairs_and_preserves_evidence(settings, dat
 
 async def test_real_orchestrator_self_healing_and_artifact_upserts(settings, database):
     router = LLMRouter(settings, database)
-    outputs = [implementation(), diagnosis().model_dump(mode="json"), repair()]
+    outputs = [implementation(), implementation(), diagnosis().model_dump(mode="json"), repair()]
 
     async def completion(mission_id, messages, **kwargs):
         return result(mission_id, outputs.pop(0))

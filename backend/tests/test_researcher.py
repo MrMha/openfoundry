@@ -50,6 +50,58 @@ def research_task(mission_id, request):
     )
 
 
+@pytest.mark.parametrize(
+    "description",
+    [
+        "Analyze the requirements in `SPEC.md`.",
+        "Read SPEC.md.",
+        "Read (SPEC.md).",
+        "Analyze the local specification to extract its requirements.",
+        "Analyze local requirements and constraints.",
+    ],
+)
+def test_explicit_specification_in_prose_selects_local_document(description):
+    request = ResearchRequest.from_description(description)
+    assert request.documents == ["SPEC.md"]
+    assert request.urls == []
+    assert request.prefer_docling is False
+    remote = ResearchRequest.from_description("Read https://example.com/SPEC.md")
+    assert remote.documents == []
+    assert remote.urls == ["https://example.com/SPEC.md"]
+
+
+async def test_requirements_analysis_reads_real_spec_without_web_search(settings, database):
+    mission_id = uuid4()
+    task = research_task(mission_id, {})
+    task.description = "Research the requirements from SPEC.md."
+    researcher = Researcher(LLMRouter(settings, database))
+    researcher._search = AsyncMock(side_effect=AssertionError("Unexpected web search"))
+    memory = MemoryVault(mission_id, storage_root=settings.memory_root)
+    async with WorkspaceSandbox(mission_id, root=settings.workspace_root) as sandbox:
+        await sandbox.write_file("SPEC.md", "# Requirements\nPreserve Unicode normalization.")
+        output = await researcher.execute_task(task, sandbox, memory, AsyncMock())
+        manifest = json.loads(await sandbox.read_file(f"research/{task.id}/manifest.json"))
+    assert "Extracted 1 sources" in output["summary"]
+    assert manifest["sources"][0]["source"] == "SPEC.md"
+    assert manifest["sources"][0]["backend"] == "text"
+    researcher._search.assert_not_awaited()
+
+
+@pytest.mark.parametrize("platform", ["linux", "darwin"])
+def test_parser_resource_limits_respect_platform_and_inherited_hard_caps(monkeypatch, platform):
+    import resource
+
+    calls = []
+    monkeypatch.setattr(documents.sys, "platform", platform)
+    monkeypatch.setattr(resource, "getrlimit", lambda kind: (4, 7))
+    monkeypatch.setattr(resource, "setrlimit", lambda kind, cap: calls.append((kind, cap)))
+    warnings = documents._resource_limits()
+    assert all(cap[0] <= 7 and cap[1] <= 7 for _, cap in calls)
+    assert (resource.RLIMIT_CPU, (7, 7)) in calls
+    assert any(kind == resource.RLIMIT_AS for kind, _ in calls) == (platform == "linux")
+    assert bool(warnings) == (platform == "darwin")
+
+
 def pdf_bytes(*, text="SQLite BM25 search evidence", pages=1, encrypted=False):
     writer = PdfWriter()
     for _ in range(pages):
