@@ -1,4 +1,4 @@
-"""Offline document parsing in a disposable, time- and memory-bounded subprocess."""
+"""Offline parsing with process deadlines, byte limits and Linux address-space limits."""
 
 from __future__ import annotations
 
@@ -145,14 +145,29 @@ async def parse_document(
     return ParsedDocument.model_validate_json(output)
 
 
-def _worker() -> None:
+def _resource_limits() -> list[str]:
+    warnings: list[str] = []
     if sys.platform != "win32":
         import resource
 
-        resource.setrlimit(resource.RLIMIT_AS, (1536 * 1024 * 1024, 1536 * 1024 * 1024))
-        resource.setrlimit(resource.RLIMIT_CPU, (20, 20))
-        resource.setrlimit(resource.RLIMIT_FSIZE, (16 * MAX_SOURCE_BYTES, 16 * MAX_SOURCE_BYTES))
-        resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+        limits = [
+            (resource.RLIMIT_CPU, 20),
+            (resource.RLIMIT_FSIZE, 16 * MAX_SOURCE_BYTES),
+            (resource.RLIMIT_CORE, 0),
+        ]
+        if sys.platform == "linux":
+            limits.append((resource.RLIMIT_AS, 1536 * 1024 * 1024))
+        else:
+            warnings.append("No address-space cap on this platform; byte and time limits remain")
+        for kind, requested in limits:
+            _, hard = resource.getrlimit(kind)
+            cap = min(requested, hard) if hard != resource.RLIM_INFINITY else requested
+            resource.setrlimit(kind, (cap, cap))
+    return warnings
+
+
+def _worker() -> None:
+    limit_warnings = _resource_limits()
 
     def offline(event: str, args: tuple[object, ...]) -> None:
         if event in {"socket.connect", "socket.getaddrinfo"}:
@@ -163,6 +178,7 @@ def _worker() -> None:
     data = base64.b64decode(request["data"], validate=True)
     with contextlib.redirect_stdout(sys.stderr):
         result = parse_bytes(data, request["name"], prefer_docling=request["prefer_docling"])
+    result.warnings = (limit_warnings + result.warnings)[:10]
     sys.stdout.write(result.model_dump_json())
 
 

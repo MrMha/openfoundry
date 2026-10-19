@@ -210,6 +210,7 @@ class GrowthCareer(BaseDepartment):
                 ChatMessage(role="user", content=json.dumps(context, ensure_ascii=False)),
             ],
             json_schema=strict_schema(GrowthResult),
+            output_validator=GrowthResult.model_validate,
         )
         work = GrowthResult.model_validate(response.structured_output)
         prefix = f"growth/{task.id}"
