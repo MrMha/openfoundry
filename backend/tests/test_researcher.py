@@ -4,6 +4,7 @@ import asyncio
 import io
 import json
 import socket
+import sys
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 from uuid import uuid4
@@ -89,7 +90,19 @@ async def test_requirements_analysis_reads_real_spec_without_web_search(settings
 
 @pytest.mark.parametrize("platform", ["linux", "darwin"])
 def test_parser_resource_limits_respect_platform_and_inherited_hard_caps(monkeypatch, platform):
-    import resource
+    if sys.platform == "win32":
+        resource = SimpleNamespace(
+            RLIMIT_CPU=0,
+            RLIMIT_FSIZE=1,
+            RLIMIT_CORE=2,
+            RLIMIT_AS=3,
+            RLIM_INFINITY=-1,
+            getrlimit=lambda kind: (4, 7),
+            setrlimit=lambda kind, cap: None,
+        )
+        monkeypatch.setitem(sys.modules, "resource", resource)
+    else:
+        import resource
 
     calls = []
     monkeypatch.setattr(documents.sys, "platform", platform)
@@ -577,6 +590,7 @@ async def test_browser_proxy_connect_pins_validated_address_and_cleans_connectio
         (pdf_bytes(encrypted=True), "encrypted.pdf"),
         (pdf_bytes(pages=101), "long.pdf"),
     ],
+    ids=lambda value: f"{len(value)}-bytes" if isinstance(value, bytes) else value,
 )
 def test_document_fallback_rejects_corrupt_unsupported_or_oversized_inputs(data, name):
     with pytest.raises((ValueError, PyPdfError)):

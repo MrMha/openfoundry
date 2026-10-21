@@ -193,6 +193,7 @@ def demo_departments(settings: Settings, database: Database) -> dict[str, BaseDe
             "ollama_base_url": "http://127.0.0.1:11434",
             "ollama_model": "ollama_chat/openfoundry-offline-demo",
             "max_output_tokens": 8192,
+            "independent_qa_enabled": False,  # This demo has fixed, independently authored tests.
         }
     )
     router = LLMRouter(

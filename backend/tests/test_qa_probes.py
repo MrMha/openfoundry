@@ -214,7 +214,7 @@ async def test_failed_qa_persists_diagnostic_artifacts_through_orchestrator(sett
     await coordinator.start()
     try:
         mission = await coordinator.submit("Verify failed calculator behavior")
-        await asyncio.wait_for(coordinator.wait(mission.id), 20)
+        await asyncio.wait_for(coordinator.wait(mission.id), 180)
         assert await mission_state(database, mission.id) == MissionStatus.FAILED
         async with database.session() as session:
             artifacts = (

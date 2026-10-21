@@ -179,7 +179,8 @@ def _worker() -> None:
     with contextlib.redirect_stdout(sys.stderr):
         result = parse_bytes(data, request["name"], prefer_docling=request["prefer_docling"])
     result.warnings = (limit_warnings + result.warnings)[:10]
-    sys.stdout.write(result.model_dump_json())
+    # This is a byte protocol, independent of Windows' legacy console encoding.
+    sys.stdout.buffer.write(result.model_dump_json().encode("utf-8"))
 
 
 if __name__ == "__main__":

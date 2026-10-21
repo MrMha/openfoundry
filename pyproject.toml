@@ -50,6 +50,9 @@ exclude = ["backend.tests*"]
 [tool.setuptools.package-data]
 "backend.app" = ["py.typed"]
 
+[tool.setuptools.data-files]
+"share/openfoundry/blueprints" = ["blueprints/*.json"]
+
 [tool.pytest.ini_options]
 testpaths = ["backend/tests"]
 asyncio_mode = "auto"

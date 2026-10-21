@@ -8,6 +8,7 @@ from pathlib import Path
 from uuid import uuid4
 
 import pytest
+from process_helpers import process_running
 
 from backend.app.core.workspace_sandbox import (
     CommandNotAllowedError,
@@ -68,8 +69,11 @@ async def test_symlinks_hardlinks_and_special_files_are_blocked(
     (sandbox.root / "link").symlink_to(outside)
     (sandbox.root / "parent").symlink_to(tmp_path, target_is_directory=True)
     os.link(outside, sandbox.root / "hardlink")
-    os.mkfifo(sandbox.root / "fifo")
-    for path in ("link", "parent/outside.txt", "hardlink", "fifo"):
+    paths = ["link", "parent/outside.txt", "hardlink"]
+    if hasattr(os, "mkfifo"):
+        os.mkfifo(sandbox.root / "fifo")
+        paths.append("fifo")
+    for path in paths:
         with pytest.raises(UnsafePathError):
             await sandbox.read_file(path)
         with pytest.raises(UnsafePathError):
@@ -93,6 +97,12 @@ async def test_root_descriptor_stays_pinned_after_rename(
     moved = original.with_name("moved")
     original.rename(moved)
     original.symlink_to(tmp_path)
+    if not sandbox._posix_files:
+        with pytest.raises(UnsafePathError):
+            await sandbox.write_file("safe.txt", "must not follow replaced root")
+        assert not (tmp_path / "safe.txt").exists()
+        assert not (moved / "safe.txt").exists()
+        return
     await sandbox.write_file("safe.txt", "pinned root")
     assert (moved / "safe.txt").read_text() == "pinned root"
     assert not (tmp_path / "safe.txt").exists()
@@ -143,6 +153,8 @@ async def test_git_initialization_branches_and_untracked_diffs(sandbox: Workspac
 async def test_untracked_diffs_are_valid_git_patches(
     sandbox: WorkspaceSandbox, content: str, name: str
 ) -> None:
+    if os.name == "nt" and '"' in name:
+        pytest.skip("Windows filesystem does not support quote characters in filenames")
     await sandbox.write_file(name, content)
     patch = await sandbox.git_diff()
     await sandbox.write_file("change.patch", patch)
@@ -214,8 +226,7 @@ async def test_cancellation_while_spawning_does_not_orphan_processes(
         with pytest.raises(asyncio.CancelledError):
             await task
         assert children[0].returncode is not None
-        with pytest.raises(ProcessLookupError):
-            os.kill(children[0].pid, 0)
+        assert not process_running(children[0].pid)
     finally:
         release.set()
         if not task.done():
@@ -349,8 +360,7 @@ async def test_cancellation_reaps_the_test_process(sandbox: WorkspaceSandbox) ->
         task.cancel()
         with pytest.raises(asyncio.CancelledError):
             await task
-        with pytest.raises(ProcessLookupError):
-            os.kill(pid, 0)
+        assert not process_running(pid)
     finally:
         if not task.done():
             task.cancel()

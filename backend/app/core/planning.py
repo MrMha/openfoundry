@@ -74,8 +74,8 @@ class WorkResult(BaseModel):
 
     @model_validator(mode="after")
     def unique_paths(self) -> WorkResult:
-        if len({file.file_path for file in self.files}) != len(self.files):
-            raise ValueError("Generated file paths must be unique")
+        if len({file.file_path.casefold() for file in self.files}) != len(self.files):
+            raise ValueError("Generated file paths must be unique, including case variants")
         return self
 
 

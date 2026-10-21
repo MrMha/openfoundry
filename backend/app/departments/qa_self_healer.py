@@ -29,9 +29,11 @@ from backend.app.departments.engineering_contracts import (
     BugDiagnosis,
     BugReport,
     CheckRecord,
+    CommandSpec,
     VerificationPlan,
     test_path,
 )
+from backend.app.departments.independent_qa import acceptance_tests
 from backend.app.models.events import (
     AgentThoughtEvent,
     BrowserFrameEvent,
@@ -124,7 +126,7 @@ class QASelfHealer(BaseDepartment):
         for path in await sandbox.list_files():
             if path.startswith(".openfoundry-"):
                 continue
-            if path.split("/")[-1] in PROTECTED_CONFIG or test_path(path):
+            if path.casefold().split("/")[-1] in PROTECTED_CONFIG or test_path(path):
                 snapshot[path] = hashlib.sha256(await sandbox.read_bytes(path)).hexdigest()
         return snapshot
 
@@ -143,9 +145,13 @@ class QASelfHealer(BaseDepartment):
         emit_event: EventEmitter,
         iteration: int,
         artifacts: dict[str, str],
+        acceptance_path: str | None = None,
     ) -> list[CheckRecord]:
         checks: list[CheckRecord] = []
-        for spec in plan.commands:
+        commands = list(plan.commands)
+        if acceptance_path:
+            commands.append(CommandSpec(command=["pytest", "-q", acceptance_path]))
+        for spec in commands:
             result = await sandbox.run_test_command(spec.command, cwd=spec.cwd)
             checks.append(
                 CheckRecord(
@@ -285,7 +291,24 @@ class QASelfHealer(BaseDepartment):
         repairs = 0
         try:
             plan = await self._verification(task, sandbox)
+            acceptance_path: str | None = None
+            if self.router.settings.independent_qa_enabled:
+                await emit_event(
+                    AgentThoughtEvent(
+                        mission_id=task.mission_id,
+                        task_id=task.id,
+                        department=self.name,
+                        thought="Creating independent acceptance tests from the specification and "
+                        "public interfaces, without reading implementation bodies or its tests.",
+                    )
+                )
+                acceptance_path = await acceptance_tests(self.router, task, sandbox)
+                artifacts[acceptance_path] = "independent_acceptance_tests"
             baseline = await self._test_snapshot(sandbox)
+            if acceptance_path:
+                baseline[acceptance_path] = hashlib.sha256(
+                    await sandbox.read_bytes(acceptance_path)
+                ).hexdigest()
             try:
                 latest = json.loads(await sandbox.read_file("engineering/latest.json"))
                 patches = [Patch.model_validate(value) for value in latest.get("diffs", [])]
@@ -303,7 +326,7 @@ class QASelfHealer(BaseDepartment):
                 async with sandbox.mutation_lock:
                     await self._integrity(sandbox, baseline)
                     checks = await self._checks(
-                        task, plan, sandbox, emit_event, iteration, artifacts
+                        task, plan, sandbox, emit_event, iteration, artifacts, acceptance_path
                     )
                     await self._integrity(sandbox, baseline)
                 failures = [

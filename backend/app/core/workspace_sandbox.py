@@ -215,7 +215,10 @@ class WorkspaceSandbox:
             try:
                 descriptor = os.open(
                     parts[-1],
-                    os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC,
+                    os.O_RDONLY
+                    | getattr(os, "O_NOFOLLOW", 0)
+                    | getattr(os, "O_NONBLOCK", 0)
+                    | getattr(os, "O_CLOEXEC", 0),
                     dir_fd=parent,
                 )
             except FileNotFoundError:
@@ -269,7 +272,11 @@ class WorkspaceSandbox:
             temporary = f".openfoundry-write-{uuid4().hex}"
             descriptor = os.open(
                 temporary,
-                os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC,
+                os.O_WRONLY
+                | os.O_CREAT
+                | os.O_EXCL
+                | getattr(os, "O_NOFOLLOW", 0)
+                | getattr(os, "O_CLOEXEC", 0),
                 0o600,
                 dir_fd=parent,
             )
@@ -330,7 +337,7 @@ class WorkspaceSandbox:
 
     @staticmethod
     def _kill_process(process: asyncio.subprocess.Process) -> None:
-        if os.name == "nt":
+        if sys.platform == "win32":
             # taskkill terminates descendants, unlike Process.kill() on Windows.
             import subprocess
 

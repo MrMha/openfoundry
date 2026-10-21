@@ -1,0 +1,9 @@
+Use only local SPEC.md for research with zero external web dependencies. Deliver at most 3 source files (`inventory/__init__.py`, `inventory/models.py`, `inventory/store.py`), unit tests in `tests/`, `README.md`, QA verification, and a launch draft.
+Exact signatures and behavior:
+1. `inventory/models.py`: `@dataclass(frozen=True) class Item: sku: str; quantity: int`.
+2. `inventory/store.py`: `class Inventory` with:
+   - `def __init__(self) -> None`
+   - `def stock(self, sku: str) -> int`: validate `isinstance(sku, str) and sku.strip() != ''` (else raise `ValueError`); return current available integer stock for `sku` (`0` if never added).
+   - `def add(self, sku: str, quantity: int) -> Item`: validate non-blank `sku` and strict integer `quantity > 0` (`isinstance(quantity, int) and not isinstance(quantity, bool) and quantity > 0`, else raise `ValueError`); increase available stock and return `Item(sku=sku, quantity=new_available_stock)`.
+   - `def reserve(self, sku: str, quantity: int, request_id: str) -> Item`: validate non-blank `sku`, non-blank `request_id`, and strict integer `quantity > 0` (else raise `ValueError` without recording `request_id`). If `request_id` was previously recorded as a successful reservation with the exact same `(sku, quantity)`, do not deduct stock again and return `Item(sku=sku, quantity=current_available_stock)`. If `request_id` was previously recorded with different `(sku, quantity)`, raise `ValueError` without mutating stock. If `quantity > self.stock(sku)`, raise `ValueError` without mutating stock and without consuming `request_id` (a later valid call with that `request_id` must succeed). On first valid reservation, deduct `quantity` and return `Item(sku=sku, quantity=remaining_available_stock)`.
+3. Re-export `Item` and `Inventory` in `inventory/__init__.py`.

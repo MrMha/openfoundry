@@ -95,7 +95,7 @@ def fixture_config(**updates):
         allowed_tools=("add", "slow"),
         departments=("researcher",),
         requires_approval=False,
-        timeout_seconds=5,
+        timeout_seconds=30 if sys.platform == "win32" else 5,
         **updates,
     )
 
@@ -232,7 +232,8 @@ async def test_official_stdio_openfoundry_tools_drive_real_demo_and_authenticati
             env={"OPENFOUNDRY_API_TOKEN": "mcp-test-operator"},
         )
         async with (
-            asyncio.timeout(45),
+            # Includes cold stdio startup plus the real subprocess repair mission.
+            asyncio.timeout(180),
             stdio_client(parameters) as (read, write),
             ClientSession(read, write) as session,
         ):

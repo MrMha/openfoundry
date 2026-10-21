@@ -24,7 +24,7 @@ from pydantic import ValidationError as PydanticValidationError
 from referencing import Registry
 from sqlalchemy import literal, update
 
-from backend.app.config import USD_QUANTUM, Provider, Settings
+from backend.app.config import USD_QUANTUM, MissionPreferences, Provider, Settings, mission_settings
 from backend.app.database import Database
 from backend.app.models.mission import USD, AttemptStatus, LLMAttempt, Mission, MissionStatus
 
@@ -63,6 +63,10 @@ class ProvidersUnavailableError(LLMRouterError):
 
 class StructuredOutputError(LLMRouterError):
     """The provider returned incomplete text or text that does not match the schema."""
+
+
+class OutputValidationError(StructuredOutputError, ValueError):
+    """A trusted validator's safe correction instruction, without submitted values."""
 
 
 class ProviderRefusalError(LLMRouterError):
@@ -199,6 +203,17 @@ class LLMRouter:
         self.settings = settings
         self.database = database
         self._completion: CompletionFunction = completion or litellm.acompletion
+
+    def for_model(self, model: str) -> LLMRouter:
+        """An explicitly selected reviewer shares the same ledger and cost ceiling."""
+        prefix = model.split("/", 1)[0]
+        if prefix not in {"openai", "gemini", "anthropic", "ollama_chat"}:
+            raise ValueError("Review model must use a supported provider prefix")
+        provider = cast(Provider, "ollama" if prefix == "ollama_chat" else prefix)
+        configured = mission_settings(
+            self.settings, MissionPreferences(provider=provider, model=model)
+        )
+        return LLMRouter(configured, self.database, completion=self._completion)
 
     def _routes(self) -> list[_Route]:
         routes: list[_Route] = []
@@ -625,6 +640,8 @@ class LLMRouter:
                                 if isinstance(error, PydanticValidationError)
                                 else f"Python syntax error: {error.msg} at line {error.lineno}"
                                 if isinstance(error, SyntaxError)
+                                else str(error)
+                                if isinstance(error, OutputValidationError)
                                 else type(error).__name__
                             )
                             raise StructuredOutputError(

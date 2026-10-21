@@ -79,6 +79,9 @@ async def test_auto_probe_detects_blocked_user_namespaces_and_is_cached(tmp_path
         assert calls[0][-1] == "/usr/bin/true"
 
 
+@pytest.mark.skipif(
+    os.name != "posix", reason="Isolated execution uses POSIX directory descriptors"
+)
 async def test_supported_bwrap_is_selected_without_host_execution(tmp_path, monkeypatch):
     async with WorkspaceSandbox(uuid4(), root=tmp_path) as sandbox:
         await sandbox.initialize_git()
@@ -92,6 +95,9 @@ async def test_supported_bwrap_is_selected_without_host_execution(tmp_path, monk
         runner.assert_awaited_once()
 
 
+@pytest.mark.skipif(
+    os.name != "posix", reason="Isolated execution uses POSIX directory descriptors"
+)
 async def test_failed_isolated_command_is_never_replayed_on_host(tmp_path, monkeypatch):
     async with WorkspaceSandbox(uuid4(), root=tmp_path) as sandbox:
         await sandbox.initialize_git()
@@ -255,6 +261,8 @@ async def test_portable_ambiguous_and_reserved_paths_are_blocked(tmp_path, path)
     "content,name", [("", "empty.py"), ("no newline", "spaced name.txt"), ("value\n", 'quote".txt')]
 )
 async def test_engineering_unified_diffs_are_valid_reverse_git_patches(tmp_path, content, name):
+    if os.name == "nt" and '"' in name:
+        pytest.skip("Windows filesystem does not support quote characters in filenames")
     from backend.app.departments.engineer import unified_diff
 
     async with WorkspaceSandbox(uuid4(), root=tmp_path) as sandbox:

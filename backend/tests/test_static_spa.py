@@ -60,6 +60,10 @@ def test_root_assets_head_and_html_navigation_work_without_auth_but_apis_stay_pr
         "/.env",
         "/.git/config",
         "/health/missing",
+        "/api%5Cdoes-not-exist",
+        "/ws%5Cdoes-not-exist",
+        "/assets%5Cmissing",
+        "/health%5Cmissing",
     ],
 )
 def test_reserved_missing_asset_and_hidden_paths_are_never_spa_navigation(settings, dist, path):

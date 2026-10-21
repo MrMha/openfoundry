@@ -1,7 +1,9 @@
 import { defineConfig } from '@playwright/test';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 export default defineConfig({
   testDir: './e2e',
-  timeout: 90000,
+  timeout: 240000,
   workers: 1,
   projects: [
     { name: 'development', use: { baseURL: 'http://127.0.0.1:5174' } },
@@ -18,16 +20,15 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: 'uv run --project .. openfoundry --host 127.0.0.1 --port 8001',
+      command: 'uv run --frozen --project .. openfoundry --host 127.0.0.1 --port 8001',
       url: 'http://127.0.0.1:8001/health',
       env: {
-        OPENFOUNDRY_HOME: `/tmp/openfoundry-browser-${process.pid}`,
+        OPENFOUNDRY_HOME: join(tmpdir(), `openfoundry-browser-${process.pid}`),
         OPENFOUNDRY_API_TOKEN: 'e2e-operator',
         OPENFOUNDRY_SANDBOX_MODE: 'guarded',
         OPENFOUNDRY_CORS_ORIGINS: 'http://127.0.0.1:5174',
-        UV_CACHE_DIR: '/tmp/openfoundry-uv-cache',
       },
-      timeout: 30000,
+      timeout: 120000,
     },
     {
       command: 'npm run dev -- --port 5174',

@@ -23,7 +23,8 @@ test('real self-healing mission renders all live panels, approves, repairs and i
   expect(await dialog.evaluate((node) => node.contains(document.activeElement))).toBe(true);
   await dialog.getByRole('button', { name: 'Approve & Continue', exact: true }).click();
   await expect(page.getByText('5 of 5 tasks complete', { exact: false })).toBeVisible({
-    timeout: 60000,
+    // This includes actual isolated Python/ASGI subprocess verification and repair.
+    timeout: 180000,
   });
   await expect(page.getByText('Verification complete', { exact: true })).toBeVisible();
   await expect(
