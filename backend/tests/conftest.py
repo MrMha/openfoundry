@@ -15,6 +15,7 @@ def settings(tmp_path: Path) -> Settings:
         openai_api_key="unit-test-key",
         max_output_tokens=1024,
         provider_max_attempts=1,
+        independent_qa_enabled=False,  # Legacy unit fixtures supply their complete LLM transcript.
     )
 
 

@@ -28,6 +28,7 @@ from typing import Literal
 from uuid import UUID, uuid4
 
 from backend.app.core._sandbox_portable import PortablePathError, PortableWorkspace
+from backend.app.core.pytest_evidence import execution_counts
 
 SandboxMode = Literal["auto", "strict", "guarded"]
 
@@ -177,7 +178,9 @@ class WorkspaceSandbox:
         return parts
 
     @contextmanager
-    def _directory(self, parts: Sequence[str], *, create: bool = False) -> Iterator[int]:
+    def _directory(
+        self, parts: Sequence[str], *, create: bool = False, missing_is_absent: bool = False
+    ) -> Iterator[int]:
         with self._fd_lock:
             if self._closed:
                 raise SandboxError("Workspace is closed")
@@ -194,6 +197,8 @@ class WorkspaceSandbox:
                     os.close(descriptor)
                     descriptor = child
             except OSError as error:
+                if missing_is_absent and isinstance(error, FileNotFoundError):
+                    raise
                 raise UnsafePathError(
                     "Workspace path is missing, a symlink, or not a directory"
                 ) from error
@@ -211,11 +216,16 @@ class WorkspaceSandbox:
                     return self._portable.read(parts)
                 except PortablePathError as error:
                     raise UnsafePathError(str(error)) from error
-        with self._directory(parts[:-1]) as parent:
+        # Missing optional files remain absent when a parent has not been created.
+        # Other directory operations retain the stricter path-error behavior.
+        with self._directory(parts[:-1], missing_is_absent=True) as parent:
             try:
                 descriptor = os.open(
                     parts[-1],
-                    os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC,
+                    os.O_RDONLY
+                    | getattr(os, "O_NOFOLLOW", 0)
+                    | getattr(os, "O_NONBLOCK", 0)
+                    | getattr(os, "O_CLOEXEC", 0),
                     dir_fd=parent,
                 )
             except FileNotFoundError:
@@ -269,7 +279,11 @@ class WorkspaceSandbox:
             temporary = f".openfoundry-write-{uuid4().hex}"
             descriptor = os.open(
                 temporary,
-                os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC,
+                os.O_WRONLY
+                | os.O_CREAT
+                | os.O_EXCL
+                | getattr(os, "O_NOFOLLOW", 0)
+                | getattr(os, "O_CLOEXEC", 0),
                 0o600,
                 dir_fd=parent,
             )
@@ -330,7 +344,7 @@ class WorkspaceSandbox:
 
     @staticmethod
     def _kill_process(process: asyncio.subprocess.Process) -> None:
-        if os.name == "nt":
+        if sys.platform == "win32":
             # taskkill terminates descendants, unlike Process.kill() on Windows.
             import subprocess
 
@@ -860,7 +874,9 @@ class WorkspaceSandbox:
         except PortablePathError as error:
             raise UnsafePathError(str(error)) from error
 
-    async def run_test_command(self, command: Sequence[str], *, cwd: str = ".") -> CommandResult:
+    async def run_test_command(
+        self, command: Sequence[str], *, cwd: str = ".", independent_pytest: bool = False
+    ) -> CommandResult:
         """Run an allowlisted command, choosing isolation before executing project code.
 
         Auto falls back only after a harmless capability probe. A failed project command
@@ -868,6 +884,11 @@ class WorkspaceSandbox:
         output and process lifetime; generated code still has the host user's privileges.
         """
         argv = self._test_argv(command)
+        if independent_pytest and (command[0] != "pytest" or cwd != "."):
+            raise CommandNotAllowedError("Independent pytest must run at the workspace root")
+        receipt = f".openfoundry-qa/receipts/{uuid4().hex}.xml" if independent_pytest else None
+        if receipt:
+            await self.write_file(receipt, "")
         parts = self._parts(cwd, directory=True)
         isolated = self.sandbox_mode != "guarded" and await self._probe_isolation()
         if not isolated and self.sandbox_mode == "strict":
@@ -880,21 +901,25 @@ class WorkspaceSandbox:
             # Pytest otherwise discovers the service checkout's ancestor pyproject,
             # resolving project imports and testpaths against /app instead of the mission.
             prefix = "/".join(parts)
-            configuration = next(
-                (
-                    name
-                    for name in (
-                        "pytest.toml",
-                        ".pytest.toml",
-                        "pytest.ini",
-                        ".pytest.ini",
-                        "pyproject.toml",
-                        "tox.ini",
-                        "setup.cfg",
-                    )
-                    if (f"{prefix}/{name}" if prefix else name) in files
-                ),
-                os.devnull,
+            configuration = (
+                os.devnull
+                if independent_pytest
+                else next(
+                    (
+                        name
+                        for name in (
+                            "pytest.toml",
+                            ".pytest.toml",
+                            "pytest.ini",
+                            ".pytest.ini",
+                            "pyproject.toml",
+                            "tox.ini",
+                            "setup.cfg",
+                        )
+                        if (f"{prefix}/{name}" if prefix else name) in files
+                    ),
+                    os.devnull,
+                )
             )
             import_roots = shlex.join([working_directory, working_directory.rstrip("/") + "/src"])
             return (
@@ -906,6 +931,29 @@ class WorkspaceSandbox:
                 ),
                 "-c",
                 configuration,
+                *(
+                    ("--noconftest", "--override-ini=addopts=", f"--junitxml={receipt}")
+                    if independent_pytest
+                    else ()
+                ),
+            )
+
+        async def verified(result: CommandResult) -> CommandResult:
+            if not receipt:
+                return result
+            try:
+                counts = execution_counts(await self.read_bytes(receipt))
+                valid = counts["tests"] > 0 and not any(
+                    counts[key] for key in ("failed", "errors", "skipped")
+                )
+                evidence = f"Independent pytest execution counts: {counts}; receipt: {receipt}"
+            except (OSError, ValueError, SandboxError):
+                valid = False
+                evidence = "Independent pytest did not produce a valid execution receipt"
+            return replace(
+                result,
+                return_code=result.return_code if valid or result.return_code else 1,
+                stdout=result.stdout + "\n" + evidence + "\n",
             )
 
         if not isolated:
@@ -916,7 +964,9 @@ class WorkspaceSandbox:
                     pass_fds=descriptors,
                     display_command=tuple(command),
                 )
-            return replace(result, execution_mode="guarded", fallback_reason=self._isolation_reason)
+            return await verified(
+                replace(result, execution_mode="guarded", fallback_reason=self._isolation_reason)
+            )
         with (
             self._directory(parts),
             self._directory(()) as root_fd,
@@ -937,7 +987,7 @@ class WorkspaceSandbox:
             raise SandboxUnavailableError(
                 "Bubblewrap could not establish isolation; command was not retried"
             )
-        return replace(result, execution_mode="isolated")
+        return await verified(replace(result, execution_mode="isolated"))
 
     def close(self) -> None:
         with self._fd_lock:

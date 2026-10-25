@@ -63,7 +63,10 @@ through your process supervisor or secret manager. Never commit them.
 | `OPENFOUNDRY_GEMINI_MODEL` | `gemini/gemini-3.5-flash-lite` |
 | `OPENFOUNDRY_ANTHROPIC_MODEL` | `anthropic/claude-haiku-4-5` |
 | `OPENFOUNDRY_OLLAMA_MODEL` | `ollama_chat/llama3.2` |
-| `OPENFOUNDRY_MAX_OUTPUT_TOKENS` | `4096`; per-request upper bound |
+| `OPENFOUNDRY_MAX_OUTPUT_TOKENS` | `8192`; per-request upper bound, including provider-reported reasoning tokens |
+| `OPENFOUNDRY_GEMINI_REASONING_EFFORT` | `medium`; explicit thinking effort for supported Gemini 3/4 routes; `minimal`, `low`, `medium`, or `high` |
+| `OPENFOUNDRY_INDEPENDENT_QA` | `true`; requirement-based acceptance generation and draft test-contract review before protection |
+| `OPENFOUNDRY_ENGINEERING_REVIEW_MODEL` | Unset; an explicitly qualified review model shares the mission ledger and budget |
 | `OPENFOUNDRY_PROVIDER_MAX_ATTEMPTS` | `3`; shared limit for overload and invalid-output retries |
 | `OPENFOUNDRY_PROVIDER_RETRY_DELAY_SECONDS` | `1`; exponential delay, capped at 30 seconds |
 | `OPENFOUNDRY_REQUEST_TIMEOUT_SECONDS` | `180` |

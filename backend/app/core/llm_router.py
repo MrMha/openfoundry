@@ -24,7 +24,7 @@ from pydantic import ValidationError as PydanticValidationError
 from referencing import Registry
 from sqlalchemy import literal, update
 
-from backend.app.config import USD_QUANTUM, Provider, Settings
+from backend.app.config import USD_QUANTUM, MissionPreferences, Provider, Settings, mission_settings
 from backend.app.database import Database
 from backend.app.models.mission import USD, AttemptStatus, LLMAttempt, Mission, MissionStatus
 
@@ -63,6 +63,10 @@ class ProvidersUnavailableError(LLMRouterError):
 
 class StructuredOutputError(LLMRouterError):
     """The provider returned incomplete text or text that does not match the schema."""
+
+
+class OutputValidationError(StructuredOutputError, ValueError):
+    """A trusted validator's safe correction instruction, without submitted values."""
 
 
 class ProviderRefusalError(LLMRouterError):
@@ -122,6 +126,7 @@ class _Bound:
     cost_usd: Decimal
     max_input_tokens: int
     max_output_tokens: int
+    supports_reasoning: bool = False
 
 
 class _Usage(BaseModel):
@@ -200,6 +205,17 @@ class LLMRouter:
         self.database = database
         self._completion: CompletionFunction = completion or litellm.acompletion
 
+    def for_model(self, model: str) -> LLMRouter:
+        """An explicitly selected reviewer shares the same ledger and cost ceiling."""
+        prefix = model.split("/", 1)[0]
+        if prefix not in {"openai", "gemini", "anthropic", "ollama_chat"}:
+            raise ValueError("Review model must use a supported provider prefix")
+        provider = cast(Provider, "ollama" if prefix == "ollama_chat" else prefix)
+        configured = mission_settings(
+            self.settings, MissionPreferences(provider=provider, model=model)
+        )
+        return LLMRouter(configured, self.database, completion=self._completion)
+
     def _routes(self) -> list[_Route]:
         routes: list[_Route] = []
         for provider in self.settings.provider_order:
@@ -250,7 +266,7 @@ class LLMRouter:
                 raise ValueError("Paid models require positive token prices")
             limited_output = min(output_tokens, max_output)
             bound = _usd(rates[0] * max_input + rates[1] * limited_output)
-            return _Bound(bound, max_input, limited_output)
+            return _Bound(bound, max_input, limited_output, bool(info.get("supports_reasoning")))
         except Exception:
             raise PricingUnavailableError(
                 "No bounded pricing available for configured model"
@@ -507,6 +523,13 @@ class LLMRouter:
             }
             if route.api_key is not None:
                 kwargs["api_key"] = route.api_key
+            if (
+                route.provider == "gemini"
+                and route.model.startswith(("gemini/gemini-3", "gemini/gemini-4"))
+                and bound.supports_reasoning
+                and self.settings.gemini_reasoning_effort is not None
+            ):
+                kwargs["reasoning_effort"] = self.settings.gemini_reasoning_effort
             if route.api_base is not None:
                 kwargs["api_base"] = route.api_base
             if json_schema is not None:
@@ -625,6 +648,8 @@ class LLMRouter:
                                 if isinstance(error, PydanticValidationError)
                                 else f"Python syntax error: {error.msg} at line {error.lineno}"
                                 if isinstance(error, SyntaxError)
+                                else str(error)
+                                if isinstance(error, OutputValidationError)
                                 else type(error).__name__
                             )
                             raise StructuredOutputError(

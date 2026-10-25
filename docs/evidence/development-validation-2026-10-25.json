@@ -1,0 +1,406 @@
+{
+  "checkpoint_date": "2026-10-25",
+  "release_status": "v1.0 blocked; owner paused work",
+  "package_version": "0.1.0",
+  "ci_tested_source": "6a5648f7eb14882b41f37652f3d4072653c50f84",
+  "results_are_snapshot_specific": true,
+  "backend_ci": {
+    "passed": 512,
+    "url": "https://github.com/MrMha/openfoundry/actions/runs/40202043823/job/121195071806"
+  },
+  "frontend_ci": {
+    "status": "success",
+    "url": "https://github.com/MrMha/openfoundry/actions/runs/40202043881"
+  },
+  "linux_local_frozen_314891b": {
+    "passed": 511,
+    "skipped": 0
+  },
+  "windows_current_frozen": {
+    "status": "interrupted_by_owner",
+    "final_result": null
+  },
+  "antigravity_older_snapshot": {
+    "commit": "cdb92d8bad8026dbfc7f7139c7405148be828b89",
+    "passed": 497,
+    "skipped": 8,
+    "unresolved_reproducer_findings": [
+      "bare pytest.raises",
+      "dead-code assertions",
+      "decoupled assertions"
+    ],
+    "current_contract_review_integration": "unverified"
+  },
+  "pending": [
+    "current Windows full suite",
+    "remaining false-pass fixes and negative controls",
+    "fresh installed-wheel smoke",
+    "Docker/Compose runtime smoke",
+    "complete repeated six-case and broader multi-file live campaigns"
+  ],
+  "operator_stop": {
+    "recorded_at_utc": "2026-10-25T14:50:56.311418+00:00",
+    "reason": "owner requested stop and save for later",
+    "source_commit": "6a5648f7eb14882b41f37652f3d4072653c50f84",
+    "live_batch": "20261025T143402Z-f2dc07",
+    "operator_status": "interrupted_by_owner",
+    "original_report_current_run_status": "running",
+    "interrupted_case": "csv_summary",
+    "interrupted_mission_id": "09ea1952-f036-4b11-823b-5c7227e90454",
+    "completed_cases": [
+      "slugify repeat 1",
+      "invoice repeat 1"
+    ],
+    "windows_frozen_suite": "interrupted_by_owner; no final result",
+    "raw_reports_rewritten": false,
+    "api_key_file_removed": true,
+    "validation_services": "Docker/socket/containerd/ubuntu-fan inactive and disabled"
+  },
+  "billing": {
+    "enabled_by_this_session": false,
+    "observed_project_tier": "Free tier / Set up billing",
+    "provider_invoice_amount": "unknown",
+    "temporary_key_file_removed": true
+  },
+  "historical_october_22_raw_receipts": "not recovered with missing prior checkout; sanitized published summary retained",
+  "live_batches": [
+    {
+      "batch": "20261025T112324Z-60249c",
+      "raw_report_sha256": "6dca1590e9dea51f421c2cc4cab97e7e44dd8ed872e3f08901d676e106e11eeb",
+      "backend_commit": "ea82355314969b014c4b58ec9c522c3c5f0a080d",
+      "model": "gemini/gemini-3.5-flash-lite",
+      "engineering_review_model": "gemini/gemini-3.8-flash",
+      "gemini_reasoning_effort": null,
+      "max_output_tokens": 8192,
+      "started_at_utc": "2026-10-25T11:23:24.972041+00:00",
+      "runs": [
+        {
+          "case": "csv_summary",
+          "repeat": 1,
+          "mission_id": "84574661-17e3-4742-a798-f00ee89d1db7",
+          "mission_status": "failed",
+          "end_to_end_pass": false,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 10112,
+          "recorded_completion_tokens": 3960,
+          "usage_complete": false,
+          "external_status": "not_run"
+        }
+      ],
+      "original_current_run": null,
+      "operator_status": "completed_batch"
+    },
+    {
+      "batch": "20261025T113006Z-738648",
+      "raw_report_sha256": "a50a8d812f84f1734540f34faeca94be351202189eacb538fa84bcec5ce227ca",
+      "backend_commit": "ea82355314969b014c4b58ec9c522c3c5f0a080d",
+      "model": "gemini/gemini-3.5-flash-lite",
+      "engineering_review_model": null,
+      "gemini_reasoning_effort": null,
+      "max_output_tokens": 8192,
+      "started_at_utc": "2026-10-25T11:30:06.020075+00:00",
+      "runs": [
+        {
+          "case": "csv_summary",
+          "repeat": 1,
+          "mission_id": "1786d0e0-f48c-4e55-b3c6-cc9e5aeb1cb2",
+          "mission_status": "failed",
+          "end_to_end_pass": false,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 74224,
+          "recorded_completion_tokens": 10681,
+          "usage_complete": true,
+          "external_status": "passed"
+        }
+      ],
+      "original_current_run": null,
+      "operator_status": "completed_batch"
+    },
+    {
+      "batch": "20261025T114815Z-09113e",
+      "raw_report_sha256": "57ff15c8c124292eedcdec7ac74e4560840103dfc39dcad8ab28d1abc21cb631",
+      "backend_commit": "ea82355314969b014c4b58ec9c522c3c5f0a080d",
+      "model": "gemini/gemini-3.5-flash-lite",
+      "engineering_review_model": null,
+      "gemini_reasoning_effort": null,
+      "max_output_tokens": 8192,
+      "started_at_utc": "2026-10-25T11:48:15.608488+00:00",
+      "runs": [
+        {
+          "case": "csv_summary",
+          "repeat": 1,
+          "mission_id": "d6116d8d-04f4-464c-b46a-190bdf01b334",
+          "mission_status": "completed",
+          "end_to_end_pass": true,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 63214,
+          "recorded_completion_tokens": 10460,
+          "usage_complete": true,
+          "external_status": "passed"
+        },
+        {
+          "case": "csv_summary",
+          "repeat": 2,
+          "mission_id": "27ab50b9-f7b4-4f13-8b24-f0602e764901",
+          "mission_status": "failed",
+          "end_to_end_pass": false,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 78439,
+          "recorded_completion_tokens": 14623,
+          "usage_complete": true,
+          "external_status": "passed"
+        },
+        {
+          "case": "csv_summary",
+          "repeat": 3,
+          "mission_id": "4a82189c-7d1b-47b2-a0bc-ab0b5cdcf984",
+          "mission_status": "failed",
+          "end_to_end_pass": false,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 28953,
+          "recorded_completion_tokens": 6442,
+          "usage_complete": true,
+          "external_status": "passed"
+        }
+      ],
+      "original_current_run": null,
+      "operator_status": "completed_batch"
+    },
+    {
+      "batch": "20261025T132547Z-4c6011",
+      "raw_report_sha256": "500ffb999ed86280021efbab5f51f682993329d859c7ac102abaa85548fc137c",
+      "backend_commit": "ea82355314969b014c4b58ec9c522c3c5f0a080d",
+      "model": "gemini/gemini-3.5-flash-lite",
+      "engineering_review_model": null,
+      "gemini_reasoning_effort": "high",
+      "max_output_tokens": 8192,
+      "started_at_utc": "2026-10-25T13:25:47.391892+00:00",
+      "runs": [
+        {
+          "case": "csv_summary",
+          "repeat": 1,
+          "mission_id": "80dd4780-593f-4862-b308-82919c4c4d38",
+          "mission_status": "failed",
+          "end_to_end_pass": false,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 34506,
+          "recorded_completion_tokens": 30703,
+          "usage_complete": true,
+          "external_status": "passed"
+        },
+        {
+          "case": "csv_summary",
+          "repeat": 2,
+          "mission_id": "091baac3-4000-49b7-9a13-97b4e03d57f4",
+          "mission_status": "failed",
+          "end_to_end_pass": false,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 71273,
+          "recorded_completion_tokens": 43352,
+          "usage_complete": true,
+          "external_status": "passed"
+        },
+        {
+          "case": "csv_summary",
+          "repeat": 3,
+          "mission_id": "d81e1d1a-4a52-4a16-b4f2-497cb43ae1fa",
+          "mission_status": "failed",
+          "end_to_end_pass": false,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 68235,
+          "recorded_completion_tokens": 44071,
+          "usage_complete": true,
+          "external_status": "failed"
+        }
+      ],
+      "original_current_run": null,
+      "operator_status": "completed_batch"
+    },
+    {
+      "batch": "20261025T135557Z-14443b",
+      "raw_report_sha256": "a9f4760128c44b6fdbf9503003a4fb921bbd12f64fe78012f7d4e8b90bd19839",
+      "backend_commit": "ea82355314969b014c4b58ec9c522c3c5f0a080d",
+      "model": "gemini/gemini-3.5-flash-lite",
+      "engineering_review_model": null,
+      "gemini_reasoning_effort": "high",
+      "max_output_tokens": 8192,
+      "started_at_utc": "2026-10-25T13:55:57.059348+00:00",
+      "runs": [
+        {
+          "case": "csv_summary",
+          "repeat": 1,
+          "mission_id": "8dec0de5-2c14-494e-b633-652a46af4e19",
+          "mission_status": "completed",
+          "end_to_end_pass": true,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 51348,
+          "recorded_completion_tokens": 43369,
+          "usage_complete": true,
+          "external_status": "passed"
+        }
+      ],
+      "original_current_run": null,
+      "operator_status": "completed_batch"
+    },
+    {
+      "batch": "20261025T140119Z-4c1b31",
+      "raw_report_sha256": "b80294b1afff6aa57dfe471772f44de64196083f47a6e03874bfcbd296dc8100",
+      "backend_commit": "ea82355314969b014c4b58ec9c522c3c5f0a080d",
+      "model": "gemini/gemini-3.5-flash-lite",
+      "engineering_review_model": null,
+      "gemini_reasoning_effort": "medium",
+      "max_output_tokens": 8192,
+      "started_at_utc": "2026-10-25T14:01:19.538805+00:00",
+      "runs": [
+        {
+          "case": "csv_summary",
+          "repeat": 1,
+          "mission_id": "91883ee9-0115-4255-9d6a-8038cb62ba48",
+          "mission_status": "failed",
+          "end_to_end_pass": false,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 805,
+          "recorded_completion_tokens": 2029,
+          "usage_complete": true,
+          "external_status": "not_run"
+        },
+        {
+          "case": "csv_summary",
+          "repeat": 2,
+          "mission_id": "08dc1bf1-c77a-42ed-aa57-0bb95f8322f1",
+          "mission_status": "completed",
+          "end_to_end_pass": true,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 33096,
+          "recorded_completion_tokens": 16459,
+          "usage_complete": true,
+          "external_status": "passed"
+        },
+        {
+          "case": "csv_summary",
+          "repeat": 3,
+          "mission_id": "92959278-6a78-4a00-95cc-aeb57f8f8c8e",
+          "mission_status": "completed",
+          "end_to_end_pass": true,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 31461,
+          "recorded_completion_tokens": 16164,
+          "usage_complete": true,
+          "external_status": "passed"
+        }
+      ],
+      "original_current_run": null,
+      "operator_status": "completed_batch"
+    },
+    {
+      "batch": "20261025T142428Z-e33a0b",
+      "raw_report_sha256": "413bac90b6b665c9e65d72c795d021dfdc1f7c1cfb61dbb1a04f8dbfb4c7ed3a",
+      "backend_commit": "6a5648f7eb14882b41f37652f3d4072653c50f84",
+      "model": "gemini/gemini-3.5-flash-lite",
+      "engineering_review_model": null,
+      "gemini_reasoning_effort": "medium",
+      "max_output_tokens": 8192,
+      "started_at_utc": "2026-10-25T14:24:28.453882+00:00",
+      "runs": [
+        {
+          "case": "csv_summary",
+          "repeat": 1,
+          "mission_id": "12afaa02-976a-4188-94c9-c1d1c62393af",
+          "mission_status": "completed",
+          "end_to_end_pass": true,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 36032,
+          "recorded_completion_tokens": 16652,
+          "usage_complete": true,
+          "external_status": "passed"
+        },
+        {
+          "case": "csv_summary",
+          "repeat": 2,
+          "mission_id": "cbe39eaf-c680-4225-b8dc-e947729be72e",
+          "mission_status": "completed",
+          "end_to_end_pass": true,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 51596,
+          "recorded_completion_tokens": 17997,
+          "usage_complete": true,
+          "external_status": "passed"
+        },
+        {
+          "case": "csv_summary",
+          "repeat": 3,
+          "mission_id": "eef5ffad-e9a0-4ce4-a986-ba2698261089",
+          "mission_status": "completed",
+          "end_to_end_pass": true,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 31162,
+          "recorded_completion_tokens": 12864,
+          "usage_complete": true,
+          "external_status": "passed"
+        }
+      ],
+      "original_current_run": null,
+      "operator_status": "completed_batch"
+    },
+    {
+      "batch": "20261025T143402Z-f2dc07",
+      "raw_report_sha256": "6e9dd65ed15f457f15aca3dfd5d9152ffbccf63128cc285837a39bfcd226890b",
+      "backend_commit": "6a5648f7eb14882b41f37652f3d4072653c50f84",
+      "model": "gemini/gemini-3.5-flash-lite",
+      "engineering_review_model": null,
+      "gemini_reasoning_effort": "medium",
+      "max_output_tokens": 8192,
+      "started_at_utc": "2026-10-25T14:34:02.387458+00:00",
+      "runs": [
+        {
+          "case": "slugify",
+          "repeat": 1,
+          "mission_id": "4f65fada-4f23-4873-af02-e0753055072b",
+          "mission_status": "completed",
+          "end_to_end_pass": true,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 27187,
+          "recorded_completion_tokens": 12846,
+          "usage_complete": true,
+          "external_status": "passed"
+        },
+        {
+          "case": "invoice",
+          "repeat": 1,
+          "mission_id": "198d03e2-ad98-4ae6-977c-ebd755ed10e4",
+          "mission_status": "completed",
+          "end_to_end_pass": true,
+          "deadline_exceeded": false,
+          "response_cache": false,
+          "recorded_prompt_tokens": 31616,
+          "recorded_completion_tokens": 13938,
+          "usage_complete": true,
+          "external_status": "passed"
+        }
+      ],
+      "original_current_run": {
+        "case": "csv_summary",
+        "repeat": 1,
+        "status": "running",
+        "mission_id": "09ea1952-f036-4b11-823b-5c7227e90454"
+      },
+      "operator_status": "interrupted_by_owner"
+    }
+  ]
+}

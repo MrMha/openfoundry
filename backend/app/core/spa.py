@@ -20,7 +20,9 @@ class WarRoomStaticFiles(StaticFiles):
         await super().__call__(scope, receive, send)
 
     async def get_response(self, path: str, scope: Scope) -> Response:
-        parts = PurePosixPath(path).parts
+        # Starlette passes native filesystem separators on Windows.
+        normalized = PurePosixPath(path.replace("\\", "/"))
+        parts = normalized.parts
         if any(part.startswith(".") for part in parts) or (
             parts and parts[0] in {"api", "ws", "health", "docs", "redoc", "openapi.json"}
         ):
@@ -35,7 +37,7 @@ class WarRoomStaticFiles(StaticFiles):
             if (
                 error.status_code != 404
                 or scope["method"] not in {"GET", "HEAD"}
-                or PurePosixPath(path).suffix
+                or normalized.suffix
                 or parts
                 and parts[0] == "assets"
                 or not accepts_html

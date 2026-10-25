@@ -1,0 +1,2910 @@
+{
+  "checkpoint_date": "2026-10-22",
+  "release_ready": false,
+  "branch": "codex/v1-readiness",
+  "billing": {
+    "observed_project_tier": "Free tier",
+    "billing_setup_performed": false,
+    "paid_fallback_configured": false,
+    "provider_invoice_charge_usd": null,
+    "costs_are_list_price_estimates": true
+  },
+  "limitations": [
+    "Batches used successive source revisions; not one final-version reliability estimate.",
+    "Small synthetic cases; generated code used measured sandbox mode, guarded mode is not OS isolation.",
+    "Raw local receipts remain ignored; this public summary excludes secrets, generated source and machine paths.",
+    "Full backend suites were not rerun on the final source."
+  ],
+  "live_batches": [
+    {
+      "started_at_utc": "2026-10-21T19:02:40.635037+00:00",
+      "model": "gemini/gemini-3.5-flash-lite",
+      "engineering_review_model": null,
+      "backend_commit": "61c365bc32019ba4c535fbc3d2ba498d74cdb812",
+      "python": "3.14.7",
+      "platform": "Windows",
+      "independent_qa_enabled": null,
+      "runner_sha256": "35111559c22852087bf381fff6a9f1ceb31186f4cdc65edd384186889692e6f0",
+      "cases_sha256": "3fcd968b511ade21750fd6c6692b2881592cdd6475b5b2ab5f05fb88296f7904",
+      "batch_id": "20261021T190240Z-13ac42",
+      "receipt_sha256": "9b5eb7935b30fb01b6f1a3523a7cc23cffb1383ceaaa3e01f837c3c593b48867",
+      "source_sha256": {
+        "backend/app/__init__.py": "422ff70625d7dbffc7cde10d34ac53d621f62293bfa2765848364c452618be01",
+        "backend/app/api/__init__.py": "5533ed2b9d12fc56d5a22712b977767a64259a87b6b2c00c3243f17ae6eacba6",
+        "backend/app/api/auth.py": "9480b6a3880af9d5ad68a86fc53c285dac9e966dc25dad68172adb2993415fc7",
+        "backend/app/api/routes_blueprints.py": "7c4b0b51b2ad4d84df1a8c70378b9ceb2252176220ebf07ca63adac92dff29ce",
+        "backend/app/api/routes_missions.py": "4ae523c0a061c5f5fb9d8b8eccc5526f0df0a0e554aa3b9fafcd6de2e92b8f94",
+        "backend/app/api/routes_plugins.py": "97b4fac0c2284e910e7fd2777bf9c28be8c8d9ce7ff8f2d582d56b6f4db3ebe2",
+        "backend/app/api/routes_runtime.py": "75a659cdfbf897242dea9c01447864a15a0e40a352194e8b5a65fefab4d9af5b",
+        "backend/app/api/ws_war_room.py": "302ba2febdd84ba28d4b6c738a72ea1b58161331b8e6608e28dbf6b42cfa98ef",
+        "backend/app/config.py": "bc3953c20b6a229ec155f73a2aa47bd62cd135f5e93f0a9c3f3264dd9ee1808d",
+        "backend/app/core/__init__.py": "f81c4adfa7aa81045bb30ab4a8ac25cb4bfa32ac22ad28ec5c3a6f2b09490552",
+        "backend/app/core/_sandbox_portable.py": "be03bf58a0b910df23bba495f5e2a13ea43564770fc579a568fd1c46778e4708",
+        "backend/app/core/blueprints.py": "c1d0fcc3957420f0f6089335597e400aa6f4dcba84005dc1cc7756a036a0a50b",
+        "backend/app/core/demo.py": "11ee81e18ddd422c11c554cf377bebfb2d9c9ba6ecda1f8856fea8f3b2658097",
+        "backend/app/core/llm_router.py": "358812bb826fb39eba01e659f764008c86610fdeb543a9de37771973ad650b4d",
+        "backend/app/core/mcp_bridge.py": "132f7032760f429ee5339ba734c0b361da474ba317974dc247fd0a28053b868b",
+        "backend/app/core/mcp_config.py": "2d130a8ac29e0da4764b921f596be590c27c9502ec48923138687c18fc5b7d3d",
+        "backend/app/core/memory_vault.py": "e827f04c746f0112629903093f5222bd4cd79b4c262fe75f96011017b194eaeb",
+        "backend/app/core/orchestrator.py": "a42441a06d26b43aa143f8634648fa30fa65b5697d68a8e42eca346f61d6ca06",
+        "backend/app/core/plan_artifacts.py": "c12db016408e967b9bc465014270e4116ae6886c7fb6c34ea77a31fc183e870a",
+        "backend/app/core/planning.py": "8cec8cc73ef347049201defb389e079ca4f3e831a5d2ad0ae10691c8048ab3e6",
+        "backend/app/core/python_format.py": "72a87bcf97d2bffb3cbd3c225e283050f8017cb5d17e9eb48a54f11ae5e11c77",
+        "backend/app/core/research_worker.py": "4bef2f6fafd96f82112626febeb80678eeda982f6024f55a7862ed3ae9713327",
+        "backend/app/core/security_logging.py": "0a886c18c3b9d4c9797c092f225374be96149c3fa8f3ff453b52f2ce20a0954d",
+        "backend/app/core/spa.py": "6f0bf7d2a766f810a17508f2e7b87a3767a61374831da2717f5654e39921a6e5",
+        "backend/app/core/workspace_sandbox.py": "c255a41315199079fd91e8c368549acbfb41ee1ad14ad3fec409056c37045d4c",
+        "backend/app/database.py": "57f73efa27a61f162c89e55cce90433c363fca04853fcd0c7e52459a7ed949b3",
+        "backend/app/departments/__init__.py": "1afca11d689543e8662bf94b223751a2cf8df7f6237dc18c17d26e4c88b95a5f",
+        "backend/app/departments/_qa_probe_worker.py": "91a35c09d1b4d5dfd35a12ff9b1ec0edacbee69b980589fd3f516bb76a720e50",
+        "backend/app/departments/_research_browser.py": "7688c24fe95d890d143fc5566eacd84a4ee9a71338a42ff73baae6090e0a5898",
+        "backend/app/departments/_research_documents.py": "8d8be4dd3d79d39d559187197cd92d0f53f10678d083fe4cc700ac21cbadea77",
+        "backend/app/departments/_research_web.py": "861fb7001ba3b3ebb625da4177d6c9a817bf8c4d93bc3bfe6e98552df8cd6d82",
+        "backend/app/departments/base_department.py": "db95f2915932e04b57a38d2a2a22c0639ad60660ba52ba76ff56bfa77ed28bcb",
+        "backend/app/departments/builtin.py": "e9e7bab64d4e6fff1e2f12dae563b9a46797b97f5732e1e18f07a8afc683f025",
+        "backend/app/departments/chief_of_staff.py": "9ec954530c33f45032ede772d34b19a495de9dc376dc891055dfcf4e4dab61a6",
+        "backend/app/departments/engineer.py": "ea6e732b5acf7bf17e34b1dd8c1aac744e3cf2defcf88c0ea664e800dde3463b",
+        "backend/app/departments/engineering_contracts.py": "f4938ef5a33ac480559fac581c5c9ba0a938e45d600b5ab3aab01b700fe77b70",
+        "backend/app/departments/growth_career.py": "eab02a442f118aa84ac1a107b70470967cfa22f8a4c8b94e1923b8a106a77f26",
+        "backend/app/departments/growth_contracts.py": "2c66ac01edd877fde0c26ca3296fbb92d3ecd057d371d66c48a61acfde409a5d",
+        "backend/app/departments/qa_self_healer.py": "272aaff606c53e628bc3aea1ff7a015500422991072f088c137319a0ae02ca03",
+        "backend/app/departments/researcher.py": "f4974e75e63ee444906938c5d8fc4d7c37c229ffb872c6fe1f486cf2315fbe3c",
+        "backend/app/main.py": "4464d8d206a350ca23a98144fcc0b7527aa166a89d4713de9ffa20738a08b33d",
+        "backend/app/models/__init__.py": "5f0b2e4d1f9746def23fc76fa471bfb42602d62f73b1a120540de6508b86cad1",
+        "backend/app/models/events.py": "fb387c10834e9baf0df26927a9cc7e4361c3f33671ca5b1a2125af1c90b00336",
+        "backend/app/models/mission.py": "e103e25e3521dcdd9444c7da8ea772577f52ce3679860ea26891f681c996ae2d",
+        "backend/app/models/orchestration.py": "df36b68c5bf246137b14c07f17dcb7aa000fcc0f9b2bbca58b5aef8ae44af4af",
+        "pyproject.toml": "4babac4b136b15765aa0795993e1d248d8e020c6c27f5950673d3602ad2f6dcf",
+        "uv.lock": "403d723ae9b6a4426e67d146e54dfef03336e722bb13819905d28295dea1d873"
+      },
+      "runs": [
+        {
+          "case": "slugify",
+          "repeat": 1,
+          "mission_id": "c1703232-11c2-41a7-8131-e8748fe13a8b",
+          "requirements_sha256": null,
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 16.396,
+          "recorded_prompt_tokens": 806,
+          "recorded_completion_tokens": 751,
+          "usage_complete": true,
+          "end_to_end_pass": false,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "failed",
+          "estimated_list_price_usd": "0.002119300",
+          "external_acceptance": {
+            "status": "not_run"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 806,
+              "completion_tokens": 751,
+              "estimated_list_price_usd": "0.002119300",
+              "error_code": null
+            }
+          ]
+        }
+      ],
+      "recorded_runs": 1,
+      "end_to_end_passes": 0,
+      "external_acceptance_passes": 0,
+      "current_run_status": null
+    },
+    {
+      "started_at_utc": "2026-10-21T19:07:52.201982+00:00",
+      "model": "gemini/gemini-3.5-flash-lite",
+      "engineering_review_model": null,
+      "backend_commit": "61c365bc32019ba4c535fbc3d2ba498d74cdb812",
+      "python": "3.12.14",
+      "platform": "Windows",
+      "independent_qa_enabled": null,
+      "runner_sha256": "35111559c22852087bf381fff6a9f1ceb31186f4cdc65edd384186889692e6f0",
+      "cases_sha256": "3fcd968b511ade21750fd6c6692b2881592cdd6475b5b2ab5f05fb88296f7904",
+      "batch_id": "20261021T190752Z-e4177b",
+      "receipt_sha256": "d75d9ea0a1963981f6cafd51a4d5f8157392b53bf2acb3ec156448d4943fce5a",
+      "source_sha256": {
+        "backend/app/__init__.py": "28750009c1d664b2ad5ae8e6bdae31d44de9aa340cff0f5cb36c18de0017c9cd",
+        "backend/app/api/__init__.py": "fb26f4193b4c1db8aa922dd702a124e06d50a778039be25671d796d0ab2cfe70",
+        "backend/app/api/auth.py": "db56d1def1c1fc6123d379d2fea3750574d5c8325ad58fb9acee070ac5421698",
+        "backend/app/api/routes_blueprints.py": "6de2462c0c69428c3d51e661049f738b77685acd0fa85c7716717ddefbf57899",
+        "backend/app/api/routes_missions.py": "fc36fcaebd4c124540f2e94440d4ba132f45680e728e8253186bd972aedf9f9a",
+        "backend/app/api/routes_plugins.py": "f9e4635abc4ff9785a5b4ec3ce4e2f95306a96dc841fcc5b9060f10f081073c0",
+        "backend/app/api/routes_runtime.py": "3532eb1da4562020ce2f1bb2d193ec8f91da903c528b94fff33a6ba8b0bdf502",
+        "backend/app/api/ws_war_room.py": "bfa4d98540fc972292829b7545110e2d43e56040e5285a66ab772565e3688ca1",
+        "backend/app/config.py": "91dcc16d4234d2bc8904488589faff31e67eaa7141cffb6c20dd06bc385a45c3",
+        "backend/app/core/__init__.py": "2c0048e3a53ccbd89680e208d29ee9777e0e40841615d3f770f38fb79ed66277",
+        "backend/app/core/_sandbox_portable.py": "b8d2a1fab89135c2f1f4503a1351d318af2a3dd87baac616ad70b3c129ce7eb0",
+        "backend/app/core/blueprints.py": "15b1888495b79db2de98ffa5218543ec485a1051c572104ac1179631d1e83b54",
+        "backend/app/core/demo.py": "5cf7d510d116d98253f2159c847829f8204c9160869dd9d755940816d3fbef40",
+        "backend/app/core/llm_router.py": "55f03d5c11370586efc8499253083f221bf5eeef70cd74a1d133f932356b5820",
+        "backend/app/core/mcp_bridge.py": "0b6f058c01bf1140b8c9f2575fc9b419fa3dc863941c807d83393ee31b0efada",
+        "backend/app/core/mcp_config.py": "70380a4c53c741ad6d52d95405b617ffbfc3a8278cb6e8565c84b774b6a10c81",
+        "backend/app/core/memory_vault.py": "cd3b9be487558e6e1222564ab785cdee3532eeb2543fd3bae0179128f060b6a6",
+        "backend/app/core/orchestrator.py": "3c6b65214830b46645cd6fc101dba3e6880b973debc6d44b42a590001003232a",
+        "backend/app/core/plan_artifacts.py": "acc4545471aa05fa4b2cc255b1d2eabf7880a3cb551dbcdb1189781b760a7b3e",
+        "backend/app/core/planning.py": "ab5d8a4df0b91c383bd34d6812fc69b92da9796c6a00c157f2d16b22b8f51532",
+        "backend/app/core/python_format.py": "8ea8f0838dc7973b9cd8a7c722e83755cddf58b05488bdf626be465372b18d7f",
+        "backend/app/core/research_worker.py": "73b0a91afebb5d3aa72baaa7f0824034884dea1863651122f66380e1318eb29b",
+        "backend/app/core/security_logging.py": "4f4fd5263fd3fa5155de863a0d45b7df2a1d7e7c6b8d73e8857b1025b2eacd37",
+        "backend/app/core/spa.py": "381171f8b649661fd36f34a12c086bdf7184ae980389c438baed3255576ecb10",
+        "backend/app/core/workspace_sandbox.py": "224bd0750c9217618dc0a910c7a08ce5bf0c06910453e42fc42160d4bc4d8c14",
+        "backend/app/database.py": "0c679c28173db2c7ca92488d66703709cc140ab0538e9af220575b5a26c2d7ab",
+        "backend/app/departments/__init__.py": "0e7f6d9b25ddd01f26bee95a5604e8098f003c8cbe56a93d9bf4640a3b7679b6",
+        "backend/app/departments/_qa_probe_worker.py": "65d95bb766d3a77a189bbe17d57f5b6d771e2b72eedcca93f8462440300eb1cc",
+        "backend/app/departments/_research_browser.py": "e104d56993507efbdeb65ecd65fe29c67b91391a267ed107e820e9881fa8ec11",
+        "backend/app/departments/_research_documents.py": "c420712af1341fa08319232d95fa1b5761ccfdd0e7659dddbbcfea9eb3a0b712",
+        "backend/app/departments/_research_web.py": "9572eb78c4062fa37adce81f5a627d7b5ecb740115094ebbe43f8a470112ac48",
+        "backend/app/departments/base_department.py": "97077267cc7f4e6108c3517426a9ffb8932f3c2778e3f97cfda193d721880a92",
+        "backend/app/departments/builtin.py": "874f1f7392b5d948d3f1aa017a5c3b257ace70ccb9feba6c6379afadea40f98f",
+        "backend/app/departments/chief_of_staff.py": "fcc22717bdf05b3706421783034adb1989d1d6c7da883af1373adc70a5bb2361",
+        "backend/app/departments/engineer.py": "8e858e17f0e7ec46a5ecd276d72ea57bd6af54ccaec7fd14160885e9724c7f78",
+        "backend/app/departments/engineering_contracts.py": "0818632a766d15453c169cfdb869867406558c9b2a6e2bb1a66f6cac29011a31",
+        "backend/app/departments/growth_career.py": "bd616d50a199b6868c66c1566cadd7caeec8b9c70bd363b2093c834f8dc57b7c",
+        "backend/app/departments/growth_contracts.py": "45981642b6a375813c9507a30cfa3dde92178cfa32bd428769de9f5e57ae2c46",
+        "backend/app/departments/qa_self_healer.py": "29d60e2ca4f3b00f3a3f486b4dddbcc61ff74e99e9443f94ecc66b18691457bb",
+        "backend/app/departments/researcher.py": "b7767ac8a1e7a7336d71eaf63ce14ec2b71db2bdd288a6ace0e4e2dc1c265d53",
+        "backend/app/main.py": "93dbc876c9960572e7df0fc5c805bd35c06a773c1b019e5a1f4fd95a3dadf1fd",
+        "backend/app/models/__init__.py": "bd53bf603897b8929ca92665ecbacf5769efe59bcac760c6178fdbec5a323c57",
+        "backend/app/models/events.py": "dfdeb4ee48ebfd02ff836caef3dfe2fb165e6b461902f81354e9bfbd7e4a9fba",
+        "backend/app/models/mission.py": "6d9deb4d3fa4deae1d50171ec903e1dff18bf03c19d53b16297a70a312b9d536",
+        "backend/app/models/orchestration.py": "6fb45cb89e4daa201437d531af268e4de8931ebbec027cea9b80fa3487be3380",
+        "pyproject.toml": "cb3eb8f92544d693a8351b2ff566b7a1017f79bef423d2c461f7df843d138380",
+        "uv.lock": "ed8ff91312f56ff2d37ee29b76ed2bf8ef7dde0261f1383ad02c507ff44e676d"
+      },
+      "runs": [
+        {
+          "case": "slugify",
+          "repeat": 1,
+          "mission_id": "09840944-c95f-4526-9d7f-bc5ececb33e9",
+          "requirements_sha256": null,
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 49.25,
+          "recorded_prompt_tokens": 20541,
+          "recorded_completion_tokens": 3130,
+          "usage_complete": true,
+          "end_to_end_pass": true,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.013987304",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": "094a340a390c428243e3f0ffe41c15e73607f78ff623e6e02aff33d076f4d124",
+            "checks_sha256": "28ac5aa989ad1d7ffaad18bf0d9afdb79f34866657c4bdbab37660639eb68a22",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 806,
+              "completion_tokens": 690,
+              "estimated_list_price_usd": "0.001966801",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 3279,
+              "completion_tokens": 679,
+              "estimated_list_price_usd": "0.002681201",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 3810,
+              "completion_tokens": 679,
+              "estimated_list_price_usd": "0.002840501",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 12646,
+              "completion_tokens": 1082,
+              "estimated_list_price_usd": "0.006498801",
+              "error_code": null
+            }
+          ]
+        }
+      ],
+      "recorded_runs": 1,
+      "end_to_end_passes": 1,
+      "external_acceptance_passes": 1,
+      "current_run_status": null
+    },
+    {
+      "started_at_utc": "2026-10-21T19:13:33.222740+00:00",
+      "model": "gemini/gemini-3.5-flash-lite",
+      "engineering_review_model": null,
+      "backend_commit": "61c365bc32019ba4c535fbc3d2ba498d74cdb812",
+      "python": "3.12.14",
+      "platform": "Windows",
+      "independent_qa_enabled": null,
+      "runner_sha256": "e6d29c9895525498759f76ba9f7f75dd42125a2b56a0c6cc259fe00fc2dd34f1",
+      "cases_sha256": "b56ae6a4b6715ad19dec2cad84529a35ee6d66e6ac233c10370902c48029cbd1",
+      "batch_id": "20261021T191333Z-935055",
+      "receipt_sha256": "69ce6a6efb213d5340d93172ceeb36a06c3ae671da81bc7bde4d895a2bad411d",
+      "source_sha256": {
+        "backend/app/__init__.py": "28750009c1d664b2ad5ae8e6bdae31d44de9aa340cff0f5cb36c18de0017c9cd",
+        "backend/app/api/__init__.py": "fb26f4193b4c1db8aa922dd702a124e06d50a778039be25671d796d0ab2cfe70",
+        "backend/app/api/auth.py": "db56d1def1c1fc6123d379d2fea3750574d5c8325ad58fb9acee070ac5421698",
+        "backend/app/api/routes_blueprints.py": "6de2462c0c69428c3d51e661049f738b77685acd0fa85c7716717ddefbf57899",
+        "backend/app/api/routes_missions.py": "fc36fcaebd4c124540f2e94440d4ba132f45680e728e8253186bd972aedf9f9a",
+        "backend/app/api/routes_plugins.py": "f9e4635abc4ff9785a5b4ec3ce4e2f95306a96dc841fcc5b9060f10f081073c0",
+        "backend/app/api/routes_runtime.py": "3532eb1da4562020ce2f1bb2d193ec8f91da903c528b94fff33a6ba8b0bdf502",
+        "backend/app/api/ws_war_room.py": "bfa4d98540fc972292829b7545110e2d43e56040e5285a66ab772565e3688ca1",
+        "backend/app/config.py": "91dcc16d4234d2bc8904488589faff31e67eaa7141cffb6c20dd06bc385a45c3",
+        "backend/app/core/__init__.py": "2c0048e3a53ccbd89680e208d29ee9777e0e40841615d3f770f38fb79ed66277",
+        "backend/app/core/_sandbox_portable.py": "b8d2a1fab89135c2f1f4503a1351d318af2a3dd87baac616ad70b3c129ce7eb0",
+        "backend/app/core/blueprints.py": "15b1888495b79db2de98ffa5218543ec485a1051c572104ac1179631d1e83b54",
+        "backend/app/core/demo.py": "5cf7d510d116d98253f2159c847829f8204c9160869dd9d755940816d3fbef40",
+        "backend/app/core/llm_router.py": "55f03d5c11370586efc8499253083f221bf5eeef70cd74a1d133f932356b5820",
+        "backend/app/core/mcp_bridge.py": "0b6f058c01bf1140b8c9f2575fc9b419fa3dc863941c807d83393ee31b0efada",
+        "backend/app/core/mcp_config.py": "70380a4c53c741ad6d52d95405b617ffbfc3a8278cb6e8565c84b774b6a10c81",
+        "backend/app/core/memory_vault.py": "cd3b9be487558e6e1222564ab785cdee3532eeb2543fd3bae0179128f060b6a6",
+        "backend/app/core/orchestrator.py": "3c6b65214830b46645cd6fc101dba3e6880b973debc6d44b42a590001003232a",
+        "backend/app/core/plan_artifacts.py": "acc4545471aa05fa4b2cc255b1d2eabf7880a3cb551dbcdb1189781b760a7b3e",
+        "backend/app/core/planning.py": "ab5d8a4df0b91c383bd34d6812fc69b92da9796c6a00c157f2d16b22b8f51532",
+        "backend/app/core/python_format.py": "8ea8f0838dc7973b9cd8a7c722e83755cddf58b05488bdf626be465372b18d7f",
+        "backend/app/core/research_worker.py": "73b0a91afebb5d3aa72baaa7f0824034884dea1863651122f66380e1318eb29b",
+        "backend/app/core/security_logging.py": "4f4fd5263fd3fa5155de863a0d45b7df2a1d7e7c6b8d73e8857b1025b2eacd37",
+        "backend/app/core/spa.py": "381171f8b649661fd36f34a12c086bdf7184ae980389c438baed3255576ecb10",
+        "backend/app/core/workspace_sandbox.py": "d687be5143e607187e770af6f77ff6abf464283a2db3f27bcd0ef5b0fc9cf964",
+        "backend/app/database.py": "0c679c28173db2c7ca92488d66703709cc140ab0538e9af220575b5a26c2d7ab",
+        "backend/app/departments/__init__.py": "0e7f6d9b25ddd01f26bee95a5604e8098f003c8cbe56a93d9bf4640a3b7679b6",
+        "backend/app/departments/_qa_probe_worker.py": "65d95bb766d3a77a189bbe17d57f5b6d771e2b72eedcca93f8462440300eb1cc",
+        "backend/app/departments/_research_browser.py": "e104d56993507efbdeb65ecd65fe29c67b91391a267ed107e820e9881fa8ec11",
+        "backend/app/departments/_research_documents.py": "c420712af1341fa08319232d95fa1b5761ccfdd0e7659dddbbcfea9eb3a0b712",
+        "backend/app/departments/_research_web.py": "9572eb78c4062fa37adce81f5a627d7b5ecb740115094ebbe43f8a470112ac48",
+        "backend/app/departments/base_department.py": "97077267cc7f4e6108c3517426a9ffb8932f3c2778e3f97cfda193d721880a92",
+        "backend/app/departments/builtin.py": "874f1f7392b5d948d3f1aa017a5c3b257ace70ccb9feba6c6379afadea40f98f",
+        "backend/app/departments/chief_of_staff.py": "fcc22717bdf05b3706421783034adb1989d1d6c7da883af1373adc70a5bb2361",
+        "backend/app/departments/engineer.py": "8e858e17f0e7ec46a5ecd276d72ea57bd6af54ccaec7fd14160885e9724c7f78",
+        "backend/app/departments/engineering_contracts.py": "0818632a766d15453c169cfdb869867406558c9b2a6e2bb1a66f6cac29011a31",
+        "backend/app/departments/growth_career.py": "bd616d50a199b6868c66c1566cadd7caeec8b9c70bd363b2093c834f8dc57b7c",
+        "backend/app/departments/growth_contracts.py": "45981642b6a375813c9507a30cfa3dde92178cfa32bd428769de9f5e57ae2c46",
+        "backend/app/departments/qa_self_healer.py": "29d60e2ca4f3b00f3a3f486b4dddbcc61ff74e99e9443f94ecc66b18691457bb",
+        "backend/app/departments/researcher.py": "b7767ac8a1e7a7336d71eaf63ce14ec2b71db2bdd288a6ace0e4e2dc1c265d53",
+        "backend/app/main.py": "93dbc876c9960572e7df0fc5c805bd35c06a773c1b019e5a1f4fd95a3dadf1fd",
+        "backend/app/models/__init__.py": "bd53bf603897b8929ca92665ecbacf5769efe59bcac760c6178fdbec5a323c57",
+        "backend/app/models/events.py": "dfdeb4ee48ebfd02ff836caef3dfe2fb165e6b461902f81354e9bfbd7e4a9fba",
+        "backend/app/models/mission.py": "6d9deb4d3fa4deae1d50171ec903e1dff18bf03c19d53b16297a70a312b9d536",
+        "backend/app/models/orchestration.py": "6fb45cb89e4daa201437d531af268e4de8931ebbec027cea9b80fa3487be3380",
+        "pyproject.toml": "cb3eb8f92544d693a8351b2ff566b7a1017f79bef423d2c461f7df843d138380",
+        "uv.lock": "ed8ff91312f56ff2d37ee29b76ed2bf8ef7dde0261f1383ad02c507ff44e676d"
+      },
+      "runs": [
+        {
+          "case": "slugify",
+          "repeat": 1,
+          "mission_id": "2d47bea1-39cf-4b66-83e8-814a0f2db57f",
+          "requirements_sha256": null,
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 53.468,
+          "recorded_prompt_tokens": 24333,
+          "recorded_completion_tokens": 4049,
+          "usage_complete": true,
+          "end_to_end_pass": true,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.017422402",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": "6f895b3b48fda695bf02ed70b7afa576c6fd9e29ee03656e3c4a325d763e1888",
+            "source_sha256": {
+              "app.py": "6f895b3b48fda695bf02ed70b7afa576c6fd9e29ee03656e3c4a325d763e1888"
+            },
+            "checks_sha256": "28ac5aa989ad1d7ffaad18bf0d9afdb79f34866657c4bdbab37660639eb68a22",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 806,
+              "completion_tokens": 812,
+              "estimated_list_price_usd": "0.002271800",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 3743,
+              "completion_tokens": 1143,
+              "estimated_list_price_usd": "0.003980401",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 4726,
+              "completion_tokens": 1143,
+              "estimated_list_price_usd": "0.004275301",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 15058,
+              "completion_tokens": 951,
+              "estimated_list_price_usd": "0.006894900",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "invoice",
+          "repeat": 1,
+          "mission_id": "86803bff-9fdb-4d0a-b07e-7a3dc9f06f57",
+          "requirements_sha256": null,
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 72.953,
+          "recorded_prompt_tokens": 47358,
+          "recorded_completion_tokens": 6147,
+          "usage_complete": true,
+          "end_to_end_pass": true,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.029574903",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": "426292a5451f2fd803d262daca539033e5cd9b28bdc47be058809bc094579427",
+            "source_sha256": {
+              "app.py": "426292a5451f2fd803d262daca539033e5cd9b28bdc47be058809bc094579427"
+            },
+            "checks_sha256": "e9d652197d6229cb3e6a9a59d2d6166e6d7a3014b89562d1286fc7cdac611427",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 810,
+              "completion_tokens": 864,
+              "estimated_list_price_usd": "0.002403000",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 3966,
+              "completion_tokens": 1672,
+              "estimated_list_price_usd": "0.005369801",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5478,
+              "completion_tokens": 1679,
+              "estimated_list_price_usd": "0.005840901",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5478,
+              "completion_tokens": 218,
+              "estimated_list_price_usd": "0.002188400",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 8250,
+              "completion_tokens": 495,
+              "estimated_list_price_usd": "0.003712500",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 23376,
+              "completion_tokens": 1219,
+              "estimated_list_price_usd": "0.010060301",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "csv_summary",
+          "repeat": 1,
+          "mission_id": "1cd1f698-6324-485f-be54-2333c84895ab",
+          "requirements_sha256": null,
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 62.391,
+          "recorded_prompt_tokens": 75728,
+          "recorded_completion_tokens": 9973,
+          "usage_complete": true,
+          "end_to_end_pass": true,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.047650901",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": "ebbcbf888bd084708a57a2fa8d403988a39399690415c737b3ff8bbe9d185d7c",
+            "source_sha256": {
+              "app.py": "ebbcbf888bd084708a57a2fa8d403988a39399690415c737b3ff8bbe9d185d7c"
+            },
+            "checks_sha256": "6536f0a5f9485215d09739df0dd7bbc35dbdddbf5aab6a6bf8963ce2237bdebe",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 805,
+              "completion_tokens": 909,
+              "estimated_list_price_usd": "0.002514000",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 4035,
+              "completion_tokens": 2399,
+              "estimated_list_price_usd": "0.007208000",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6505,
+              "completion_tokens": 2077,
+              "estimated_list_price_usd": "0.007144000",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5940,
+              "completion_tokens": 2077,
+              "estimated_list_price_usd": "0.006974500",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 18909,
+              "completion_tokens": 780,
+              "estimated_list_price_usd": "0.007622701",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 19765,
+              "completion_tokens": 787,
+              "estimated_list_price_usd": "0.007897000",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 19769,
+              "completion_tokens": 944,
+              "estimated_list_price_usd": "0.008290700",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "config_graph_topo",
+          "repeat": 1,
+          "mission_id": "82951e0f-e714-4c1e-bba6-c6dd5b9e1d8d",
+          "requirements_sha256": null,
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 51.031,
+          "recorded_prompt_tokens": 23436,
+          "recorded_completion_tokens": 5739,
+          "usage_complete": true,
+          "end_to_end_pass": false,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "failed",
+          "estimated_list_price_usd": "0.021378303",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": null,
+            "source_sha256": {
+              "config_graph/__init__.py": "fa1090997ef1c37cc95f09368212e57c65efef75059739d128c7de8ac06c59ec",
+              "config_graph/core.py": "f7aa3bd0ec480b51a62183e3e432d50adc0dc25c86af0dd14b3d63917dace4ff"
+            },
+            "checks_sha256": "86d83cd4a849f095264e19e8512371f6b34d07ec84fcedb9183fe91e34ce7526",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 930,
+              "completion_tokens": 817,
+              "estimated_list_price_usd": "0.002321500",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 4125,
+              "completion_tokens": 1868,
+              "estimated_list_price_usd": "0.005907501",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5833,
+              "completion_tokens": 1617,
+              "estimated_list_price_usd": "0.005792400",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5474,
+              "completion_tokens": 179,
+              "estimated_list_price_usd": "0.002089701",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7074,
+              "completion_tokens": 1258,
+              "estimated_list_price_usd": "0.005267201",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "fastapi_notes_api",
+          "repeat": 1,
+          "mission_id": "8d892ee6-76ba-4a7c-b68c-d9fd569638fc",
+          "requirements_sha256": null,
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 108.219,
+          "recorded_prompt_tokens": 28184,
+          "recorded_completion_tokens": 6990,
+          "usage_complete": true,
+          "end_to_end_pass": false,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "failed",
+          "estimated_list_price_usd": "0.025930203",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": "b0d01d8594a68fc3aabebbd6c598579b5d557837a83434d3dfc0ad8d219fcbda",
+            "source_sha256": {
+              "app.py": "b0d01d8594a68fc3aabebbd6c598579b5d557837a83434d3dfc0ad8d219fcbda"
+            },
+            "checks_sha256": "2aec4cb4a2d986dc32f2ed396c3c4df4bcd336c5a7d33e0022d09b1f8db06b5a",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 1042,
+              "completion_tokens": 886,
+              "estimated_list_price_usd": "0.002527601",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 4738,
+              "completion_tokens": 2606,
+              "estimated_list_price_usd": "0.007936401",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7155,
+              "completion_tokens": 2606,
+              "estimated_list_price_usd": "0.008661501",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6680,
+              "completion_tokens": 171,
+              "estimated_list_price_usd": "0.002431500",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 8569,
+              "completion_tokens": 721,
+              "estimated_list_price_usd": "0.004373200",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "inventory_reservation",
+          "repeat": 1,
+          "mission_id": "dbb3f87b-ae33-4b66-983b-d40591edcd4c",
+          "requirements_sha256": null,
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 115.328,
+          "recorded_prompt_tokens": 55388,
+          "recorded_completion_tokens": 7110,
+          "usage_complete": true,
+          "end_to_end_pass": true,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.034391402",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": null,
+            "source_sha256": {
+              "inventory/__init__.py": "85648858e08c57dfd0a011c0672f288c194baa41e7b53c39ef115da546e779b8",
+              "inventory/models.py": "e79f520576b1ee9db958b0abe746767ed3a038ec2dc330ab095cbb7722b6676d",
+              "inventory/store.py": "57c5452866a7e7356b0edccad47e93641519d85855317b08846308b0bc7b8d86"
+            },
+            "checks_sha256": "0a65d6986ea977aca8f47e7b01eb2f7565e331c4ffcdc50f40513bea5a4a203a",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 1171,
+              "completion_tokens": 813,
+              "estimated_list_price_usd": "0.002383800",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5005,
+              "completion_tokens": 2123,
+              "estimated_list_price_usd": "0.006809001",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6956,
+              "completion_tokens": 2136,
+              "estimated_list_price_usd": "0.007426800",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7204,
+              "completion_tokens": 216,
+              "estimated_list_price_usd": "0.002701200",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 8531,
+              "completion_tokens": 775,
+              "estimated_list_price_usd": "0.004496801",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 26521,
+              "completion_tokens": 1047,
+              "estimated_list_price_usd": "0.010573800",
+              "error_code": null
+            }
+          ]
+        }
+      ],
+      "recorded_runs": 6,
+      "end_to_end_passes": 4,
+      "external_acceptance_passes": 6,
+      "current_run_status": null
+    },
+    {
+      "started_at_utc": "2026-10-21T19:30:23.418695+00:00",
+      "model": "gemini/gemini-3.5-flash-lite",
+      "engineering_review_model": null,
+      "backend_commit": "61c365bc32019ba4c535fbc3d2ba498d74cdb812",
+      "python": "3.12.14",
+      "platform": "Windows",
+      "independent_qa_enabled": null,
+      "runner_sha256": "ee4dbbb2aff1ad29851450ad1069ec99ecf145dc266c3e78a590abc501ba73d3",
+      "cases_sha256": "b56ae6a4b6715ad19dec2cad84529a35ee6d66e6ac233c10370902c48029cbd1",
+      "batch_id": "20261021T193023Z-2acbc7",
+      "receipt_sha256": "582d8c1c68afa89bde9049a50d048915f0d92ea14f1dadb69074d7e70319d332",
+      "source_sha256": {
+        "backend/app/__init__.py": "28750009c1d664b2ad5ae8e6bdae31d44de9aa340cff0f5cb36c18de0017c9cd",
+        "backend/app/api/__init__.py": "fb26f4193b4c1db8aa922dd702a124e06d50a778039be25671d796d0ab2cfe70",
+        "backend/app/api/auth.py": "db56d1def1c1fc6123d379d2fea3750574d5c8325ad58fb9acee070ac5421698",
+        "backend/app/api/routes_blueprints.py": "6de2462c0c69428c3d51e661049f738b77685acd0fa85c7716717ddefbf57899",
+        "backend/app/api/routes_missions.py": "fc36fcaebd4c124540f2e94440d4ba132f45680e728e8253186bd972aedf9f9a",
+        "backend/app/api/routes_plugins.py": "f9e4635abc4ff9785a5b4ec3ce4e2f95306a96dc841fcc5b9060f10f081073c0",
+        "backend/app/api/routes_runtime.py": "3532eb1da4562020ce2f1bb2d193ec8f91da903c528b94fff33a6ba8b0bdf502",
+        "backend/app/api/ws_war_room.py": "bfa4d98540fc972292829b7545110e2d43e56040e5285a66ab772565e3688ca1",
+        "backend/app/config.py": "91dcc16d4234d2bc8904488589faff31e67eaa7141cffb6c20dd06bc385a45c3",
+        "backend/app/core/__init__.py": "2c0048e3a53ccbd89680e208d29ee9777e0e40841615d3f770f38fb79ed66277",
+        "backend/app/core/_sandbox_portable.py": "b8d2a1fab89135c2f1f4503a1351d318af2a3dd87baac616ad70b3c129ce7eb0",
+        "backend/app/core/blueprints.py": "15b1888495b79db2de98ffa5218543ec485a1051c572104ac1179631d1e83b54",
+        "backend/app/core/demo.py": "5cf7d510d116d98253f2159c847829f8204c9160869dd9d755940816d3fbef40",
+        "backend/app/core/llm_router.py": "fecfd6ff056547ce1f837a3d8dc5cf028efb73c3fcf2828658d17a1f19647eda",
+        "backend/app/core/mcp_bridge.py": "0b6f058c01bf1140b8c9f2575fc9b419fa3dc863941c807d83393ee31b0efada",
+        "backend/app/core/mcp_config.py": "70380a4c53c741ad6d52d95405b617ffbfc3a8278cb6e8565c84b774b6a10c81",
+        "backend/app/core/memory_vault.py": "cd3b9be487558e6e1222564ab785cdee3532eeb2543fd3bae0179128f060b6a6",
+        "backend/app/core/orchestrator.py": "3c6b65214830b46645cd6fc101dba3e6880b973debc6d44b42a590001003232a",
+        "backend/app/core/plan_artifacts.py": "acc4545471aa05fa4b2cc255b1d2eabf7880a3cb551dbcdb1189781b760a7b3e",
+        "backend/app/core/planning.py": "fadf8d56f9d9cdaaaf40a60e1afe1ecd9ed410c40a5e86c32607ce0b972f94b9",
+        "backend/app/core/python_format.py": "8ea8f0838dc7973b9cd8a7c722e83755cddf58b05488bdf626be465372b18d7f",
+        "backend/app/core/research_worker.py": "73b0a91afebb5d3aa72baaa7f0824034884dea1863651122f66380e1318eb29b",
+        "backend/app/core/security_logging.py": "4f4fd5263fd3fa5155de863a0d45b7df2a1d7e7c6b8d73e8857b1025b2eacd37",
+        "backend/app/core/spa.py": "381171f8b649661fd36f34a12c086bdf7184ae980389c438baed3255576ecb10",
+        "backend/app/core/workspace_sandbox.py": "d687be5143e607187e770af6f77ff6abf464283a2db3f27bcd0ef5b0fc9cf964",
+        "backend/app/database.py": "0c679c28173db2c7ca92488d66703709cc140ab0538e9af220575b5a26c2d7ab",
+        "backend/app/departments/__init__.py": "0e7f6d9b25ddd01f26bee95a5604e8098f003c8cbe56a93d9bf4640a3b7679b6",
+        "backend/app/departments/_qa_probe_worker.py": "65d95bb766d3a77a189bbe17d57f5b6d771e2b72eedcca93f8462440300eb1cc",
+        "backend/app/departments/_research_browser.py": "e104d56993507efbdeb65ecd65fe29c67b91391a267ed107e820e9881fa8ec11",
+        "backend/app/departments/_research_documents.py": "c420712af1341fa08319232d95fa1b5761ccfdd0e7659dddbbcfea9eb3a0b712",
+        "backend/app/departments/_research_web.py": "9572eb78c4062fa37adce81f5a627d7b5ecb740115094ebbe43f8a470112ac48",
+        "backend/app/departments/base_department.py": "97077267cc7f4e6108c3517426a9ffb8932f3c2778e3f97cfda193d721880a92",
+        "backend/app/departments/builtin.py": "874f1f7392b5d948d3f1aa017a5c3b257ace70ccb9feba6c6379afadea40f98f",
+        "backend/app/departments/chief_of_staff.py": "fcc22717bdf05b3706421783034adb1989d1d6c7da883af1373adc70a5bb2361",
+        "backend/app/departments/engineer.py": "d8bea9a5c752c9a18e28f910973268b225e95c7ca83e79dc906512b6490d42c3",
+        "backend/app/departments/engineering_contracts.py": "e994cc822ce48139b8a4371d44ecf6bd5df7a49539952229814dd98b1e698e54",
+        "backend/app/departments/growth_career.py": "bd616d50a199b6868c66c1566cadd7caeec8b9c70bd363b2093c834f8dc57b7c",
+        "backend/app/departments/growth_contracts.py": "45981642b6a375813c9507a30cfa3dde92178cfa32bd428769de9f5e57ae2c46",
+        "backend/app/departments/qa_self_healer.py": "5795b0cefcb81afb9ee2ec11807775dbd77983450aa8fe58c80bab39e26b3211",
+        "backend/app/departments/researcher.py": "b7767ac8a1e7a7336d71eaf63ce14ec2b71db2bdd288a6ace0e4e2dc1c265d53",
+        "backend/app/main.py": "93dbc876c9960572e7df0fc5c805bd35c06a773c1b019e5a1f4fd95a3dadf1fd",
+        "backend/app/models/__init__.py": "bd53bf603897b8929ca92665ecbacf5769efe59bcac760c6178fdbec5a323c57",
+        "backend/app/models/events.py": "dfdeb4ee48ebfd02ff836caef3dfe2fb165e6b461902f81354e9bfbd7e4a9fba",
+        "backend/app/models/mission.py": "6d9deb4d3fa4deae1d50171ec903e1dff18bf03c19d53b16297a70a312b9d536",
+        "backend/app/models/orchestration.py": "6fb45cb89e4daa201437d531af268e4de8931ebbec027cea9b80fa3487be3380",
+        "pyproject.toml": "cb3eb8f92544d693a8351b2ff566b7a1017f79bef423d2c461f7df843d138380",
+        "scripts/evaluation_cases/config_graph_topo.md": "c0f05c643c8f3899445d38cded7dbfebe157a7dfacfcc2abdf11a5be5c43f4bb",
+        "scripts/evaluation_cases/config_graph_topo.py": "cf94f90ca29e2d37824123d008d0e1d45d5c33097cc465e9712e386d2a451e76",
+        "scripts/evaluation_cases/fastapi_notes_api.md": "55bf691f61d1fe3c9408f28d22377c21dfedcacee05ffa0c83189f5066893c47",
+        "scripts/evaluation_cases/fastapi_notes_api.py": "02676b9d254685604182245a5d59fb07c5835c44e78f828ac24fbbf0b872ee6d",
+        "scripts/evaluation_cases/inventory_reservation.md": "cd5c3c980863d2faed1e5a3200d803ea92f0d84657dce227ed20ac01aa1bff7c",
+        "scripts/evaluation_cases/inventory_reservation.py": "14af49f206afc27a99411334813788f55b8e0f7b461ef1866e15d19f53d49fce",
+        "scripts/evaluation_support.py": "3ac263f0bc4828af8c82ae861bf3ba7c68b66aef10e3454c34082134c05e5bd9",
+        "scripts/generate_demo_assets.py": "bac55de22f99c09848a730e28bbabaf55ae5de1e6bfd0e422f3a3aa78a1f4d03",
+        "scripts/live_evaluation_cases.py": "b56ae6a4b6715ad19dec2cad84529a35ee6d66e6ac233c10370902c48029cbd1",
+        "scripts/release_evaluation_cases.py": "46a1298061ef3f2ee9080d42ba0044e3d4b2dba79eeee8f95688a60d249ce153",
+        "scripts/run_live_evaluation.py": "ee4dbbb2aff1ad29851450ad1069ec99ecf145dc266c3e78a590abc501ba73d3",
+        "uv.lock": "ed8ff91312f56ff2d37ee29b76ed2bf8ef7dde0261f1383ad02c507ff44e676d"
+      },
+      "runs": [
+        {
+          "case": "slugify",
+          "repeat": 1,
+          "mission_id": "0170be9b-2d57-40e0-a336-14b6edf10df5",
+          "requirements_sha256": "eec40d99ec0e684cffb56b17b36eec141b4a8a5c1c4c8fe41892c586396a710a",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 63.61,
+          "recorded_prompt_tokens": 22278,
+          "recorded_completion_tokens": 3400,
+          "usage_complete": true,
+          "end_to_end_pass": true,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.015183400",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": "d12a1848ccb082aa27b5aec0d01b1485118ff26f3022076fec1eeec57a5760df",
+            "source_sha256": {
+              "app.py": "d12a1848ccb082aa27b5aec0d01b1485118ff26f3022076fec1eeec57a5760df"
+            },
+            "checks_sha256": "28ac5aa989ad1d7ffaad18bf0d9afdb79f34866657c4bdbab37660639eb68a22",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 806,
+              "completion_tokens": 796,
+              "estimated_list_price_usd": "0.002231800",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 3559,
+              "completion_tokens": 824,
+              "estimated_list_price_usd": "0.003127700",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 4235,
+              "completion_tokens": 824,
+              "estimated_list_price_usd": "0.003330500",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 13678,
+              "completion_tokens": 956,
+              "estimated_list_price_usd": "0.006493400",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "invoice",
+          "repeat": 1,
+          "mission_id": "ac9437a9-df64-49a4-8415-2fe6bc963c6b",
+          "requirements_sha256": "2ef0db2ee0d4480edd6ef4425831b8f51bbbd8afa45c6722a54e26f76ca33aa8",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 101.484,
+          "recorded_prompt_tokens": 61802,
+          "recorded_completion_tokens": 11248,
+          "usage_complete": true,
+          "end_to_end_pass": true,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.046660602",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": "bee02bdc16554b980f39f9686de7835f6f4a8c0bdcc0c1aa2030fe1c8026d585",
+            "source_sha256": {
+              "app.py": "bee02bdc16554b980f39f9686de7835f6f4a8c0bdcc0c1aa2030fe1c8026d585"
+            },
+            "checks_sha256": "e9d652197d6229cb3e6a9a59d2d6166e6d7a3014b89562d1286fc7cdac611427",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 810,
+              "completion_tokens": 840,
+              "estimated_list_price_usd": "0.002343001",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 4069,
+              "completion_tokens": 1827,
+              "estimated_list_price_usd": "0.005788200",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5955,
+              "completion_tokens": 1683,
+              "estimated_list_price_usd": "0.005994000",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5580,
+              "completion_tokens": 1683,
+              "estimated_list_price_usd": "0.005881500",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5521,
+              "completion_tokens": 1768,
+              "estimated_list_price_usd": "0.006076300",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7118,
+              "completion_tokens": 1768,
+              "estimated_list_price_usd": "0.006555400",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5415,
+              "completion_tokens": 167,
+              "estimated_list_price_usd": "0.002042000",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6856,
+              "completion_tokens": 482,
+              "estimated_list_price_usd": "0.003261801",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 20478,
+              "completion_tokens": 1030,
+              "estimated_list_price_usd": "0.008718400",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "csv_summary",
+          "repeat": 1,
+          "mission_id": "df56be07-7394-4623-a4b2-766997cf635a",
+          "requirements_sha256": "8046fbde07db10fb160597efd52fa9be1cd3e52a5e421a8aebc31f4b0e1c10a8",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 56.797,
+          "recorded_prompt_tokens": 31986,
+          "recorded_completion_tokens": 6090,
+          "usage_complete": true,
+          "end_to_end_pass": false,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.024820802",
+          "external_acceptance": {
+            "status": "failed",
+            "return_code": 1,
+            "application_sha256": "b3e48ada3a23a47e6b8cefad6f6e29adb1493cf81c5a490985c591bb275d15d4",
+            "source_sha256": {
+              "app.py": "b3e48ada3a23a47e6b8cefad6f6e29adb1493cf81c5a490985c591bb275d15d4"
+            },
+            "checks_sha256": "6536f0a5f9485215d09739df0dd7bbc35dbdddbf5aab6a6bf8963ce2237bdebe",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 805,
+              "completion_tokens": 851,
+              "estimated_list_price_usd": "0.002369000",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 3873,
+              "completion_tokens": 1519,
+              "estimated_list_price_usd": "0.004959400",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5443,
+              "completion_tokens": 1469,
+              "estimated_list_price_usd": "0.005305401",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5170,
+              "completion_tokens": 1480,
+              "estimated_list_price_usd": "0.005251000",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 16695,
+              "completion_tokens": 771,
+              "estimated_list_price_usd": "0.006936001",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "config_graph_topo",
+          "repeat": 1,
+          "mission_id": "0ea45c73-d2a0-48ba-bab5-58c5471de394",
+          "requirements_sha256": "9eeef6c9bffad157f6543155d659b59868d64dd04932ad479d0acf1bc3dc3cfa",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 136.281,
+          "recorded_prompt_tokens": 86613,
+          "recorded_completion_tokens": 10091,
+          "usage_complete": true,
+          "end_to_end_pass": true,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.051211405",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": null,
+            "source_sha256": {
+              "config_graph/__init__.py": "fa1090997ef1c37cc95f09368212e57c65efef75059739d128c7de8ac06c59ec",
+              "config_graph/core.py": "7c93969f1a1f8d328bd21b294c459d02f670d3e561c3666ea1db9443102ae339"
+            },
+            "checks_sha256": "e1d796ba35edc88b6684953a4480f30080b17752cfc594c582e1f960d36f56d1",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 930,
+              "completion_tokens": 962,
+              "estimated_list_price_usd": "0.002684000",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 1941,
+              "completion_tokens": 967,
+              "estimated_list_price_usd": "0.002999801",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 4584,
+              "completion_tokens": 1962,
+              "estimated_list_price_usd": "0.006280201",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6385,
+              "completion_tokens": 1961,
+              "estimated_list_price_usd": "0.006818001",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6007,
+              "completion_tokens": 179,
+              "estimated_list_price_usd": "0.002249600",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7387,
+              "completion_tokens": 817,
+              "estimated_list_price_usd": "0.004258600",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7137,
+              "completion_tokens": 200,
+              "estimated_list_price_usd": "0.002641100",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7715,
+              "completion_tokens": 820,
+              "estimated_list_price_usd": "0.004364500",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5963,
+              "completion_tokens": 209,
+              "estimated_list_price_usd": "0.002311401",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7200,
+              "completion_tokens": 805,
+              "estimated_list_price_usd": "0.004172500",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 31364,
+              "completion_tokens": 1209,
+              "estimated_list_price_usd": "0.012431701",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "fastapi_notes_api",
+          "repeat": 1,
+          "mission_id": "b9559171-f8e9-4276-ba84-437b0e293256",
+          "requirements_sha256": "40abefa6ab29598aa37fadd19854342ec48e2aa1072a0723134d886995e8647c",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 149.203,
+          "recorded_prompt_tokens": 97044,
+          "recorded_completion_tokens": 14006,
+          "usage_complete": true,
+          "end_to_end_pass": true,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.064128204",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": "0e9f204de8ba42361239d34146d0339b5f87819d13f17d2bab61e908a20eaa27",
+            "source_sha256": {
+              "app.py": "0e9f204de8ba42361239d34146d0339b5f87819d13f17d2bab61e908a20eaa27"
+            },
+            "checks_sha256": "2aec4cb4a2d986dc32f2ed396c3c4df4bcd336c5a7d33e0022d09b1f8db06b5a",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 1046,
+              "completion_tokens": 837,
+              "estimated_list_price_usd": "0.002406300",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 4589,
+              "completion_tokens": 2117,
+              "estimated_list_price_usd": "0.006669200",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6752,
+              "completion_tokens": 2071,
+              "estimated_list_price_usd": "0.007203101",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6748,
+              "completion_tokens": 2063,
+              "estimated_list_price_usd": "0.007181901",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6527,
+              "completion_tokens": 2150,
+              "estimated_list_price_usd": "0.007333101",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6219,
+              "completion_tokens": 152,
+              "estimated_list_price_usd": "0.002245700",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 8147,
+              "completion_tokens": 833,
+              "estimated_list_price_usd": "0.004526600",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7050,
+              "completion_tokens": 127,
+              "estimated_list_price_usd": "0.002432500",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 8783,
+              "completion_tokens": 1892,
+              "estimated_list_price_usd": "0.007364901",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 10744,
+              "completion_tokens": 871,
+              "estimated_list_price_usd": "0.005400700",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 30439,
+              "completion_tokens": 893,
+              "estimated_list_price_usd": "0.011364200",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "inventory_reservation",
+          "repeat": 1,
+          "mission_id": "62ae3928-04d6-4be9-bbf1-c287ecdb4d1b",
+          "requirements_sha256": "e532d3eef3e30dc94928157dd71f3c470d7cf237738d75dfe564a8de79d8f3f5",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 78.937,
+          "recorded_prompt_tokens": 72962,
+          "recorded_completion_tokens": 10099,
+          "usage_complete": true,
+          "end_to_end_pass": false,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "failed",
+          "estimated_list_price_usd": "0.047136107",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": null,
+            "source_sha256": {
+              "inventory/__init__.py": "85648858e08c57dfd0a011c0672f288c194baa41e7b53c39ef115da546e779b8",
+              "inventory/models.py": "e79f520576b1ee9db958b0abe746767ed3a038ec2dc330ab095cbb7722b6676d",
+              "inventory/store.py": "ae58d34efa08906a9c0f48de29b8a7aadf956ca51716827c68a45acf137ccc9a"
+            },
+            "checks_sha256": "9faf2b9acf8976e2386a173fd21db830abb3b04e561300a6609e90aa8dc93ff8",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 1171,
+              "completion_tokens": 954,
+              "estimated_list_price_usd": "0.002736301",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5391,
+              "completion_tokens": 2413,
+              "estimated_list_price_usd": "0.007649801",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7632,
+              "completion_tokens": 2413,
+              "estimated_list_price_usd": "0.008322101",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7989,
+              "completion_tokens": 350,
+              "estimated_list_price_usd": "0.003271700",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 10417,
+              "completion_tokens": 1825,
+              "estimated_list_price_usd": "0.007687601",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 12311,
+              "completion_tokens": 735,
+              "estimated_list_price_usd": "0.005530800",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 8587,
+              "completion_tokens": 190,
+              "estimated_list_price_usd": "0.003051101",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 9137,
+              "completion_tokens": 1121,
+              "estimated_list_price_usd": "0.005543601",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 10327,
+              "completion_tokens": 98,
+              "estimated_list_price_usd": "0.003343101",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "slugify",
+          "repeat": 2,
+          "mission_id": "b29323da-38aa-49c6-811c-b04c48ac6e37",
+          "requirements_sha256": "eec40d99ec0e684cffb56b17b36eec141b4a8a5c1c4c8fe41892c586396a710a",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 61.922,
+          "recorded_prompt_tokens": 31188,
+          "recorded_completion_tokens": 4970,
+          "usage_complete": true,
+          "end_to_end_pass": true,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.021781402",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": "1aec8bbea3f0f56de9284dd0ef25cbdb205ca0c2d8beb0f98feb795832869db3",
+            "source_sha256": {
+              "app.py": "1aec8bbea3f0f56de9284dd0ef25cbdb205ca0c2d8beb0f98feb795832869db3"
+            },
+            "checks_sha256": "28ac5aa989ad1d7ffaad18bf0d9afdb79f34866657c4bdbab37660639eb68a22",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 806,
+              "completion_tokens": 825,
+              "estimated_list_price_usd": "0.002304300",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 3573,
+              "completion_tokens": 900,
+              "estimated_list_price_usd": "0.003321901",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 4325,
+              "completion_tokens": 847,
+              "estimated_list_price_usd": "0.003415000",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 4183,
+              "completion_tokens": 837,
+              "estimated_list_price_usd": "0.003347400",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 4873,
+              "completion_tokens": 847,
+              "estimated_list_price_usd": "0.003579400",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 13428,
+              "completion_tokens": 714,
+              "estimated_list_price_usd": "0.005813401",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "invoice",
+          "repeat": 2,
+          "mission_id": "427a0cda-fb62-4d9a-b20c-588e9fc08184",
+          "requirements_sha256": "2ef0db2ee0d4480edd6ef4425831b8f51bbbd8afa45c6722a54e26f76ca33aa8",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 74.328,
+          "recorded_prompt_tokens": 43894,
+          "recorded_completion_tokens": 6074,
+          "usage_complete": true,
+          "end_to_end_pass": true,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.028353203",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": "a1877254b096ce76f6006cd9f18fed7225086681b1b6da54eee78895b89354b3",
+            "source_sha256": {
+              "app.py": "a1877254b096ce76f6006cd9f18fed7225086681b1b6da54eee78895b89354b3"
+            },
+            "checks_sha256": "e9d652197d6229cb3e6a9a59d2d6166e6d7a3014b89562d1286fc7cdac611427",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 810,
+              "completion_tokens": 803,
+              "estimated_list_price_usd": "0.002250500",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 3784,
+              "completion_tokens": 1775,
+              "estimated_list_price_usd": "0.005572701",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5398,
+              "completion_tokens": 1774,
+              "estimated_list_price_usd": "0.006054401",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5366,
+              "completion_tokens": 198,
+              "estimated_list_price_usd": "0.002104800",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7117,
+              "completion_tokens": 545,
+              "estimated_list_price_usd": "0.003497601",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 21419,
+              "completion_tokens": 979,
+              "estimated_list_price_usd": "0.008873200",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "csv_summary",
+          "repeat": 2,
+          "mission_id": "73083be6-5fc2-4994-837b-2fe8fa0ff4ff",
+          "requirements_sha256": "8046fbde07db10fb160597efd52fa9be1cd3e52a5e421a8aebc31f4b0e1c10a8",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 85.109,
+          "recorded_prompt_tokens": 41173,
+          "recorded_completion_tokens": 9666,
+          "usage_complete": true,
+          "end_to_end_pass": true,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.036516905",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": "86a0eed596dd30927d6745f5801adf75271b2906fc58225ab22b82451fc67f73",
+            "source_sha256": {
+              "app.py": "86a0eed596dd30927d6745f5801adf75271b2906fc58225ab22b82451fc67f73"
+            },
+            "checks_sha256": "6536f0a5f9485215d09739df0dd7bbc35dbdddbf5aab6a6bf8963ce2237bdebe",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 805,
+              "completion_tokens": 887,
+              "estimated_list_price_usd": "0.002459001",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 4040,
+              "completion_tokens": 1925,
+              "estimated_list_price_usd": "0.006024501",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5793,
+              "completion_tokens": 1909,
+              "estimated_list_price_usd": "0.006510401",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5653,
+              "completion_tokens": 1903,
+              "estimated_list_price_usd": "0.006453401",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7385,
+              "completion_tokens": 1903,
+              "estimated_list_price_usd": "0.006973001",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 17497,
+              "completion_tokens": 1139,
+              "estimated_list_price_usd": "0.008096600",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "config_graph_topo",
+          "repeat": 2,
+          "mission_id": "ddc53af2-555f-4748-a886-f1ada27c3227",
+          "requirements_sha256": "9eeef6c9bffad157f6543155d659b59868d64dd04932ad479d0acf1bc3dc3cfa",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 140.657,
+          "recorded_prompt_tokens": 78831,
+          "recorded_completion_tokens": 9371,
+          "usage_complete": true,
+          "end_to_end_pass": false,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "failed",
+          "estimated_list_price_usd": "0.047076808",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": null,
+            "source_sha256": {
+              "config_graph/__init__.py": "d1daa0980c7c8425a312cc4901fb939229f2949dfb3a357c075612924132c79f",
+              "config_graph/core.py": "f1d39910d665018faaf7905d5966b3016c28d6319c6a6cc277fde75101de946b"
+            },
+            "checks_sha256": "e1d796ba35edc88b6684953a4480f30080b17752cfc594c582e1f960d36f56d1",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 930,
+              "completion_tokens": 878,
+              "estimated_list_price_usd": "0.002474001",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 4338,
+              "completion_tokens": 1846,
+              "estimated_list_price_usd": "0.005916400",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6024,
+              "completion_tokens": 1865,
+              "estimated_list_price_usd": "0.006469700",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5645,
+              "completion_tokens": 227,
+              "estimated_list_price_usd": "0.002261001",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7128,
+              "completion_tokens": 1509,
+              "estimated_list_price_usd": "0.005910901",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 8706,
+              "completion_tokens": 866,
+              "estimated_list_price_usd": "0.004776801",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6740,
+              "completion_tokens": 211,
+              "estimated_list_price_usd": "0.002549501",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7568,
+              "completion_tokens": 699,
+              "estimated_list_price_usd": "0.004017901",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 8336,
+              "completion_tokens": 187,
+              "estimated_list_price_usd": "0.002968301",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7099,
+              "completion_tokens": 208,
+              "estimated_list_price_usd": "0.002649701",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7774,
+              "completion_tokens": 700,
+              "estimated_list_price_usd": "0.004082200",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 8543,
+              "completion_tokens": 175,
+              "estimated_list_price_usd": "0.003000400",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "fastapi_notes_api",
+          "repeat": 2,
+          "mission_id": "3b362fd4-2fe4-4016-8aa5-6ecb9479e656",
+          "requirements_sha256": "40abefa6ab29598aa37fadd19854342ec48e2aa1072a0723134d886995e8647c",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 109.422,
+          "recorded_prompt_tokens": 57094,
+          "recorded_completion_tokens": 9033,
+          "usage_complete": true,
+          "end_to_end_pass": true,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.039710703",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": "97dc798d3019c60995d711e98cbbc76499d5f64b6bd44787d3c4b664bf40987b",
+            "source_sha256": {
+              "app.py": "97dc798d3019c60995d711e98cbbc76499d5f64b6bd44787d3c4b664bf40987b"
+            },
+            "checks_sha256": "2aec4cb4a2d986dc32f2ed396c3c4df4bcd336c5a7d33e0022d09b1f8db06b5a",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 1046,
+              "completion_tokens": 756,
+              "estimated_list_price_usd": "0.002203801",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 1851,
+              "completion_tokens": 736,
+              "estimated_list_price_usd": "0.002395300",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 4410,
+              "completion_tokens": 1984,
+              "estimated_list_price_usd": "0.006283000",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6481,
+              "completion_tokens": 1904,
+              "estimated_list_price_usd": "0.006704300",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6149,
+              "completion_tokens": 1904,
+              "estimated_list_price_usd": "0.006604700",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5631,
+              "completion_tokens": 138,
+              "estimated_list_price_usd": "0.002034301",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7564,
+              "completion_tokens": 714,
+              "estimated_list_price_usd": "0.004054201",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 23962,
+              "completion_tokens": 897,
+              "estimated_list_price_usd": "0.009431100",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "inventory_reservation",
+          "repeat": 2,
+          "mission_id": "a219617b-2547-4049-bc41-240b98cc408d",
+          "requirements_sha256": "e532d3eef3e30dc94928157dd71f3c470d7cf237738d75dfe564a8de79d8f3f5",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 4.39,
+          "recorded_prompt_tokens": 1171,
+          "recorded_completion_tokens": 871,
+          "usage_complete": true,
+          "end_to_end_pass": false,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "failed",
+          "estimated_list_price_usd": "0.002528800",
+          "external_acceptance": {
+            "status": "not_run"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 1171,
+              "completion_tokens": 871,
+              "estimated_list_price_usd": "0.002528800",
+              "error_code": null
+            }
+          ]
+        }
+      ],
+      "recorded_runs": 12,
+      "end_to_end_passes": 8,
+      "external_acceptance_passes": 10,
+      "current_run_status": null
+    },
+    {
+      "started_at_utc": "2026-10-21T19:50:48.797910+00:00",
+      "model": "gemini/gemini-3.5-flash-lite",
+      "engineering_review_model": null,
+      "backend_commit": "61c365bc32019ba4c535fbc3d2ba498d74cdb812",
+      "python": "3.12.14",
+      "platform": "Windows",
+      "independent_qa_enabled": true,
+      "runner_sha256": "efae9b91598f0ac043a92b0b2c6d4aa2403217499ae2d5f5f59fed42b9e4ba66",
+      "cases_sha256": "b56ae6a4b6715ad19dec2cad84529a35ee6d66e6ac233c10370902c48029cbd1",
+      "batch_id": "20261021T195048Z-68314a",
+      "receipt_sha256": "025c627c338fb87030e9427818e81ecc892e8329c6ca0da17f6bdc87b5cf1dde",
+      "source_sha256": {
+        "backend/app/__init__.py": "28750009c1d664b2ad5ae8e6bdae31d44de9aa340cff0f5cb36c18de0017c9cd",
+        "backend/app/api/__init__.py": "fb26f4193b4c1db8aa922dd702a124e06d50a778039be25671d796d0ab2cfe70",
+        "backend/app/api/auth.py": "db56d1def1c1fc6123d379d2fea3750574d5c8325ad58fb9acee070ac5421698",
+        "backend/app/api/routes_blueprints.py": "6de2462c0c69428c3d51e661049f738b77685acd0fa85c7716717ddefbf57899",
+        "backend/app/api/routes_missions.py": "fc36fcaebd4c124540f2e94440d4ba132f45680e728e8253186bd972aedf9f9a",
+        "backend/app/api/routes_plugins.py": "f9e4635abc4ff9785a5b4ec3ce4e2f95306a96dc841fcc5b9060f10f081073c0",
+        "backend/app/api/routes_runtime.py": "3532eb1da4562020ce2f1bb2d193ec8f91da903c528b94fff33a6ba8b0bdf502",
+        "backend/app/api/ws_war_room.py": "bfa4d98540fc972292829b7545110e2d43e56040e5285a66ab772565e3688ca1",
+        "backend/app/config.py": "67354eb2a4ea914f73f5530624acd8ad71b54fa6ed7bd3402bdf9d841339fa33",
+        "backend/app/core/__init__.py": "2c0048e3a53ccbd89680e208d29ee9777e0e40841615d3f770f38fb79ed66277",
+        "backend/app/core/_sandbox_portable.py": "b8d2a1fab89135c2f1f4503a1351d318af2a3dd87baac616ad70b3c129ce7eb0",
+        "backend/app/core/blueprints.py": "113efdb6bf348ecb50be5b1ceb15f4dcfcf5b6e5974c83ab6ca164f1b3fab1fc",
+        "backend/app/core/demo.py": "fdda5245975157d4cb4be4b37b6ca99f9c3464a7197c2a52bcc23b32385a3b80",
+        "backend/app/core/llm_router.py": "fecfd6ff056547ce1f837a3d8dc5cf028efb73c3fcf2828658d17a1f19647eda",
+        "backend/app/core/mcp_bridge.py": "0b6f058c01bf1140b8c9f2575fc9b419fa3dc863941c807d83393ee31b0efada",
+        "backend/app/core/mcp_config.py": "70380a4c53c741ad6d52d95405b617ffbfc3a8278cb6e8565c84b774b6a10c81",
+        "backend/app/core/memory_vault.py": "cd3b9be487558e6e1222564ab785cdee3532eeb2543fd3bae0179128f060b6a6",
+        "backend/app/core/orchestrator.py": "3c6b65214830b46645cd6fc101dba3e6880b973debc6d44b42a590001003232a",
+        "backend/app/core/plan_artifacts.py": "acc4545471aa05fa4b2cc255b1d2eabf7880a3cb551dbcdb1189781b760a7b3e",
+        "backend/app/core/planning.py": "fadf8d56f9d9cdaaaf40a60e1afe1ecd9ed410c40a5e86c32607ce0b972f94b9",
+        "backend/app/core/python_format.py": "8ea8f0838dc7973b9cd8a7c722e83755cddf58b05488bdf626be465372b18d7f",
+        "backend/app/core/research_worker.py": "73b0a91afebb5d3aa72baaa7f0824034884dea1863651122f66380e1318eb29b",
+        "backend/app/core/security_logging.py": "4f4fd5263fd3fa5155de863a0d45b7df2a1d7e7c6b8d73e8857b1025b2eacd37",
+        "backend/app/core/spa.py": "381171f8b649661fd36f34a12c086bdf7184ae980389c438baed3255576ecb10",
+        "backend/app/core/workspace_sandbox.py": "d687be5143e607187e770af6f77ff6abf464283a2db3f27bcd0ef5b0fc9cf964",
+        "backend/app/database.py": "0c679c28173db2c7ca92488d66703709cc140ab0538e9af220575b5a26c2d7ab",
+        "backend/app/departments/__init__.py": "0e7f6d9b25ddd01f26bee95a5604e8098f003c8cbe56a93d9bf4640a3b7679b6",
+        "backend/app/departments/_qa_probe_worker.py": "65d95bb766d3a77a189bbe17d57f5b6d771e2b72eedcca93f8462440300eb1cc",
+        "backend/app/departments/_research_browser.py": "e104d56993507efbdeb65ecd65fe29c67b91391a267ed107e820e9881fa8ec11",
+        "backend/app/departments/_research_documents.py": "c420712af1341fa08319232d95fa1b5761ccfdd0e7659dddbbcfea9eb3a0b712",
+        "backend/app/departments/_research_web.py": "9572eb78c4062fa37adce81f5a627d7b5ecb740115094ebbe43f8a470112ac48",
+        "backend/app/departments/base_department.py": "97077267cc7f4e6108c3517426a9ffb8932f3c2778e3f97cfda193d721880a92",
+        "backend/app/departments/builtin.py": "874f1f7392b5d948d3f1aa017a5c3b257ace70ccb9feba6c6379afadea40f98f",
+        "backend/app/departments/chief_of_staff.py": "fcc22717bdf05b3706421783034adb1989d1d6c7da883af1373adc70a5bb2361",
+        "backend/app/departments/engineer.py": "a8fabc3dd155658b809e4c16c1a6f4f3a1e63c837a2a7ce455eb14db39e5da08",
+        "backend/app/departments/engineering_contracts.py": "e994cc822ce48139b8a4371d44ecf6bd5df7a49539952229814dd98b1e698e54",
+        "backend/app/departments/growth_career.py": "bd616d50a199b6868c66c1566cadd7caeec8b9c70bd363b2093c834f8dc57b7c",
+        "backend/app/departments/growth_contracts.py": "45981642b6a375813c9507a30cfa3dde92178cfa32bd428769de9f5e57ae2c46",
+        "backend/app/departments/independent_qa.py": "f2ae4a153c3c2bd4893c69089f8891a878c7c76b60dd521c4068e2562c64e1a8",
+        "backend/app/departments/qa_self_healer.py": "aa34dd976ae715bc9c69273c096e6fe7ae9be748acd0d32df9cc7e5354ba0525",
+        "backend/app/departments/researcher.py": "b7767ac8a1e7a7336d71eaf63ce14ec2b71db2bdd288a6ace0e4e2dc1c265d53",
+        "backend/app/main.py": "93dbc876c9960572e7df0fc5c805bd35c06a773c1b019e5a1f4fd95a3dadf1fd",
+        "backend/app/models/__init__.py": "bd53bf603897b8929ca92665ecbacf5769efe59bcac760c6178fdbec5a323c57",
+        "backend/app/models/events.py": "dfdeb4ee48ebfd02ff836caef3dfe2fb165e6b461902f81354e9bfbd7e4a9fba",
+        "backend/app/models/mission.py": "6d9deb4d3fa4deae1d50171ec903e1dff18bf03c19d53b16297a70a312b9d536",
+        "backend/app/models/orchestration.py": "6fb45cb89e4daa201437d531af268e4de8931ebbec027cea9b80fa3487be3380",
+        "pyproject.toml": "75ae7c2818715b2a3b32f3589d22814767fc46d6bb35af4fdd980de61bb7da42",
+        "scripts/evaluation_cases/config_graph_topo.md": "c0f05c643c8f3899445d38cded7dbfebe157a7dfacfcc2abdf11a5be5c43f4bb",
+        "scripts/evaluation_cases/config_graph_topo.py": "cf94f90ca29e2d37824123d008d0e1d45d5c33097cc465e9712e386d2a451e76",
+        "scripts/evaluation_cases/fastapi_notes_api.md": "55bf691f61d1fe3c9408f28d22377c21dfedcacee05ffa0c83189f5066893c47",
+        "scripts/evaluation_cases/fastapi_notes_api.py": "02676b9d254685604182245a5d59fb07c5835c44e78f828ac24fbbf0b872ee6d",
+        "scripts/evaluation_cases/inventory_reservation.md": "cd5c3c980863d2faed1e5a3200d803ea92f0d84657dce227ed20ac01aa1bff7c",
+        "scripts/evaluation_cases/inventory_reservation.py": "14af49f206afc27a99411334813788f55b8e0f7b461ef1866e15d19f53d49fce",
+        "scripts/evaluation_support.py": "3ac263f0bc4828af8c82ae861bf3ba7c68b66aef10e3454c34082134c05e5bd9",
+        "scripts/generate_demo_assets.py": "bac55de22f99c09848a730e28bbabaf55ae5de1e6bfd0e422f3a3aa78a1f4d03",
+        "scripts/live_evaluation_cases.py": "b56ae6a4b6715ad19dec2cad84529a35ee6d66e6ac233c10370902c48029cbd1",
+        "scripts/release_evaluation_cases.py": "46a1298061ef3f2ee9080d42ba0044e3d4b2dba79eeee8f95688a60d249ce153",
+        "scripts/run_live_evaluation.py": "efae9b91598f0ac043a92b0b2c6d4aa2403217499ae2d5f5f59fed42b9e4ba66",
+        "uv.lock": "ed8ff91312f56ff2d37ee29b76ed2bf8ef7dde0261f1383ad02c507ff44e676d"
+      },
+      "runs": [
+        {
+          "case": "csv_summary",
+          "repeat": 1,
+          "mission_id": "3781cdc7-ef50-4f5d-aa7d-92023bcc2a1e",
+          "requirements_sha256": "8046fbde07db10fb160597efd52fa9be1cd3e52a5e421a8aebc31f4b0e1c10a8",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 61.094,
+          "recorded_prompt_tokens": 28729,
+          "recorded_completion_tokens": 5416,
+          "usage_complete": true,
+          "end_to_end_pass": false,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.022158702",
+          "external_acceptance": {
+            "status": "failed",
+            "return_code": 1,
+            "application_sha256": "476170fb7a02b22a0d722cc681808c634991e14184cb435bda04e42cbf20f691",
+            "source_sha256": {
+              "app.py": "476170fb7a02b22a0d722cc681808c634991e14184cb435bda04e42cbf20f691"
+            },
+            "checks_sha256": "6536f0a5f9485215d09739df0dd7bbc35dbdddbf5aab6a6bf8963ce2237bdebe",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 805,
+              "completion_tokens": 864,
+              "estimated_list_price_usd": "0.002401500",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 3906,
+              "completion_tokens": 1558,
+              "estimated_list_price_usd": "0.005066801",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5433,
+              "completion_tokens": 1570,
+              "estimated_list_price_usd": "0.005554901",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 1049,
+              "completion_tokens": 529,
+              "estimated_list_price_usd": "0.001637200",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 17536,
+              "completion_tokens": 895,
+              "estimated_list_price_usd": "0.007498300",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "csv_summary",
+          "repeat": 2,
+          "mission_id": "f9ddec6a-5d68-46b2-967d-000c6c9b9aaf",
+          "requirements_sha256": "8046fbde07db10fb160597efd52fa9be1cd3e52a5e421a8aebc31f4b0e1c10a8",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 82.531,
+          "recorded_prompt_tokens": 53711,
+          "recorded_completion_tokens": 7913,
+          "usage_complete": true,
+          "end_to_end_pass": false,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.035895805",
+          "external_acceptance": {
+            "status": "failed",
+            "return_code": 1,
+            "application_sha256": "046ac1d4747f3aa12aca91b0e2aed03eee05244c26a2cecee4fce70bb3e55b1e",
+            "source_sha256": {
+              "app.py": "046ac1d4747f3aa12aca91b0e2aed03eee05244c26a2cecee4fce70bb3e55b1e"
+            },
+            "checks_sha256": "6536f0a5f9485215d09739df0dd7bbc35dbdddbf5aab6a6bf8963ce2237bdebe",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 805,
+              "completion_tokens": 863,
+              "estimated_list_price_usd": "0.002399000",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 3883,
+              "completion_tokens": 1517,
+              "estimated_list_price_usd": "0.004957401",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5451,
+              "completion_tokens": 1478,
+              "estimated_list_price_usd": "0.005330301",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5728,
+              "completion_tokens": 1503,
+              "estimated_list_price_usd": "0.005475901",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 1044,
+              "completion_tokens": 590,
+              "estimated_list_price_usd": "0.001788201",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 1685,
+              "completion_tokens": 599,
+              "estimated_list_price_usd": "0.002003001",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 17297,
+              "completion_tokens": 448,
+              "estimated_list_price_usd": "0.006309100",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 17818,
+              "completion_tokens": 915,
+              "estimated_list_price_usd": "0.007632900",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "csv_summary",
+          "repeat": 3,
+          "mission_id": "3b1e8947-be92-47d8-a15f-4adf6670476a",
+          "requirements_sha256": "8046fbde07db10fb160597efd52fa9be1cd3e52a5e421a8aebc31f4b0e1c10a8",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 64.562,
+          "recorded_prompt_tokens": 28317,
+          "recorded_completion_tokens": 5971,
+          "usage_complete": true,
+          "end_to_end_pass": true,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.023422605",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": "8810fc298e960aab58631025530238728f2f9a63840a14c52eccf04930bfe288",
+            "source_sha256": {
+              "app.py": "8810fc298e960aab58631025530238728f2f9a63840a14c52eccf04930bfe288"
+            },
+            "checks_sha256": "6536f0a5f9485215d09739df0dd7bbc35dbdddbf5aab6a6bf8963ce2237bdebe",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 805,
+              "completion_tokens": 764,
+              "estimated_list_price_usd": "0.002151501",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 3512,
+              "completion_tokens": 1545,
+              "estimated_list_price_usd": "0.004916101",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5027,
+              "completion_tokens": 1542,
+              "estimated_list_price_usd": "0.005363101",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 928,
+              "completion_tokens": 555,
+              "estimated_list_price_usd": "0.001665900",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 1534,
+              "completion_tokens": 554,
+              "estimated_list_price_usd": "0.001845201",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 16511,
+              "completion_tokens": 1011,
+              "estimated_list_price_usd": "0.007480801",
+              "error_code": null
+            }
+          ]
+        }
+      ],
+      "recorded_runs": 3,
+      "end_to_end_passes": 1,
+      "external_acceptance_passes": 1,
+      "current_run_status": null
+    },
+    {
+      "started_at_utc": "2026-10-21T19:56:21.640283+00:00",
+      "model": "gemini/gemini-3.5-flash-lite",
+      "engineering_review_model": null,
+      "backend_commit": "61c365bc32019ba4c535fbc3d2ba498d74cdb812",
+      "python": "3.12.14",
+      "platform": "Windows",
+      "independent_qa_enabled": true,
+      "runner_sha256": "efae9b91598f0ac043a92b0b2c6d4aa2403217499ae2d5f5f59fed42b9e4ba66",
+      "cases_sha256": "b56ae6a4b6715ad19dec2cad84529a35ee6d66e6ac233c10370902c48029cbd1",
+      "batch_id": "20261021T195621Z-985358",
+      "receipt_sha256": "0ca11d4601c4999bb3f5e2cef1119877a49403ad01286451c060881092302563",
+      "source_sha256": {
+        "backend/app/__init__.py": "28750009c1d664b2ad5ae8e6bdae31d44de9aa340cff0f5cb36c18de0017c9cd",
+        "backend/app/api/__init__.py": "fb26f4193b4c1db8aa922dd702a124e06d50a778039be25671d796d0ab2cfe70",
+        "backend/app/api/auth.py": "db56d1def1c1fc6123d379d2fea3750574d5c8325ad58fb9acee070ac5421698",
+        "backend/app/api/routes_blueprints.py": "6de2462c0c69428c3d51e661049f738b77685acd0fa85c7716717ddefbf57899",
+        "backend/app/api/routes_missions.py": "fc36fcaebd4c124540f2e94440d4ba132f45680e728e8253186bd972aedf9f9a",
+        "backend/app/api/routes_plugins.py": "f9e4635abc4ff9785a5b4ec3ce4e2f95306a96dc841fcc5b9060f10f081073c0",
+        "backend/app/api/routes_runtime.py": "3532eb1da4562020ce2f1bb2d193ec8f91da903c528b94fff33a6ba8b0bdf502",
+        "backend/app/api/ws_war_room.py": "bfa4d98540fc972292829b7545110e2d43e56040e5285a66ab772565e3688ca1",
+        "backend/app/config.py": "67354eb2a4ea914f73f5530624acd8ad71b54fa6ed7bd3402bdf9d841339fa33",
+        "backend/app/core/__init__.py": "2c0048e3a53ccbd89680e208d29ee9777e0e40841615d3f770f38fb79ed66277",
+        "backend/app/core/_sandbox_portable.py": "b8d2a1fab89135c2f1f4503a1351d318af2a3dd87baac616ad70b3c129ce7eb0",
+        "backend/app/core/blueprints.py": "113efdb6bf348ecb50be5b1ceb15f4dcfcf5b6e5974c83ab6ca164f1b3fab1fc",
+        "backend/app/core/demo.py": "fdda5245975157d4cb4be4b37b6ca99f9c3464a7197c2a52bcc23b32385a3b80",
+        "backend/app/core/llm_router.py": "fecfd6ff056547ce1f837a3d8dc5cf028efb73c3fcf2828658d17a1f19647eda",
+        "backend/app/core/mcp_bridge.py": "0b6f058c01bf1140b8c9f2575fc9b419fa3dc863941c807d83393ee31b0efada",
+        "backend/app/core/mcp_config.py": "70380a4c53c741ad6d52d95405b617ffbfc3a8278cb6e8565c84b774b6a10c81",
+        "backend/app/core/memory_vault.py": "cd3b9be487558e6e1222564ab785cdee3532eeb2543fd3bae0179128f060b6a6",
+        "backend/app/core/orchestrator.py": "3c6b65214830b46645cd6fc101dba3e6880b973debc6d44b42a590001003232a",
+        "backend/app/core/plan_artifacts.py": "acc4545471aa05fa4b2cc255b1d2eabf7880a3cb551dbcdb1189781b760a7b3e",
+        "backend/app/core/planning.py": "fadf8d56f9d9cdaaaf40a60e1afe1ecd9ed410c40a5e86c32607ce0b972f94b9",
+        "backend/app/core/python_format.py": "8ea8f0838dc7973b9cd8a7c722e83755cddf58b05488bdf626be465372b18d7f",
+        "backend/app/core/research_worker.py": "73b0a91afebb5d3aa72baaa7f0824034884dea1863651122f66380e1318eb29b",
+        "backend/app/core/security_logging.py": "4f4fd5263fd3fa5155de863a0d45b7df2a1d7e7c6b8d73e8857b1025b2eacd37",
+        "backend/app/core/spa.py": "381171f8b649661fd36f34a12c086bdf7184ae980389c438baed3255576ecb10",
+        "backend/app/core/workspace_sandbox.py": "d687be5143e607187e770af6f77ff6abf464283a2db3f27bcd0ef5b0fc9cf964",
+        "backend/app/database.py": "0c679c28173db2c7ca92488d66703709cc140ab0538e9af220575b5a26c2d7ab",
+        "backend/app/departments/__init__.py": "0e7f6d9b25ddd01f26bee95a5604e8098f003c8cbe56a93d9bf4640a3b7679b6",
+        "backend/app/departments/_qa_probe_worker.py": "65d95bb766d3a77a189bbe17d57f5b6d771e2b72eedcca93f8462440300eb1cc",
+        "backend/app/departments/_research_browser.py": "e104d56993507efbdeb65ecd65fe29c67b91391a267ed107e820e9881fa8ec11",
+        "backend/app/departments/_research_documents.py": "c420712af1341fa08319232d95fa1b5761ccfdd0e7659dddbbcfea9eb3a0b712",
+        "backend/app/departments/_research_web.py": "9572eb78c4062fa37adce81f5a627d7b5ecb740115094ebbe43f8a470112ac48",
+        "backend/app/departments/base_department.py": "97077267cc7f4e6108c3517426a9ffb8932f3c2778e3f97cfda193d721880a92",
+        "backend/app/departments/builtin.py": "874f1f7392b5d948d3f1aa017a5c3b257ace70ccb9feba6c6379afadea40f98f",
+        "backend/app/departments/chief_of_staff.py": "fcc22717bdf05b3706421783034adb1989d1d6c7da883af1373adc70a5bb2361",
+        "backend/app/departments/engineer.py": "f619856f546b666451a9896a9bb7b233701f59fe81af791bf68e429a78c259fc",
+        "backend/app/departments/engineering_contracts.py": "e994cc822ce48139b8a4371d44ecf6bd5df7a49539952229814dd98b1e698e54",
+        "backend/app/departments/growth_career.py": "bd616d50a199b6868c66c1566cadd7caeec8b9c70bd363b2093c834f8dc57b7c",
+        "backend/app/departments/growth_contracts.py": "45981642b6a375813c9507a30cfa3dde92178cfa32bd428769de9f5e57ae2c46",
+        "backend/app/departments/independent_qa.py": "28859bf08553ef9a7482b2f82c141d1a3c5689094a94112424d70a0846e2f3d5",
+        "backend/app/departments/qa_self_healer.py": "aa34dd976ae715bc9c69273c096e6fe7ae9be748acd0d32df9cc7e5354ba0525",
+        "backend/app/departments/researcher.py": "b7767ac8a1e7a7336d71eaf63ce14ec2b71db2bdd288a6ace0e4e2dc1c265d53",
+        "backend/app/main.py": "93dbc876c9960572e7df0fc5c805bd35c06a773c1b019e5a1f4fd95a3dadf1fd",
+        "backend/app/models/__init__.py": "bd53bf603897b8929ca92665ecbacf5769efe59bcac760c6178fdbec5a323c57",
+        "backend/app/models/events.py": "dfdeb4ee48ebfd02ff836caef3dfe2fb165e6b461902f81354e9bfbd7e4a9fba",
+        "backend/app/models/mission.py": "6d9deb4d3fa4deae1d50171ec903e1dff18bf03c19d53b16297a70a312b9d536",
+        "backend/app/models/orchestration.py": "6fb45cb89e4daa201437d531af268e4de8931ebbec027cea9b80fa3487be3380",
+        "pyproject.toml": "75ae7c2818715b2a3b32f3589d22814767fc46d6bb35af4fdd980de61bb7da42",
+        "scripts/evaluation_cases/config_graph_topo.md": "c0f05c643c8f3899445d38cded7dbfebe157a7dfacfcc2abdf11a5be5c43f4bb",
+        "scripts/evaluation_cases/config_graph_topo.py": "cf94f90ca29e2d37824123d008d0e1d45d5c33097cc465e9712e386d2a451e76",
+        "scripts/evaluation_cases/fastapi_notes_api.md": "55bf691f61d1fe3c9408f28d22377c21dfedcacee05ffa0c83189f5066893c47",
+        "scripts/evaluation_cases/fastapi_notes_api.py": "02676b9d254685604182245a5d59fb07c5835c44e78f828ac24fbbf0b872ee6d",
+        "scripts/evaluation_cases/inventory_reservation.md": "cd5c3c980863d2faed1e5a3200d803ea92f0d84657dce227ed20ac01aa1bff7c",
+        "scripts/evaluation_cases/inventory_reservation.py": "14af49f206afc27a99411334813788f55b8e0f7b461ef1866e15d19f53d49fce",
+        "scripts/evaluation_support.py": "3ac263f0bc4828af8c82ae861bf3ba7c68b66aef10e3454c34082134c05e5bd9",
+        "scripts/generate_demo_assets.py": "bac55de22f99c09848a730e28bbabaf55ae5de1e6bfd0e422f3a3aa78a1f4d03",
+        "scripts/live_evaluation_cases.py": "b56ae6a4b6715ad19dec2cad84529a35ee6d66e6ac233c10370902c48029cbd1",
+        "scripts/release_evaluation_cases.py": "46a1298061ef3f2ee9080d42ba0044e3d4b2dba79eeee8f95688a60d249ce153",
+        "scripts/run_live_evaluation.py": "efae9b91598f0ac043a92b0b2c6d4aa2403217499ae2d5f5f59fed42b9e4ba66",
+        "uv.lock": "ed8ff91312f56ff2d37ee29b76ed2bf8ef7dde0261f1383ad02c507ff44e676d"
+      },
+      "runs": [
+        {
+          "case": "csv_summary",
+          "repeat": 1,
+          "mission_id": "3098e1e0-169f-49c4-94d3-f2607c75b28c",
+          "requirements_sha256": "8046fbde07db10fb160597efd52fa9be1cd3e52a5e421a8aebc31f4b0e1c10a8",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 143.094,
+          "recorded_prompt_tokens": 77415,
+          "recorded_completion_tokens": 11974,
+          "usage_complete": true,
+          "end_to_end_pass": false,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "failed",
+          "estimated_list_price_usd": "0.053159501",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": "3178c7ab27dcea2842a07e7c7930b0b64e16ed66f51c6ba82cb9527245c9db1d",
+            "source_sha256": {
+              "app.py": "3178c7ab27dcea2842a07e7c7930b0b64e16ed66f51c6ba82cb9527245c9db1d"
+            },
+            "checks_sha256": "6536f0a5f9485215d09739df0dd7bbc35dbdddbf5aab6a6bf8963ce2237bdebe",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 805,
+              "completion_tokens": 837,
+              "estimated_list_price_usd": "0.002334000",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 3888,
+              "completion_tokens": 2135,
+              "estimated_list_price_usd": "0.006503900",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6072,
+              "completion_tokens": 2011,
+              "estimated_list_price_usd": "0.006849101",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5970,
+              "completion_tokens": 1932,
+              "estimated_list_price_usd": "0.006621000",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5938,
+              "completion_tokens": 1946,
+              "estimated_list_price_usd": "0.006646400",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 1114,
+              "completion_tokens": 395,
+              "estimated_list_price_usd": "0.001321700",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 8103,
+              "completion_tokens": 307,
+              "estimated_list_price_usd": "0.003198400",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 11037,
+              "completion_tokens": 615,
+              "estimated_list_price_usd": "0.004848600",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 8264,
+              "completion_tokens": 256,
+              "estimated_list_price_usd": "0.003119200",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 9087,
+              "completion_tokens": 621,
+              "estimated_list_price_usd": "0.004278600",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 8138,
+              "completion_tokens": 287,
+              "estimated_list_price_usd": "0.003158900",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 8999,
+              "completion_tokens": 632,
+              "estimated_list_price_usd": "0.004279700",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "csv_summary",
+          "repeat": 2,
+          "mission_id": "262d7e67-d66a-4507-a9b8-f4a00a34378f",
+          "requirements_sha256": "8046fbde07db10fb160597efd52fa9be1cd3e52a5e421a8aebc31f4b0e1c10a8",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 61.656,
+          "recorded_prompt_tokens": 36662,
+          "recorded_completion_tokens": 8702,
+          "usage_complete": true,
+          "end_to_end_pass": true,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "completed",
+          "estimated_list_price_usd": "0.032753605",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": "7803d9b4884af76e3e713f95aaaa31690f63250371f91125227f321436d70089",
+            "source_sha256": {
+              "app.py": "7803d9b4884af76e3e713f95aaaa31690f63250371f91125227f321436d70089"
+            },
+            "checks_sha256": "6536f0a5f9485215d09739df0dd7bbc35dbdddbf5aab6a6bf8963ce2237bdebe",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 805,
+              "completion_tokens": 793,
+              "estimated_list_price_usd": "0.002224001",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 1647,
+              "completion_tokens": 773,
+              "estimated_list_price_usd": "0.002426601",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 3670,
+              "completion_tokens": 1910,
+              "estimated_list_price_usd": "0.005876001",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5631,
+              "completion_tokens": 1885,
+              "estimated_list_price_usd": "0.006401801",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 5673,
+              "completion_tokens": 1897,
+              "estimated_list_price_usd": "0.006444400",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 1064,
+              "completion_tokens": 637,
+              "estimated_list_price_usd": "0.001911701",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 18172,
+              "completion_tokens": 807,
+              "estimated_list_price_usd": "0.007469100",
+              "error_code": null
+            }
+          ]
+        },
+        {
+          "case": "csv_summary",
+          "repeat": 3,
+          "mission_id": "0db44485-cef2-497b-b343-c3e0a7573dec",
+          "requirements_sha256": "8046fbde07db10fb160597efd52fa9be1cd3e52a5e421a8aebc31f4b0e1c10a8",
+          "mode": "live",
+          "response_cache": false,
+          "deadline_exceeded": false,
+          "generation_seconds": 313.062,
+          "recorded_prompt_tokens": 82308,
+          "recorded_completion_tokens": 11144,
+          "usage_complete": true,
+          "end_to_end_pass": false,
+          "provider_invoice_charge_usd": null,
+          "mission_status": "failed",
+          "estimated_list_price_usd": "0.052552404",
+          "external_acceptance": {
+            "status": "passed",
+            "return_code": 0,
+            "application_sha256": "c66e691cc2ed1e3a0724e41d39aee8b9f02683dcbba0adb76cc73b0f4ecce4d3",
+            "source_sha256": {
+              "app.py": "c66e691cc2ed1e3a0724e41d39aee8b9f02683dcbba0adb76cc73b0f4ecce4d3"
+            },
+            "checks_sha256": "6536f0a5f9485215d09739df0dd7bbc35dbdddbf5aab6a6bf8963ce2237bdebe",
+            "timed_out": false,
+            "execution_mode": "guarded"
+          },
+          "attempts": [
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 805,
+              "completion_tokens": 903,
+              "estimated_list_price_usd": "0.002499001",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 4002,
+              "completion_tokens": 1985,
+              "estimated_list_price_usd": "0.006163101",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6199,
+              "completion_tokens": 1904,
+              "estimated_list_price_usd": "0.006619700",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 1171,
+              "completion_tokens": 644,
+              "estimated_list_price_usd": "0.001961300",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6320,
+              "completion_tokens": 339,
+              "estimated_list_price_usd": "0.002743501",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 8991,
+              "completion_tokens": 1373,
+              "estimated_list_price_usd": "0.006129800",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 10433,
+              "completion_tokens": 779,
+              "estimated_list_price_usd": "0.005077400",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6367,
+              "completion_tokens": 361,
+              "estimated_list_price_usd": "0.002812600",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7197,
+              "completion_tokens": 894,
+              "estimated_list_price_usd": "0.004394100",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 8159,
+              "completion_tokens": 206,
+              "estimated_list_price_usd": "0.002962700",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 6565,
+              "completion_tokens": 475,
+              "estimated_list_price_usd": "0.003157001",
+              "error_code": null
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 7494,
+              "completion_tokens": 1042,
+              "estimated_list_price_usd": "0.004853200",
+              "error_code": "invalid_output"
+            },
+            {
+              "provider": "gemini",
+              "model": "gemini/gemini-3.5-flash-lite",
+              "status": "succeeded",
+              "prompt_tokens": 8605,
+              "completion_tokens": 239,
+              "estimated_list_price_usd": "0.003179000",
+              "error_code": null
+            }
+          ]
+        }
+      ],
+      "recorded_runs": 3,
+      "end_to_end_passes": 1,
+      "external_acceptance_passes": 3,
+      "current_run_status": null
+    }
+  ],
+  "checks": [
+    {
+      "local_receipt": ".openfoundry/validation/final-failure-retests.log",
+      "sha256": "368961126ee4f3635dc1474c860b657fe823d3243a85bc612bf45e8a6a783a63",
+      "summary_lines": [
+        "53 passed, 2 warnings in 119.35s (0:01:59)"
+      ]
+    },
+    {
+      "local_receipt": ".openfoundry/validation/mypy-latest.log",
+      "sha256": "233ca251f4495071f8580bcc0f181b6680d429481f0a309ed35483affff57bbc",
+      "summary_lines": [
+        "Success: no issues found in 46 source files"
+      ]
+    },
+    {
+      "local_receipt": ".openfoundry/validation/new-features-final.log",
+      "sha256": "2d4858ef8b884a3910a54068152bc63ec9f71f27cd08bd30e469b09a5dfe24c5",
+      "summary_lines": [
+        "72 passed, 2 warnings in 89.98s (0:01:29)"
+      ]
+    },
+    {
+      "local_receipt": ".openfoundry/validation/independent-qa-v2.log",
+      "sha256": "e6089657219e77b9078a9b47cb7b5ba89cdc5948881d47891feba9fd1b48a91b",
+      "summary_lines": [
+        "5 passed in 43.03s"
+      ]
+    },
+    {
+      "local_receipt": ".openfoundry/validation/engineering-final.log",
+      "sha256": "262d4c9fc99e02ed8e2b09ee6982c1309760e9a79505a302724870993a5a3c32",
+      "summary_lines": [
+        "32 passed in 574.43s (0:09:34)"
+      ]
+    },
+    {
+      "local_receipt": ".openfoundry/validation/grader-final.log",
+      "sha256": "cef5afd175174f93ee92ac6f0b44a19aed99087965fc207a3c579919276415bb",
+      "summary_lines": [
+        "18 passed, 1 warning in 33.70s"
+      ]
+    },
+    {
+      "local_receipt": ".openfoundry/validation/spa-after.log",
+      "sha256": "2700c920b1f86dcb15eb96a874dca66777c1cc66dad90c4ddf33cc393b71cd6b",
+      "summary_lines": [
+        "18 passed, 1 warning in 18.58s"
+      ]
+    },
+    {
+      "local_receipt": ".openfoundry/validation/e2e-final.log",
+      "sha256": "248c66e900ad55ae43ea25aa88559c8d91ba2fb6a5b993315fe86d58dfc84ef0",
+      "summary_lines": [
+        "6 passed (3.9m)"
+      ]
+    },
+    {
+      "local_receipt": ".openfoundry/validation/wheel-smoke-final.log",
+      "sha256": "518e3e8c731a4819b1145d759f47f7f6ab89e6c9629eed7b3edc80d2e27c28ac",
+      "summary_lines": [
+        "PASS: isolated installed wheel; health and 3 blueprint templates outside checkout"
+      ]
+    },
+    {
+      "local_receipt": ".openfoundry/validation/windows-final.log",
+      "sha256": "16f0773254afbf85acae9f1200d729af25a857d39fc329135dedee9decd2be58",
+      "summary_lines": [
+        "6 failed, 456 passed, 8 skipped, 2 warnings in 1452.71s (0:24:12)"
+      ]
+    },
+    {
+      "local_receipt": ".openfoundry/validation/linux-baseline.log",
+      "sha256": "2cf4284e2ce3494b549a1d64ab2926824a453eaea60a2b8688bb0873141880ea",
+      "summary_lines": [
+        "1 failed, 468 passed, 1 skipped, 2 warnings in 1566.22s (0:26:06)"
+      ]
+    },
+    {
+      "local_receipt": ".openfoundry/validation/lint-latest.log",
+      "sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0",
+      "summary_lines": [
+        "All checks passed!"
+      ]
+    }
+  ]
+}

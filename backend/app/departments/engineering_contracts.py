@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 import ipaddress
 import re
 from typing import Literal
@@ -16,8 +17,8 @@ from backend.app.models.events import CodeDiffEvent, TestResult
 QA_CONFIG = "openfoundry.qa.json"
 PROTECTED_CONFIG = frozenset(
     {
-        "SPEC.md",
-        "STATE.md",
+        "spec.md",
+        "state.md",
         QA_CONFIG,
         "pyproject.toml",
         "pytest.ini",
@@ -32,7 +33,7 @@ PROTECTED_CONFIG = frozenset(
 
 
 def test_path(path: str) -> bool:
-    parts = path.split("/")
+    parts = path.casefold().split("/")
     return any(part in {"tests", "test"} for part in parts[:-1]) or (
         parts[-1].startswith("test_") or parts[-1].endswith("_test.py")
     )
@@ -40,10 +41,11 @@ def test_path(path: str) -> bool:
 
 def editable_path(path: str) -> str:
     CodeDiffEvent.relative_file_path(path)
+    folded = path.casefold()
     if (
-        path in {"SPEC.md", "STATE.md", QA_CONFIG}
-        or any(part.startswith(".openfoundry-") for part in path.split("/"))
-        or path.split("/")[0] in {"qa", "research", "engineering"}
+        folded in {"spec.md", "state.md", QA_CONFIG}
+        or any(part.startswith(".openfoundry-") for part in folded.split("/"))
+        or folded.split("/")[0] in {"qa", "research", "engineering"}
     ):
         raise ValueError(
             "Engineering cannot overwrite specifications, verification plans, or evidence"
@@ -172,7 +174,98 @@ class EngineeringResult(WorkResult):
             editable_path(file.file_path)
             if len(file.content.splitlines()) >= 200:
                 raise ValueError("Generated files must contain fewer than 200 lines")
+        reference = self.verification.asgi_app
+        if reference:
+            module, target = reference.split(":", 1)
+            candidates = {module.replace(".", "/") + suffix for suffix in (".py", "/__init__.py")}
+            source = next(
+                (file.content for file in self.files if file.file_path in candidates), None
+            )
+            if source is not None:
+                self._validate_asgi_export(source, target)
         return self
+
+    def _validate_asgi_export(self, source: str, target: str) -> None:
+        """Reject a statically visible factory/instance mismatch before freezing QA.
+
+        Inspect declarations only; importing generated code here would escape the
+        subprocess boundary. Re-exported or dynamically constructed callables are
+        left to the real probe worker rather than guessed from their names.
+        """
+        try:
+            declarations = ast.parse(source).body
+        except SyntaxError:
+            return  # The Engineer's syntax validator provides the original diagnostic.
+        constructors = {"FastAPI", "Starlette"}
+        for node in declarations:
+            if isinstance(node, ast.ImportFrom) and node.module in {
+                "fastapi",
+                "starlette.applications",
+            }:
+                constructors.update(
+                    alias.asname or alias.name
+                    for alias in node.names
+                    if alias.name in {"FastAPI", "Starlette"}
+                )
+
+        def constructs_app(value: ast.expr | None) -> bool:
+            return isinstance(value, ast.Call) and (
+                isinstance(value.func, ast.Name)
+                and value.func.id in constructors
+                or isinstance(value.func, ast.Attribute)
+                and value.func.attr in {"FastAPI", "Starlette"}
+            )
+
+        local_functions: set[str] = set()
+        for node in declarations:
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                instances = {
+                    target.id
+                    for statement in node.body
+                    if isinstance(statement, ast.Assign) and constructs_app(statement.value)
+                    for target in statement.targets
+                    if isinstance(target, ast.Name)
+                }
+                returns = [
+                    statement.value for statement in node.body if isinstance(statement, ast.Return)
+                ]
+                if returns and all(
+                    constructs_app(value) or isinstance(value, ast.Name) and value.id in instances
+                    for value in returns
+                ):
+                    local_functions.add(node.name)
+        for node in declarations:
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == target:
+                required = len(node.args.posonlyargs + node.args.args) - len(node.args.defaults)
+                required_keywords = any(default is None for default in node.args.kw_defaults)
+                if self.verification.app_factory and (required or required_keywords):
+                    raise ValueError("ASGI factory export must be callable with no arguments")
+                if (
+                    not self.verification.app_factory
+                    and not required
+                    and not required_keywords
+                    and node.args.vararg is None
+                    and node.args.kwarg is None
+                ):
+                    raise ValueError(
+                        "ASGI factory export requires app_factory=true; instance expected"
+                    )
+            elif isinstance(node, (ast.Assign, ast.AnnAssign)):
+                targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+                if not any(isinstance(name, ast.Name) and name.id == target for name in targets):
+                    continue
+                call = node.value
+                known_instance = isinstance(call, ast.Call) and (
+                    isinstance(call.func, ast.Name)
+                    and call.func.id in {*constructors, *local_functions}
+                    or isinstance(call.func, ast.Attribute)
+                    and call.func.attr in {"FastAPI", "Starlette"}
+                )
+                if self.verification.app_factory and known_instance:
+                    raise ValueError(
+                        "ASGI instance export requires app_factory=false; for a factory, "
+                        "reference the zero-argument function such as module:create_app"
+                    )
 
 
 class BugDiagnosis(BaseModel):

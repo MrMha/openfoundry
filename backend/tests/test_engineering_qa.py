@@ -527,7 +527,9 @@ async def test_real_orchestrator_self_healing_and_artifact_upserts(settings, dat
     await coordinator.start()
     try:
         mission = await coordinator.submit("Build and verify a calculator")
-        await asyncio.wait_for(coordinator.wait(mission.id), 40)
+        # A real repair includes two pytest/ASGI worker rounds. Cold Windows
+        # imports exceeded 40s while the per-command 60s bounds remained intact.
+        await asyncio.wait_for(coordinator.wait(mission.id), 180)
         assert await mission_state(database, mission.id) == MissionStatus.COMPLETED
         assert all(
             row.status == TaskStatus.COMPLETED for row in await task_rows(database, mission.id)

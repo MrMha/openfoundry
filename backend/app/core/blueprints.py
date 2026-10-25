@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sysconfig
 from pathlib import Path
 from string import Template
 from typing import Literal
@@ -14,6 +15,8 @@ from backend.app.core.planning import MissionPlan, TaskSpec
 from backend.app.models.events import CodeDiffEvent
 
 BLUEPRINT_ROOT = Path(__file__).resolve().parents[3] / "blueprints"
+if not BLUEPRINT_ROOT.is_dir():
+    BLUEPRINT_ROOT = Path(sysconfig.get_path("data")) / "share" / "openfoundry" / "blueprints"
 DEPARTMENTS = {"researcher", "engineer", "qa_self_healer", "growth_career"}
 
 

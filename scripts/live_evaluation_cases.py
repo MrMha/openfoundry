@@ -92,6 +92,12 @@ def test_independent_csv(text, expected):
 def test_independent_csv_rejection(text):
     with pytest.raises(ValueError):
         summarize_csv(text)
+
+@pytest.mark.parametrize('caller', ['tests/test_app.py', 'test_independent.py', 'user_script.py'])
+def test_same_empty_input_contract_for_every_caller(caller):
+    invocation = compile('summarize_csv(\"\")', caller, 'exec')
+    with pytest.raises(ValueError):
+        exec(invocation, {'summarize_csv': summarize_csv})
 """,
     },
 }

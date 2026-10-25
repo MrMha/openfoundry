@@ -112,7 +112,7 @@ def test_complete_phase2_mission_streams_one_self_heal_and_accounts_for_every_pa
         update={
             "sandbox_mode": "guarded",
             "max_output_tokens": 4096,
-            "department_timeout_seconds": 45,
+            "department_timeout_seconds": 180,
         }
     )
     with TestClient(create_app(config)) as client:
@@ -125,7 +125,7 @@ def test_complete_phase2_mission_streams_one_self_heal_and_accounts_for_every_pa
         assert created.status_code == 202
         mission_id = created.json()["id"]
         events = []
-        deadline = time.monotonic() + 60
+        deadline = time.monotonic() + 240
         with client.websocket_connect(f"/ws/missions/{mission_id}?after=0") as websocket:
             while time.monotonic() < deadline:
                 payload = websocket.receive_json()

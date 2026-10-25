@@ -11,7 +11,9 @@ RUN npm run build
 
 FROM python:3.12-slim-bookworm AS runtime
 COPY --from=ghcr.io/astral-sh/uv:0.12.23 /uv /usr/local/bin/uv
-RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates \
+RUN sed -i 's|http://deb.debian.org|https://deb.debian.org|g' /etc/apt/sources.list.d/debian.sources \
+    && apt-get -o Acquire::Retries=3 -o APT::Update::Error-Mode=any update \
+    && apt-get install -y --no-install-recommends git ca-certificates \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd --gid 10001 openfoundry \
     && useradd --uid 10001 --gid 10001 --create-home openfoundry

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pydantic import JsonValue
+
 from backend.app.core.llm_router import ChatMessage
 from backend.app.core.memory_vault import MemoryVault
 from backend.app.core.plan_artifacts import materialize_plan
@@ -50,6 +52,29 @@ class ChiefOfStaff(BaseDepartment):
             for name, cls in registered_departments().items()
             if name != self.name and name not in {"research", "engineering", "qa", "growth"}
         }
+        aliases = {
+            "research": "researcher",
+            "engineering": "engineer",
+            "qa": "qa_self_healer",
+            "growth": "growth_career",
+        }
+
+        def validate_plan(value: JsonValue) -> MissionPlan:
+            from backend.app.departments.engineering_contracts import VerificationPlan
+            from backend.app.departments.researcher import ResearchRequest
+
+            candidate = MissionPlan.model_validate(value)
+            for item in candidate.tasks:
+                item.department = aliases.get(item.department, item.department)
+                if item.department == "researcher":
+                    ResearchRequest.from_description(item.description)
+                elif item.department == "qa_self_healer" and item.description.lstrip().startswith(
+                    "{"
+                ):
+                    VerificationPlan.model_validate_json(item.description)
+            candidate.validate_dag(registered_departments().keys())
+            return candidate
+
         result = await self.router.complete(
             task.mission_id,
             [
@@ -70,8 +95,10 @@ class ChiefOfStaff(BaseDepartment):
                         "and documents (workspace-relative paths). Never invent source URLs. "
                         "For self-contained tasks whose requirements supply the needed facts, "
                         "research the local SPEC.md rather than requiring a web search. "
-                        'Use a JSON research description with query and documents=["SPEC.md"], '
-                        "prefer_docling=false; clearly describe it as requirements analysis. "
+                        "For local requirements, a plain description such as 'Analyze local "
+                        "SPEC.md requirements' selects the real local document reader. "
+                        "If using a JSON task description, the entire description must be one "
+                        "valid JSON object with no prose before or after it. "
                         "Each task must describe a concrete deliverable and verification criteria. "
                         "Use stable lowercase task keys and dependencies on other task keys. "
                         "Set requires_approval=true on the first engineering task, "
@@ -84,19 +111,11 @@ class ChiefOfStaff(BaseDepartment):
                 ChatMessage(role="user", content=task.description),
             ],
             json_schema=strict_schema(MissionPlan),
+            output_validator=validate_plan,
         )
-        plan = MissionPlan.model_validate(result.structured_output)
+        plan = validate_plan(result.structured_output)
         # Legacy identifiers remain executable for saved plans; newly planned tasks use
         # the canonical plugin names advertised above.
-        aliases = {
-            "research": "researcher",
-            "engineering": "engineer",
-            "qa": "qa_self_healer",
-            "growth": "growth_career",
-        }
-        for item in plan.tasks:
-            item.department = aliases.get(item.department, item.department)
-        plan.validate_dag(registered_departments().keys())
         by_key = {item.key: item for item in plan.tasks}
         for item in plan.tasks:
             if item.department != "engineer":

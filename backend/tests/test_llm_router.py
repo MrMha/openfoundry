@@ -18,6 +18,7 @@ from backend.app.core.llm_router import (
     LLMRouter,
     MissionInactiveError,
     MissionNotFoundError,
+    OutputValidationError,
     ProviderRefusalError,
     ProvidersUnavailableError,
 )
@@ -77,6 +78,53 @@ async def attempts(database: Database) -> list[LLMAttempt]:
         return list(
             (await session.scalars(select(LLMAttempt).order_by(LLMAttempt.created_at))).all()
         )
+
+
+@pytest.mark.parametrize(
+    ("effort", "supported", "expected"),
+    [
+        ("medium", True, "medium"),
+        ("high", True, "high"),
+        (None, True, None),
+        ("medium", False, None),
+    ],
+)
+async def test_gemini_reasoning_keeps_output_and_accounting_bounds(
+    settings, database, mission_id, monkeypatch, effort, supported, expected
+):
+    original_info = litellm.get_model_info
+    monkeypatch.setattr(
+        litellm,
+        "get_model_info",
+        lambda model: {
+            **original_info(model),
+            "supports_reasoning": supported,
+        },
+    )
+    configured = Settings.model_validate(
+        {
+            **settings.model_dump(),
+            "gemini_api_key": "test-only-gemini",
+            "provider_order": ("gemini",),
+            "gemini_reasoning_effort": effort,
+        }
+    )
+    completion = AsyncMock(
+        return_value=response(
+            usage={
+                "prompt_tokens": 100,
+                "completion_tokens": 110,
+                "completion_tokens_details": {"reasoning_tokens": 100},
+            }
+        )
+    )
+    router = LLMRouter(configured, database, completion=completion)
+    result = await router.complete(mission_id, MESSAGES, json_schema=SCHEMA)
+    assert completion.call_args.kwargs.get("reasoning_effort") == expected
+    assert completion.call_args.kwargs["max_tokens"] == settings.max_output_tokens
+    assert result.usage.completion_tokens == 110
+    assert result.cost_usd == Decimal("0.000320000")
+    assert (await router.budget(mission_id)).reserved_usd == 0
 
 
 async def test_success_tracks_cost_usage_and_validates_schema(
@@ -609,3 +657,42 @@ async def test_application_validation_can_request_bounded_correction(
     assert result.structured_output == {"answer": 42}
     assert completion.await_count == 2
     assert (await attempts(database))[0].error_code == "invalid_output"
+
+
+async def test_safe_contract_feedback_is_retried_with_a_new_ledger_row(
+    settings, database, mission_id
+):
+    configured = settings.model_copy(update={"provider_max_attempts": 2})
+    completion = AsyncMock(side_effect=[response('{"answer":0}'), response()])
+
+    def validate(value):
+        if value != {"answer": 42}:
+            raise OutputValidationError("Preserve existing tests; return implementation only")
+
+    result = await LLMRouter(configured, database, completion=completion).complete(
+        mission_id, MESSAGES, json_schema=SCHEMA, output_validator=validate
+    )
+    assert result.structured_output == {"answer": 42}
+    assert completion.await_count == 2
+    assert len(await attempts(database)) == 2
+    assert "Preserve existing tests" in completion.call_args.kwargs["messages"][-1]["content"]
+
+
+async def test_explicit_review_model_uses_only_its_route_and_shared_budget(
+    settings, database, mission_id
+):
+    from pydantic import SecretStr
+
+    configured = settings.model_copy(update={"gemini_api_key": SecretStr("review-test-key")})
+    completion = AsyncMock(return_value=response())
+    original = LLMRouter(configured, database, completion=completion)
+    reviewer = original.for_model("gemini/gemini-3.8-flash")
+    await reviewer.complete(mission_id, MESSAGES)
+    assert completion.call_args.kwargs["model"] == "gemini/gemini-3.8-flash"
+    assert completion.call_args.kwargs["api_key"] == "review-test-key"
+    assert reviewer.settings.provider_order == ("gemini",)
+    assert (await original.budget(mission_id)).spent_usd > 0
+    assert (await attempts(database))[0].model == "gemini/gemini-3.8-flash"
+    with pytest.raises(ValueError):
+        original.for_model("anthropic/unconfigured-model")
+    assert completion.await_count == 1
