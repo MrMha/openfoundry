@@ -139,9 +139,12 @@ def main() -> None:
     parser.add_argument("--case", choices=[*CASES, "all"], default="slugify")
     parser.add_argument("--model", default="gemini/gemini-3.5-flash-lite")
     parser.add_argument("--review-model", default=None)
+    parser.add_argument(
+        "--reasoning-effort", choices=["minimal", "low", "medium", "high"], default="medium"
+    )
     parser.add_argument("--repeats", type=int, choices=range(1, 11), default=1)
     parser.add_argument("--timeout", type=float, default=900)
-    parser.add_argument("--max-output-tokens", type=int, default=4096)
+    parser.add_argument("--max-output-tokens", type=int, default=8192)
     parser.add_argument(
         "--unbilled-project-confirmed",
         action="store_true",
@@ -165,12 +168,14 @@ def main() -> None:
         max_output_tokens=args.max_output_tokens,
         max_parallel_tasks=1,
         engineering_review_model=args.review_model,
+        gemini_reasoning_effort=args.reasoning_effort,
     )
     data_dir.mkdir(parents=True, mode=0o700)
     report = {
         "started_at_utc": datetime.now(UTC).isoformat(),
         "model": args.model,
         "engineering_review_model": args.review_model,
+        "gemini_reasoning_effort": args.reasoning_effort,
         "backend_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
         "source_sha256": {
             str(path): hashlib.sha256(path.read_bytes()).hexdigest()

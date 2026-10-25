@@ -1,0 +1,22 @@
+import pytest
+from app import summarize_csv
+
+@pytest.mark.parametrize(('text', 'expected'), [
+    ('category,amount\na,2\na,3\nb,-1\n', {'a': 5, 'b': -1}),
+    ('amount,category,unused\r\n2, a ,x\r\n', {'a': 2}),
+    ('category,amount\n"a,b",4\n', {'a,b': 4}),
+    ('category,amount\n', {}),
+    ('category,amount\n\na,1\n\n', {'a': 1}),
+    ('category,amount\na,0\nA,2\n', {'a': 0, 'A': 2}),
+])
+def test_independent_csv(text, expected):
+    assert summarize_csv(text) == expected
+
+@pytest.mark.parametrize('text', [
+    '', 'name,amount\na,1\n', 'category,value\na,1\n',
+    'category,amount\n,1\n', 'category,amount\na,\n',
+    'category,amount\na,1.2\n', 'category,amount\na\n',
+])
+def test_independent_csv_rejection(text):
+    with pytest.raises(ValueError):
+        summarize_csv(text)

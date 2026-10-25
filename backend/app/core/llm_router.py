@@ -126,6 +126,7 @@ class _Bound:
     cost_usd: Decimal
     max_input_tokens: int
     max_output_tokens: int
+    supports_reasoning: bool = False
 
 
 class _Usage(BaseModel):
@@ -265,7 +266,7 @@ class LLMRouter:
                 raise ValueError("Paid models require positive token prices")
             limited_output = min(output_tokens, max_output)
             bound = _usd(rates[0] * max_input + rates[1] * limited_output)
-            return _Bound(bound, max_input, limited_output)
+            return _Bound(bound, max_input, limited_output, bool(info.get("supports_reasoning")))
         except Exception:
             raise PricingUnavailableError(
                 "No bounded pricing available for configured model"
@@ -522,6 +523,13 @@ class LLMRouter:
             }
             if route.api_key is not None:
                 kwargs["api_key"] = route.api_key
+            if (
+                route.provider == "gemini"
+                and route.model.startswith(("gemini/gemini-3", "gemini/gemini-4"))
+                and bound.supports_reasoning
+                and self.settings.gemini_reasoning_effort is not None
+            ):
+                kwargs["reasoning_effort"] = self.settings.gemini_reasoning_effort
             if route.api_base is not None:
                 kwargs["api_base"] = route.api_base
             if json_schema is not None:

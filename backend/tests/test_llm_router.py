@@ -80,6 +80,53 @@ async def attempts(database: Database) -> list[LLMAttempt]:
         )
 
 
+@pytest.mark.parametrize(
+    ("effort", "supported", "expected"),
+    [
+        ("medium", True, "medium"),
+        ("high", True, "high"),
+        (None, True, None),
+        ("medium", False, None),
+    ],
+)
+async def test_gemini_reasoning_keeps_output_and_accounting_bounds(
+    settings, database, mission_id, monkeypatch, effort, supported, expected
+):
+    original_info = litellm.get_model_info
+    monkeypatch.setattr(
+        litellm,
+        "get_model_info",
+        lambda model: {
+            **original_info(model),
+            "supports_reasoning": supported,
+        },
+    )
+    configured = Settings.model_validate(
+        {
+            **settings.model_dump(),
+            "gemini_api_key": "test-only-gemini",
+            "provider_order": ("gemini",),
+            "gemini_reasoning_effort": effort,
+        }
+    )
+    completion = AsyncMock(
+        return_value=response(
+            usage={
+                "prompt_tokens": 100,
+                "completion_tokens": 110,
+                "completion_tokens_details": {"reasoning_tokens": 100},
+            }
+        )
+    )
+    router = LLMRouter(configured, database, completion=completion)
+    result = await router.complete(mission_id, MESSAGES, json_schema=SCHEMA)
+    assert completion.call_args.kwargs.get("reasoning_effort") == expected
+    assert completion.call_args.kwargs["max_tokens"] == settings.max_output_tokens
+    assert result.usage.completion_tokens == 110
+    assert result.cost_usd == Decimal("0.000320000")
+    assert (await router.budget(mission_id)).reserved_usd == 0
+
+
 async def test_success_tracks_cost_usage_and_validates_schema(
     settings: Settings, database: Database, mission_id: UUID
 ) -> None:

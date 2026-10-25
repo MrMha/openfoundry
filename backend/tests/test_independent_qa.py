@@ -48,8 +48,11 @@ async def test_independent_acceptance_controls_qa_result(settings, database, goo
         dependencies_json="[]",
     )
     router = LLMRouter(configured, database)
-    router.complete = AsyncMock(
-        return_value=SimpleNamespace(
+
+    def completion(*args, **kwargs):
+        if "findings" in kwargs["json_schema"]["properties"]:
+            return SimpleNamespace(structured_output={"findings": []})
+        return SimpleNamespace(
             structured_output={
                 "source": CHECKS,
                 "empty_or_missing_input_tests": CHECKS.replace(
@@ -57,7 +60,8 @@ async def test_independent_acceptance_controls_qa_result(settings, database, goo
                 ),
             }
         )
-    )
+
+    router.complete = AsyncMock(side_effect=completion)
     memory = MemoryVault(mid, storage_root=settings.memory_root)
     async with WorkspaceSandbox(
         mid, root=settings.workspace_root, sandbox_mode="guarded"
@@ -98,9 +102,10 @@ async def test_independent_acceptance_controls_qa_result(settings, database, goo
         checks = report["history"][0]["checks"]
         assert checks[0]["result"]["status"] == "passed"
         assert checks[1]["result"]["status"] == ("passed" if good else "failed")
-        call = router.complete.call_args.kwargs
-        assert "implementation bodies" in router.complete.call_args.args[1][0].content.lower()
-        assert "return {}" not in router.complete.call_args.args[1][1].content
+        generation = router.complete.call_args_list[0]
+        call = generation.kwargs
+        assert "implementation bodies" in generation.args[1][0].content.lower()
+        assert "return {}" not in generation.args[1][1].content
         assert call["output_validator"]
         assert any(
             a["artifact_type"] == "independent_acceptance_tests" for a in output["artifacts"]

@@ -65,7 +65,9 @@ async def independently_check(settings: Settings, mission_id: UUID, checks: str)
         for path, data in files.items():
             await sandbox.write_bytes(path, data)
         await sandbox.write_file("test_independent.py", checks)
-        result = await sandbox.run_test_command(["pytest", "-q", "test_independent.py"])
+        result = await sandbox.run_test_command(
+            ["pytest", "-q", "test_independent.py"], independent_pytest=True
+        )
     hashes = {name: hashlib.sha256(data).hexdigest() for name, data in sorted(files.items())}
     return {
         "status": "passed" if result.succeeded else "failed",

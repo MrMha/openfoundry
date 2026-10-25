@@ -98,11 +98,12 @@ class Settings(BaseModel):
     ollama_base_url: str | None = None
     openai_model: str = "openai/gpt-4o-mini"
     gemini_model: str = "gemini/gemini-3.5-flash-lite"
+    gemini_reasoning_effort: Literal["minimal", "low", "medium", "high"] | None = "medium"
     anthropic_model: str = "anthropic/claude-haiku-4-5"
     ollama_model: str = "ollama_chat/llama3.2"
     provider_order: tuple[Provider, ...] = ("openai", "gemini", "anthropic", "ollama")
     request_timeout_seconds: float = Field(default=180, gt=0, le=600)
-    max_output_tokens: int = Field(default=4096, gt=0, le=131_072)
+    max_output_tokens: int = Field(default=8192, gt=0, le=131_072)
     provider_max_attempts: int = Field(default=3, ge=1, le=5)
     provider_retry_delay_seconds: float = Field(default=1, ge=0, le=30)
     independent_qa_enabled: bool = True
@@ -225,6 +226,7 @@ class Settings(BaseModel):
             "OLLAMA_BASE_URL": "ollama_base_url",
             "OPENFOUNDRY_OPENAI_MODEL": "openai_model",
             "OPENFOUNDRY_GEMINI_MODEL": "gemini_model",
+            "OPENFOUNDRY_GEMINI_REASONING_EFFORT": "gemini_reasoning_effort",
             "OPENFOUNDRY_ANTHROPIC_MODEL": "anthropic_model",
             "OPENFOUNDRY_OLLAMA_MODEL": "ollama_model",
             "OPENFOUNDRY_REQUEST_TIMEOUT_SECONDS": "request_timeout_seconds",

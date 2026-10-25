@@ -95,7 +95,9 @@ def fixture_config(**updates):
         allowed_tools=("add", "slow"),
         departments=("researcher",),
         requires_approval=False,
-        timeout_seconds=30 if sys.platform == "win32" else 5,
+        # Functional discovery includes cold SDK startup. Exercise the production
+        # 15-second budget on POSIX; the separate 50ms test verifies deadlines.
+        timeout_seconds=30 if sys.platform == "win32" else 15,
         **updates,
     )
 

@@ -152,7 +152,13 @@ class QASelfHealer(BaseDepartment):
         if acceptance_path:
             commands.append(CommandSpec(command=["pytest", "-q", acceptance_path]))
         for spec in commands:
-            result = await sandbox.run_test_command(spec.command, cwd=spec.cwd)
+            result = await sandbox.run_test_command(
+                spec.command,
+                cwd=spec.cwd,
+                independent_pytest=bool(
+                    acceptance_path and spec.command == ["pytest", "-q", acceptance_path]
+                ),
+            )
             checks.append(
                 CheckRecord(
                     name=" ".join(spec.command),
@@ -304,6 +310,9 @@ class QASelfHealer(BaseDepartment):
                 )
                 acceptance_path = await acceptance_tests(self.router, task, sandbox)
                 artifacts[acceptance_path] = "independent_acceptance_tests"
+                for audit_path in await sandbox.list_files():
+                    if audit_path.startswith(f"qa/{task.id}/test-contract-review-"):
+                        artifacts[audit_path] = "test_contract_review"
             baseline = await self._test_snapshot(sandbox)
             if acceptance_path:
                 baseline[acceptance_path] = hashlib.sha256(
