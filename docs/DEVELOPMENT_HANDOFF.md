@@ -1,4 +1,12 @@
-# Development checkpoint — 2026-10-22
+# Latest checkpoint — 2026-10-25
+
+**Work is paused at the owner's request.** Read the current
+[October 25 handoff](DEVELOPMENT_CHECKPOINT_2026-10-25.md) before resuming.
+Version 1.0 is not ready. The text below is historical October 22 context;
+its ignored raw receipts were lost with the earlier checkout and are not
+available in the restored checkout. Today's evidence is saved separately.
+
+## Historical development checkpoint — 2026-10-22
 
 Work paused at the owner's request. Branch: `codex/v1-readiness`. This is a
 development checkpoint, **not a v1.0 release or a reliability certification**.
